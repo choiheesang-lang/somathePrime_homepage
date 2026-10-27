@@ -211,13 +211,15 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(24
   body.intro-on .quick { transform: translateY(24px); }
   .quick__list li:not(:first-child) { display: none; }
   .quick__list li:first-child { margin: 0; }
-  .quick__btn--lead, .quick__top {
-    width: 64px; height: 64px; padding: 0; justify-content: center; border-radius: 50%;
-    box-shadow: var(--shadow-md); font-size: 10.5px;
+  /* 등록 버튼은 글자가 들어가는 알약, 맨 위로는 원 */
+  .quick__btn--lead {
+    flex-direction: row; gap: 6px; height: 52px; padding: 0 20px 0 16px; border-radius: 999px;
+    box-shadow: var(--shadow-md); font-family: var(--font-title); font-size: 15px; font-weight: 700; white-space: nowrap;
   }
   .quick__btn--lead svg { width: 20px; height: 20px; }
   .quick__btn--lead br { display: none; }
-  .quick__top { order: 2; width: 48px; height: 48px; margin: 0 0 0 auto; background: #fff; border: 1px solid var(--line-neutral); }
+  .quick__top { justify-content: center; border-radius: 50%; box-shadow: var(--shadow-md); font-size: 10.5px; }
+  .quick__top { order: 2; width: 48px; height: 48px; padding: 0; margin: 0 0 0 auto; background: #fff; border: 1px solid var(--line-neutral); }
 }
 
 /* ── 푸터 ──────────────────────────────────────────────────────── */

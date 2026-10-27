@@ -84,7 +84,8 @@ body.intro-light .intro-skip { color: var(--ink); background: rgba(255, 255, 255
 
 .kv__panel {
   position: absolute; left: 0; top: 0; bottom: 0; z-index: 1;
-  width: max(30%, 440px);
+  /* 왼쪽 여백(콘텐츠 1200 기준) + 글 영역 400 — 「소마 더 프라임」 한 줄이 들어가는 폭 */
+  width: calc(max(var(--gutter), (100vw - var(--max-w)) / 2) + 400px);
   display: flex; flex-direction: column; justify-content: space-between;
   padding: 48px 48px 48px max(var(--gutter), calc((100vw - var(--max-w)) / 2));
   background: rgba(241, 238, 236, 0.86);
@@ -99,7 +100,7 @@ body.intro-light .intro-skip { color: var(--ink); background: rgba(255, 255, 255
 }
 .kv__lead svg { width: 16px; height: 16px; }
 .kv__lead:hover { background: var(--ink); color: #fff; }
-.kv__title { display: flex; flex-direction: column; font-size: clamp(36px, 3.4vw, 56px); font-weight: 700; line-height: 1.22; color: var(--ink); }
+.kv__title { display: flex; flex-direction: column; white-space: nowrap; font-size: clamp(36px, 3.4vw, 52px); font-weight: 700; line-height: 1.22; color: var(--ink); }
 .kv__sub { margin-top: 24px; font-family: var(--font-title); font-size: clamp(18px, 1.5vw, 24px); line-height: 1.5; color: var(--ink-2); }
 
 .kv__ctrl {
@@ -123,12 +124,13 @@ body.intro-light .intro-skip { color: var(--ink); background: rgba(255, 255, 255
 .kv__bar i { display: block; height: 100%; width: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); }
 
 @media (max-width: 1024px) {
-  .kv { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column-reverse; }
+  /* 모바일: 사진(위) → 글(아래). 넘김 컨트롤은 사진의 오른쪽 아래에 얹습니다 */
+  .kv { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column; }
   .kv__slides { position: relative; inset: auto; aspect-ratio: 4 / 3; }
   .kv__panel { position: relative; width: auto; padding: 32px var(--gutter) 28px; gap: 24px; background: var(--bg-brand-heavy); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .kv__copy { order: -1; }
   .kv__lead { order: 1; }
-  .kv__ctrl { position: absolute; right: var(--gutter); top: -68px; }
+  .kv__ctrl { position: absolute; right: var(--gutter); top: -68px; height: 48px; }
   .kv__sub { margin-top: 14px; }
 }
 
