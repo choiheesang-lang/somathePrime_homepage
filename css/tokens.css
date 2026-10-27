@@ -1,0 +1,184 @@
+/* ═════════════════════════════════════════════════════════════
+   SOMA the Prime · Design Tokens
+   Figma: soma_thePrime (zdJrSOqkvIRsrPZmK4QT4L)
+
+   3계층 구조로 Figma 변수 컬렉션을 그대로 옮긴 것이다.
+     L1 Palette   원시값. Figma "Palette" 컬렉션과 1:1.
+     L2 Semantic  역할값. Figma "Semantic" 컬렉션 Light 모드와 1:1.
+     L3 App       이 프로토타입 전용 별칭·스케일. Figma에 없음.
+
+   색을 바꿀 때는 L1만 고치면 L2·L3가 따라온다.
+   ═════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ───────────────────────────────────────────────────────────
+     L1 · PALETTE — Figma "Palette" 컬렉션
+     ─────────────────────────────────────────────────────────── */
+
+  /* Common */
+  --pal-common-0:          #000000;
+  --pal-common-100:        #FFFFFF;
+
+  /* Stone Gray — 브랜드 기본 중성색 (Figma: Palette/Stone Gray/*) */
+  --pal-stone-gray-0:      #000000;
+  --pal-stone-gray-10:     #2C2A29;
+  --pal-stone-gray-20:     #4F4D4C;
+  --pal-stone-gray-30:     #5D5B59;
+  --pal-stone-gray-40:     #A6A4A0;
+  --pal-stone-gray-50:     #E1DEDA;
+  --pal-stone-gray-60:     #F1EEEC;
+  --pal-stone-gray-70:     #F5F2F0;
+  --pal-stone-gray-80:     #F7F5F3;
+  --pal-stone-gray-90:     #FCFBF9;
+  --pal-stone-gray-100:    #FFFFFF;
+
+  /* Brand — 자매 브랜드 코어 컬러 (Figma: Palette/Brand/*) */
+  --pal-brand-coral:       #F2A48C;   /* soma */
+  --pal-brand-yellow:      #F6D98A;   /* playfacto */
+  --pal-brand-dusty-blue:  #98B8E3;   /* reading ocean */
+  --pal-brand-sage-green:  #B7CFA3;   /* myON */
+
+  /* Cool Neutral — Label·Line 알파값의 베이스 (Figma: Palette/Cool Neutral/*) */
+  --pal-cool-neutral-10:   #171719;
+  --pal-cool-neutral-15:   #1B1C1E;
+  --pal-cool-neutral-50:   #70737C;
+  --pal-cool-neutral-70:   #989BA2;
+  --pal-cool-neutral-80:   #AEB0B6;
+  --pal-cool-neutral-96:   #E1E2E4;
+  --pal-cool-neutral-98:   #F4F4F5;
+  --pal-cool-neutral-99:   #F7F7F8;
+
+  /* Status */
+  --pal-green-50:          #00BF40;
+  --pal-orange-50:         #FF9200;
+  --pal-red-50:            #FF4242;
+
+  /* ───────────────────────────────────────────────────────────
+     L2 · SEMANTIC — Figma "Semantic" 컬렉션 (Light 모드)
+     Dark 모드는 Figma에만 정의되어 있고 이 프로토타입은 라이트 전용이다.
+     ─────────────────────────────────────────────────────────── */
+
+  /* Primary — 2026-09-10 블루에서 Stone Gray로 교체됨 */
+  --primary-normal:        var(--pal-stone-gray-10);
+  --primary-strong:        var(--pal-stone-gray-20);
+  --primary-heavy:         var(--pal-stone-gray-30);
+
+  /* Primary / Lamp — 브랜드 액센트 4색 */
+  --primary-lamp-coral:      var(--pal-brand-coral);
+  --primary-lamp-yellow:     var(--pal-brand-yellow);
+  --primary-lamp-dusty-blue: var(--pal-brand-dusty-blue);
+  --primary-lamp-sage-green: var(--pal-brand-sage-green);
+
+  /* Background */
+  --bg-normal:             var(--pal-common-100);
+  --bg-alternative:        var(--pal-cool-neutral-99);
+  --bg-brand-normal:       var(--pal-stone-gray-80);
+  --bg-brand-strong:       var(--pal-stone-gray-70);
+  --bg-brand-heavy:        var(--pal-stone-gray-60);
+
+  /* Label */
+  --label-normal:          var(--pal-cool-neutral-10);
+  --label-strong:          var(--pal-common-0);
+  --label-neutral:         rgba(46, 47, 51, 0.88);
+  --label-alternative:     rgba(55, 56, 60, 0.61);
+  --label-assistive:       rgba(55, 56, 60, 0.28);
+  --label-disable:         rgba(55, 56, 60, 0.16);
+
+  /* Line */
+  --line-normal:           rgba(112, 115, 124, 0.22);
+  --line-neutral:          rgba(112, 115, 124, 0.16);
+  --line-alternative:      rgba(112, 115, 124, 0.08);
+  --line-strong:           rgba(112, 115, 124, 0.52);
+  --line-solid-normal:     var(--pal-cool-neutral-96);
+
+  /* Fill */
+  --fill-normal:           rgba(112, 115, 124, 0.08);
+  --fill-strong:           rgba(112, 115, 124, 0.16);
+  --fill-alternative:      rgba(112, 115, 124, 0.05);
+
+  /* Interaction */
+  --interaction-inactive:  var(--pal-cool-neutral-70);
+  --interaction-disable:   var(--pal-cool-neutral-98);
+
+  /* Status */
+  --status-positive:       var(--pal-green-50);
+  --status-cautionary:     var(--pal-orange-50);
+  --status-negative:       var(--pal-red-50);
+
+  /* Static / Inverse / Material */
+  --static-white:          var(--pal-common-100);
+  --static-black:          var(--pal-common-0);
+  --inverse-primary:       var(--pal-stone-gray-90);
+  --inverse-background:    var(--pal-cool-neutral-15);
+  --inverse-label:         var(--pal-cool-neutral-99);
+  --material-dimmer:       rgba(23, 23, 25, 0.52);
+
+  /* ───────────────────────────────────────────────────────────
+     L3 · APP — 이 프로토타입 전용. Figma에 대응 토큰 없음.
+     ─────────────────────────────────────────────────────────── */
+
+  /* 기존 마크업이 쓰는 짧은 별칭 (모두 L2를 가리킨다) */
+  --ink:       var(--primary-normal);
+  --ink-2:     var(--primary-heavy);
+  --muted:     var(--label-alternative);
+  --line:      var(--line-normal);
+  --white:     var(--static-white);
+  --bg-hero:   var(--bg-brand-heavy);
+
+  --coral:     var(--primary-lamp-coral);
+  --yellow:    var(--primary-lamp-yellow);
+  --sage:      var(--primary-lamp-sage-green);
+  --blue:      var(--primary-lamp-dusty-blue);
+
+  /* 브랜드 음영 — 3D 아이콘 그라디언트용. Figma 미정의. */
+  --coral-d:   #D9846B;
+  --yellow-d:  #D9B860;
+  --sage-d:    #8FAE7B;
+  --blue-d:    #7F95B5;
+
+  /* 히어로 전용 */
+  --hero-veil-solid: var(--primary-strong);  /* 장면 1의 사진 덮개 (Figma 대기화면 배경 #4F4D4C) */
+  --hero-veil:       rgba(0, 0, 0, 0.11);  /* 장면 2 이후 베일 */
+  --hero-glass-bg:     rgba(255, 255, 255, 0.01);
+  --hero-glass-border: rgba(221, 221, 221, 0.2);
+
+  /* Type */
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+          "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", Roboto, sans-serif;
+  --fs-hero:  clamp(2.6rem, 6.5vw, 6rem);
+  --fs-h1:    clamp(2rem, 4.6vw, 4.2rem);
+  --fs-h2:    clamp(1.5rem, 3vw, 2.6rem);
+  --fs-h3:    clamp(1.2rem, 1.9vw, 1.6rem);
+  --fs-body:  clamp(1rem, 1.15vw, 1.15rem);
+  --fs-small: 0.875rem;
+  --fs-tiny:  0.75rem;
+  --lh-body:  1.7;
+
+  /* Spacing */
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6rem;
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --r-pill: 999px;
+
+  /* Shadow — Stone Gray 10 기반 */
+  --shadow-sm: 0 2px 10px rgba(44, 42, 41, 0.08);
+  --shadow-md: 0 14px 40px rgba(44, 42, 41, 0.12);
+  --shadow-lg: 0 30px 80px rgba(44, 42, 41, 0.18);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --header-h: 76px;
+  --max-w: 1200px;
+}

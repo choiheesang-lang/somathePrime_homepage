@@ -1,0 +1,146 @@
+---
+title: 소마 더 프라임 | SOMA the Prime — 12월 목동 OPEN
+desc: 사고력 수학 · 창의 교구 수학 · 글로벌 영어 독서 · 사고력 독서. 네 개의 브랜드가 하나로 이어지는 프리미엄 캠퍼스, 소마 더 프라임. 12월 목동 OPEN.
+path: /
+menu:
+css: hero home
+js: hero home
+preload: /img/campus/entrance-01.webp
+body: home
+---
+  <script>
+    /* 인트로를 볼 차례면 첫 페인트 전에 표시해 둡니다 — 그래야 메인 비주얼이 한 프레임
+       보였다가 인트로가 덮는 깜박임이 없습니다. 같은 탭에서는 한 번만(js/home.js). */
+    (function () {
+      var q = new URLSearchParams(location.search), seen = false;
+      try { seen = sessionStorage.getItem('stp-intro') === '1'; } catch (e) {}
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (q.get('intro') === '1' || (!seen && q.get('intro') !== '0' && !reduce)) document.body.classList.add('intro-on');
+    })();
+  </script>
+  {{sprite}}
+
+  {{gnb}}
+
+  <!-- ─── 인트로 (기획서 3p) — 화면 전체를 덮는 오프닝. 끝나면 사라지고 메인부터 시작합니다 ─── -->
+  {{stage}}
+
+  <main id="content" class="page home-main">
+
+    <!-- 상단 배너 (기획서 4p ②) — 미래탐구·소마 홈페이지의 팝업 배너 자리. 닫으면 세션 동안 숨깁니다 -->
+    <div class="topbanner" id="topbanner">
+      <div class="topbanner__inner">
+        <p class="topbanner__text"><b>12월 목동 OPEN</b><span>관심고객으로 등록하시면 설명회 · 오픈 소식을 가장 먼저 알려 드립니다.</span></p>
+        <button type="button" class="topbanner__cta" data-lead-open>관심고객 등록 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="topbanner__close" id="topbanner-close" aria-label="배너 닫기"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 3L15 15M15 3L3 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+
+    <!-- 메인 비주얼 (기획서 4p ③④) — 텍스트는 고정, 사진 세 장이 돌아갑니다 -->
+    <section class="kv" id="s-main" aria-roledescription="carousel" aria-label="소마 더 프라임 캠퍼스">
+      <div class="kv__slides" id="kv-slides">
+        <figure class="kv__slide is-on" aria-roledescription="slide" aria-label="1 / 3"><img src="/img/campus/entrance-01.webp" alt="소마 더 프라임 캠퍼스 입구" fetchpriority="high" /></figure>
+        <figure class="kv__slide" aria-roledescription="slide" aria-label="2 / 3"><img src="/img/campus/lounge-01.webp" alt="라운지 — 천장의 SOMA THE PRIME 사인과 TV 책장" loading="lazy" /></figure>
+        <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/lounge-07.webp" alt="나무 그늘 아래 아치형 책장의 독서 공간" loading="lazy" /></figure>
+      </div>
+      <div class="kv__panel">
+        <button type="button" class="kv__lead" data-lead-open><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><g transform="translate(2 1)"><rect x="0.5" y="0.5" width="10" height="13" rx="1.5" stroke="currentColor"/><path d="M3 5h5M3 8h5M3 11h3" stroke="currentColor" stroke-linecap="round"/></g></svg>관심고객 등록</button>
+        <div class="kv__copy">
+          <h1 class="kv__title"><span>소마 더 프라임</span><span>12월 OPEN</span></h1>
+          <p class="kv__sub">아이의 성장에서<br />가장 중요한 시기, 프라임</p>
+        </div>
+        <div class="kv__ctrl" role="group" aria-label="사진 넘기기">
+          <p class="kv__count" id="kv-count" aria-live="polite"><b>1</b> / 3</p>
+          <button type="button" class="kv__btn" id="kv-prev" aria-label="이전 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <i class="kv__sep" aria-hidden="true"></i>
+          <button type="button" class="kv__btn" id="kv-next" aria-label="다음 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="kv__btn kv__btn--toggle" id="kv-toggle" aria-pressed="false" aria-label="자동 넘김 멈춤">
+            <svg class="i-pause" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.2" height="12" rx="1"/><rect x="11.8" y="4" width="3.2" height="12" rx="1"/></svg>
+            <svg class="i-play" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.5 4.6v10.8a.8.8 0 0 0 1.22.68l8.5-5.4a.8.8 0 0 0 0-1.36l-8.5-5.4A.8.8 0 0 0 6.5 4.6z"/></svg>
+          </button>
+          <span class="kv__bar" aria-hidden="true"><i id="kv-bar"></i></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기획서 5p — 랜딩 장면 10에서 슬로건만 바꿈. 영역을 누르면 브랜드 소개로 -->
+    {{scene10}}
+
+    <!-- 기획서 6p — 교육 프로그램 안내 (14p 디자인 활용) -->
+    <section class="prog" id="s-program">
+      <div class="wrap">
+        <div class="sec-head" data-step="0">
+          <h2>네 개의 브랜드, 하나의 성장 여정</h2>
+          <p>사고력 형성기에 필요한 네 가지 축을 한 캠퍼스에서 완성합니다.</p>
+        </div>
+        <ul class="prog__list">
+          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-coral)">
+            <span class="prog__logo"><svg viewBox="0 0 174 40" role="img" aria-label="소마"><use href="#lg-soma" /></svg></span>
+            <b class="prog__field">사고력 수학</b>
+            <span class="prog__desc">정답보다 과정을 중시하는 사고력 수학</span>
+          </li>
+          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-yellow)">
+            <span class="prog__logo"><svg viewBox="0 0 96 64" role="img" aria-label="플레이팩토" class="is-play"><use href="#lg-playfacto" /></svg></span>
+            <b class="prog__field">창의 교구 수학</b>
+            <span class="prog__desc">손으로 만지며 원리를 깨치는 유아 수학</span>
+          </li>
+          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-sage-green)">
+            <span class="prog__logo"><svg viewBox="0 0 201 62" role="img" aria-label="Renaissance myON"><use href="#lg-myon-wide" /></svg></span>
+            <b class="prog__field">글로벌 영어 독서</b>
+            <span class="prog__desc">7,000권 이상의 인터랙티브 영어 원서</span>
+          </li>
+          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-dusty-blue)">
+            <span class="prog__logo"><svg viewBox="0 0 151 50" role="img" aria-label="리딩오션"><use href="#lg-reading" /></svg></span>
+            <b class="prog__field">사고력 독서</b>
+            <span class="prog__desc">읽은 것을 생각으로, 생각을 표현으로</span>
+          </li>
+        </ul>
+        <div class="prog__more" data-step="2">
+          <a class="btn2" href="/program.html">교육 프로그램 안내 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기획서 7p — 랜딩 장면 12 + 관심고객 등록 버튼. 영역을 누르면 캠퍼스 안내로 -->
+    {{scene12}}
+
+    <!-- 기획서 7p ③ — 오시는 길 (13p 참고). 지도는 기존 홈페이지 지도 연동 자리 -->
+    <section class="visit" id="s-visit">
+      <div class="wrap">
+        <div class="visit__head" data-step="0">
+          <h2>오시는 길</h2>
+          <a class="visit__more" href="/brand/location.html">자세히 보기 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="visit__card" data-step="1">
+          <div class="visit__info">
+            <svg class="visit__logo logo-prime" viewBox="0 0 432 160" role="img" aria-label="SOMA THE PRIME"><use href="#logo-prime" /></svg>
+            <dl>
+              <div><dt>주소</dt><dd>서울 양천구 목동서로 349, 7층</dd></div>
+              <div><dt>전화</dt><dd>추후 안내 예정</dd></div>
+            </dl>
+            <div class="visit__links">
+              <a href="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">카카오맵</a>
+              <a href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">네이버 지도</a>
+            </div>
+          </div>
+          <!-- 지도 자리: 기존 홈페이지의 지도 연동 기능이 들어올 곳(기획서 13p). 지금은 그림 지도 -->
+          <div class="visit__map" role="img" aria-label="지도 — 서울 양천구 목동서로 349">
+            <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="640" height="360" fill="#EEEAE4"/>
+              <g fill="#E3DED6"><rect x="24" y="24" width="150" height="96" rx="6"/><rect x="200" y="24" width="120" height="96" rx="6"/><rect x="430" y="24" width="186" height="96" rx="6"/><rect x="24" y="214" width="150" height="122" rx="6"/><rect x="200" y="214" width="120" height="122" rx="6"/><rect x="430" y="214" width="186" height="122" rx="6"/></g>
+              <rect x="346" y="24" width="58" height="312" rx="6" fill="#DCE7D3"/>
+              <g stroke="#fff" stroke-linecap="round"><path d="M0 167h640" stroke-width="30"/><path d="M187 0v360M417 0v360" stroke-width="16"/></g>
+              <path d="M0 167h640" stroke="#F6D98A" stroke-width="4"/>
+              <text x="24" y="160" font-size="13" fill="#8A8580" font-family="sans-serif">목동서로</text>
+              <g transform="translate(300 128)"><path d="M0 34s-17-14.6-17-28.5a17 17 0 0 1 34 0C17 19.4 0 34 0 34z" fill="#323333"/><circle cy="5.5" r="6.5" fill="#fff"/></g>
+              <g transform="translate(300 92)"><rect x="-62" y="-22" width="124" height="30" rx="15" fill="#fff" stroke="#E1DEDA"/><text y="-2" text-anchor="middle" font-size="13" font-weight="700" fill="#323333" font-family="sans-serif">소마 더 프라임</text></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {{footer}}
+  {{quick}}
+  {{lead}}

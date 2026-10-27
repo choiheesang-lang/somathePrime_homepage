@@ -1,0 +1,26 @@
+<a class="skip-link" href="#content">본문 바로가기</a>
+  <header class="gnb2" id="site-header">
+    <div class="gnb2__inner">
+      <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
+      <nav class="gnb2__nav" aria-label="주요 메뉴">
+        <ul class="gnb2__menu">
+          {{items}}
+        </ul>
+      </nav>
+      <div class="gnb2__util">
+        <a href="/mypage.html">로그인</a><a href="/mypage.html">회원가입</a>
+      </div>
+      <button type="button" class="gnb2__burger" id="mnav-open" aria-label="전체 메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mnav" id="mnav" hidden>
+    <div class="mnav__head">
+      <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
+      <button type="button" class="mnav__close" id="mnav-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M1 1L17 17M17 1L1 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+    </div>
+    <ul class="mnav__list">
+        {{mobile}}
+    </ul>
+    <div class="mnav__util"><a href="/mypage.html">로그인</a><a href="/mypage.html">회원가입</a></div>
+  </div>

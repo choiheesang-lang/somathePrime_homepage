@@ -1,0 +1,293 @@
+/* ─────────────────────────────────────────────
+   Reset & base
+   ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* no scroll-behavior: smooth here — ScrollTrigger.refresh() saves and restores the scroll
+   position by writing to the scroller, and CSS smooth scrolling animates that write so it
+   reads back a transitional value. The one place that wants a smooth jump (the nav brand
+   link) asks for it explicitly with scrollTo({ behavior: 'smooth' }). */
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background: var(--bg-hero);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+h1, h2, h3, p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.en { letter-spacing: -0.01em; }
+
+/* ─────────────────────────────────────────────
+   GNB (Figma GNB_menu)
+   ───────────────────────────────────────────── */
+.gnb {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  padding: 8px var(--gutter);
+  /* Figma GNB_menu (17674:740): a frosted bar so content passing underneath stays readable */
+  background: rgba(241, 238, 236, 0.72);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--line-normal);
+  color: #000;
+  /* 24차: 로고는 밝은 바닥에서 컬러(피그마 GNB light) */
+  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
+  /* transform is in the list for the hide-on-scroll-down in js/main.js; without it the bar
+     would jump. 0.32s is short enough that scrolling back up feels immediate. */
+  transition: color 0.45s var(--ease-out), border-color 0.45s var(--ease-out),
+              background-color 0.45s var(--ease-out), transform 0.32s var(--ease-out),
+              --lp-ink 0.45s var(--ease-out), --lp-o 0.45s var(--ease-out),
+              --lp-g 0.45s var(--ease-out), --lp-c 0.45s var(--ease-out);
+}
+/* ── 24차 · 새 로고 「SOMA / THE PRIME」 (index.html의 #logo-prime) ─────────────
+   부분별 색을 커스텀 속성으로 받습니다(<use> 안쪽은 바깥 셀렉터가 못 닿는 그림자 트리).
+   @property로 **등록**하는 이유는 트랜지션 — 미등록 커스텀 속성은 보간되지 않아 GNB가
+   어두운 바닥으로 넘어갈 때 글자는 0.45s에 걸쳐 바래는데 O·큐브만 툭 바뀝니다.
+   함정: 등록하면 `var(--x, 폴백)`의 폴백이 **절대 쓰이지 않고** 아래 초기값이 쓰입니다.
+   그래서 로고를 쓰는 자리마다 넷을 모두 명시합니다(푸터가 모르고 주황 O를 받지 않게). */
+@property --lp-ink { syntax: '<color>'; inherits: true; initial-value: #323333; }
+@property --lp-o   { syntax: '<color>'; inherits: true; initial-value: #E39241; }
+@property --lp-g   { syntax: '<color>'; inherits: true; initial-value: #5FA756; }
+@property --lp-c   { syntax: '<color>'; inherits: true; initial-value: #E39241; }
+.logo-prime { display: block; overflow: visible; }
+
+/* Reading downward hides the bar; any upward move brings it back (js/main.js). It stays
+   put while the hero owns the screen, and comes back for keyboard focus. */
+.gnb.is-hidden { transform: translateY(-100%); }
+.gnb.on-dark { color: #fff; background: rgba(44, 42, 41, 0.22); border-bottom-color: rgba(255, 255, 255, 0.16);
+               --lp-ink: #fff; --lp-o: #fff; --lp-g: #fff; --lp-c: #fff; }   /* 피그마 GNB dark: 흰 단색 */
+.gnb.is-solid { background: rgba(241, 238, 236, 0.88); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .gnb { background: rgba(241, 238, 236, 0.94); }
+  .gnb.on-dark { background: rgba(44, 42, 41, 0.62); }
+}
+
+.gnb__inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gnb__brand {
+  /* 24차: 텍스트 → 로고 108x40 (피그마 17681:2485). 가로 16 + 음수 마진은 그대로라 로고
+     왼변이 격자(16)에 섭니다. 세로는 (60 - 40) / 2 = 10 — 링크 높이가 바 안쪽(60)과 같아
+     클릭 영역이 바를 넘지 않습니다. */
+  display: block;
+  padding: 10px 16px;
+  margin-left: -16px;
+  line-height: 0;
+}
+.gnb__brand .logo-prime { width: 108px; height: 40px; }
+.gnb__menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(112, 115, 124, 0.22);
+}
+/* Figma 17832:4980 — a 16×16 box, 4px from the label. currentColor only: the inherited
+   colour already carries its alpha, so the glyph must not add one of its own. */
+.doc-icon { width: 16px; height: 16px; flex: 0 0 16px; }
+.gnb__menu a, .gnb__menu span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--label-alternative);
+  white-space: nowrap;
+  transition: background-color 0.3s, color 0.3s;
+}
+.gnb.on-dark .gnb__menu a, .gnb.on-dark .gnb__menu span { color: rgba(255, 255, 255, 0.85); }
+.gnb__menu a:hover { background: rgba(255, 255, 255, 0.25); }
+/* 12차: 등록 페이지가 없어 span으로 바뀌었습니다 — 링크가 아니므로 hover도 없습니다 */
+.gnb__menu span { cursor: default; }
+.gnb__menu a.is-active { background: var(--label-neutral); color: var(--static-white); }
+.gnb__menu a.is-active:hover { background: rgba(46, 47, 51, 0.95); }
+
+/* ─────────────────────────────────────────────
+   Scroll cue (Figma scroll_down) — line above, label below
+   Used by the hero stage (#scroll-hint, scaled to viewBox units) and by 장면 12, so the
+   visual lives here and each caller adds only its own placement. --cue-s is that scale.
+   ───────────────────────────────────────────── */
+.scroll-cue {
+  --cue-s: 1;
+  /* 큐가 앉는 바닥을 토큰 셋으로 — 색을 다시 쓰지 않고 이 셋만 덮어 바꿉니다 */
+  --cue-ink: var(--label-strong);
+  --cue-line: var(--line-normal);
+  --cue-glow: var(--label-alternative);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(24px * var(--cue-s));
+  color: var(--cue-ink);
+  font-size: calc(12px * var(--cue-s));
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.scroll-cue__line {
+  position: relative;
+  width: 1px;
+  height: calc(72px * var(--cue-s));
+  background: var(--cue-line);
+  overflow: hidden;
+}
+/* a highlight running down the line reads as "scroll". No blur, no rotation here, so a CSS
+   keyframe is fine — and the global reduced-motion rule switches it off for free. */
+.scroll-cue__line::after {
+  content: "";
+  position: absolute;
+  left: 0; width: 1px; height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--cue-glow));
+  animation: hint-drop 1.9s var(--ease-in-out) infinite;
+}
+@keyframes hint-drop {
+  0%   { top: -40%; opacity: 0; }
+  25%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+/* 22차: 어두운 바닥용 밝은 변형을 지웠습니다. 유일한 사용처가 장면 12의 Scroll Down
+   큐였는데 그 큐를 빼면서 아무도 켜지 않게 됐습니다. 지금 남은 큐는 장면 9 하나뿐이고
+   그 바닥은 밝아서 기본 잉크가 맞습니다. 어두운 바닥이 다시 필요해지면 위 토큰 셋
+   (--cue-ink / --cue-line / --cue-glow)만 덮으면 됩니다. */
+
+/* ─────────────────────────────────────────────
+   Buttons
+   ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 56px;
+  padding: 0 2rem;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), background-color 0.3s, color 0.3s;
+}
+.btn:hover { transform: translateY(-2px) scale(1.02); }
+.btn:active { transform: translateY(0) scale(0.99); }
+.btn--primary { background: var(--ink); color: var(--white); box-shadow: var(--shadow-md); }
+.btn--primary:hover { box-shadow: var(--shadow-lg); }
+.btn--light { background: var(--white); color: var(--ink); box-shadow: var(--shadow-md); }
+.btn--block { width: 100%; }
+.btn__arrow { transition: transform 0.35s var(--ease-out); }
+.btn:hover .btn__arrow { transform: translateX(4px); }
+
+/* ─────────────────────────────────────────────
+   Footer
+   ───────────────────────────────────────────── */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-hero);
+  border-top: 1px solid var(--line);
+  padding: var(--space-5) var(--gutter) var(--space-4);
+}
+.site-footer__inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+/* 참조 전용 스프라이트 — 그려지지 않지만 문서에 살아 있어야 <use>가 찾습니다.
+   display: none이나 visibility: hidden은 쓰지 않습니다(참조가 깨집니다). */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* 피그마 17701:3883 : 워드마크 · 1px 구분선 · 브랜드 로고 4개.
+   로고는 인라인 심볼을 <use>로 쓰므로 색이 color 한 줄로 정해집니다 — 예전 <img> +
+   grayscale/brightness 필터는 피그마에 없는 처리였고 색을 맞출 수도 없었습니다. */
+.footer-top {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 32px;
+  color: var(--primary-heavy);
+}
+.footer-mark {
+  /* 24차: 텍스트 → 로고 108x40 (피그마 17701:3883), 어두운 단색. 로고 0 · 구분선 140 ·
+     형제 로고 173 이라 기존 gap 32가 그대로 맞습니다(108 + 32 = 140). */
+  margin: 0; line-height: 0;
+  --lp-ink: var(--ink); --lp-o: var(--ink); --lp-g: var(--ink); --lp-c: var(--ink);
+}
+.footer-mark .logo-prime { width: 108px; height: 40px; }
+.footer-div { width: 1px; height: 32px; background: var(--line); }
+/* 피그마는 네 로고 사이가 **모두 정확히 56**입니다(x 0→151.26→255.84→418.98).
+   간격을 vw에 연동해 뒀던 게 1440에서 49로 좁아진 원인 — 이 행은 max-width 1200으로
+   고정이고 그게 곧 피그마 프레임 폭이라, 뷰포트를 따라갈 이유가 없었습니다. */
+.footer-brands { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px, 4vw, 56px); }
+/* 높이는 피그마 값 그대로 — 넷이 저마다 다릅니다. 폭은 viewBox 비율이 정합니다. */
+.footer-brands .fb { display: block; width: auto; }
+.fb--soma { height: 22px; }
+.fb--play { height: 32.5px; }
+.fb--myon { height: 30px; }
+.fb--read { height: 28px; }
+.footer-brands .fb--read { width: 86px; }   /* 25차: 에듀 배지가 붙은 새 로고(151×50), 피그마 86×28. 위 `.footer-brands .fb`의 width:auto를 이기려면 같은 특이도가 필요합니다 */
+.site-footer__meta {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
+  color: var(--muted); font-size: var(--fs-tiny); letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  /* 모바일 푸터 (18차 · 피그마 17934:4798). 구분선이 세로에서 **가로 32x1**로 바뀌고
+     워드마크 아래로 내려옵니다. 세로 간격은 워드마크→선 25 · 선→로고 47 · 로고→메타 64. */
+  .footer-top { flex-direction: column; align-items: flex-start; gap: 25px; }
+  .footer-div { width: 32px; height: 1px; }
+  .footer-brands { margin-top: 22px; gap: 32px; }          /* 25 + 22 = 47 */
+  .site-footer__inner { gap: 64px; }
+  .site-footer__meta { flex-direction: column; gap: 24px; }
+
+  /* 19차 · 피그마 GNB_mobile 17864:4694 (375x53 행).
+     바 좌우를 20 → 16으로. 브랜드는 padding 12 + margin -12이라 글자가 정확히 16에 섭니다
+     (패딩은 44pt 터치 타깃용이고, 글자 위치는 음수 마진이 되돌립니다). */
+  .gnb { padding: 8px 16px; }
+  .gnb__inner { height: 52px; }
+  /* 24차: 모바일 로고 사양이 아직 없어(모바일 GNB 피그마 17864:4694는 옛 텍스트 그대로)
+     19차에 글자를 23.5 → 18로 줄인 비율(0.766)을 그대로 씁니다 → 82.7 x 30.6. 세로 패딩은
+     (52 - 30.6) / 2. 가로 12 + 음수 마진 -12는 19차 그대로라 로고가 16에 섭니다. */
+  .gnb__brand { padding: 10.7px 12px; margin-left: -12px; }
+  .gnb__brand .logo-prime { width: 82.7px; height: 30.6px; }
+  /* **span까지 잡아야 합니다.** 「관심고객 등록」은 12차에 링크가 아닌 <span aria-disabled>가
+     되었는데, 여기서 a만 잡는 바람에 데스크톱 값(12px 16px · 14px)이 남아 두 탭 높이가
+     33.6 vs 40.8로 어긋났습니다. pill이 큰 쪽에 맞춰 50.8까지 부풀고, 그 안에서
+     「브랜드소개」칩이 위아래로 8.6씩 떠 칩 자신의 여백(좌우 12 · 상하 9)과 따로 놀았습니다. */
+  /* line-height도 함께 — 기본 1.2면 줄상자가 15.6이라 탭이 33.6, pill이 45.6이 됩니다.
+     피그마는 글자 상자가 14라 탭 32 · pill 42입니다(14 + 9 + 9 = 32). */
+  .gnb__menu a, .gnb__menu span { padding: 9px 12px; font-size: 13px; line-height: 14px; }
+  /* pill 안쪽 5 · 오른쪽 끝은 바에서 8 (피그마 menu x 183 + w 184 = 367 / 375) */
+  .gnb__menu { padding: 5px; margin-right: -8px; }
+  /* the Figma mobile GNB (17811:4509) is text only, and the icon would push the menu
+     into the brand on a 375 screen */
+  .gnb__menu .doc-icon { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

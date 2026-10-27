@@ -1,0 +1,246 @@
+/* ─────────────────────────────────────────────────────────────
+   site.css — 홈페이지 공통 (서체 · GNB · 전체 메뉴 · 퀵메뉴 · 푸터 · 버튼)
+   색·간격·로고는 랜딩의 tokens.css / base.css를 그대로 쓰고, 여기서는 홈페이지에서
+   새로 생긴 것과 서체만 다룹니다.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── 서체 — 사고력소마(new.somai.co.kr)와 같은 두 벌 ─────────────────
+   제목·메뉴·버튼·강조는 세방고딕, 본문은 Noto Sans KR. 기획서 9p의 「본문은 타이틀과
+   다른 깔끔한 고딕체」와도 맞습니다. */
+@font-face {
+  font-family: "SebangGothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Regular.woff") format("woff");
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "SebangGothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff") format("woff");
+  font-weight: 700; font-display: swap;
+}
+:root {
+  --font: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-title: "SebangGothic", "Noto Sans KR", -apple-system, "Apple SD Gothic Neo", sans-serif;
+  --header-h: 100px;
+  --accent: #3E7A3A;          /* 기획서 9p 「골든 타임」 강조색 — 로고 큐브 초록(#5FA756)을 본문용으로 어둡게 */
+}
+@media (max-width: 1024px) { :root { --header-h: 64px; } }
+
+body { background: var(--bg-normal); font-size: 16px; line-height: 1.7; letter-spacing: -0.01em; }
+h1, h2, h3, h4, .t-title, button, .btn2 { font-family: var(--font-title); letter-spacing: -0.02em; }
+h4 { margin: 0; }
+address { font-style: normal; }
+
+.skip-link {
+  position: fixed; left: 16px; top: -60px; z-index: 100;
+  padding: 10px 16px; border-radius: 8px; background: var(--ink); color: #fff;
+}
+.skip-link:focus { top: 16px; }
+
+.wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); box-sizing: content-box; }
+@media (max-width: 1280px) { .wrap { max-width: none; } }
+
+/* 본문이 고정 GNB 밑으로 들어가지 않게 — 홈은 인트로가 끝난 뒤 같은 자리부터 시작합니다 */
+.page { padding-top: var(--header-h); }
+
+/* ── GNB ─────────────────────────────────────────────────────────
+   기획서 3~16p: 흰 바, 왼쪽 로고, 오른쪽 6개 메뉴, 그 위에 로그인 · 회원가입. */
+.gnb2 {
+  position: fixed; inset: 0 0 auto; z-index: 50;
+  height: var(--header-h);
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--line-neutral);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  /* 랜딩과 같은 로고 컬러 벌 (base.css의 @property 등록을 그대로 씁니다) */
+  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
+  transition: transform 0.35s var(--ease-out);
+}
+.gnb2.is-hidden { transform: translateY(-100%); }
+.gnb2__inner {
+  position: relative; height: 100%;
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); box-sizing: content-box;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.gnb2__brand { display: block; line-height: 0; padding: 8px 0; }
+.gnb2__brand .logo-prime { width: 108px; height: 40px; }
+.gnb2__menu { display: flex; gap: 8px; margin-top: 18px; }
+.gnb2__item { position: relative; }
+.gnb2__link {
+  display: block; padding: 14px 16px;
+  font-family: var(--font-title); font-size: 18px; font-weight: 700; line-height: 1;
+  color: var(--ink);
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.gnb2__link:hover, .gnb2__item:focus-within > .gnb2__link { background: var(--bg-brand-normal); }
+.gnb2__item.is-active > .gnb2__link { color: var(--accent); }
+.gnb2__item.is-active > .gnb2__link::after {
+  content: ""; display: block; height: 2px; margin-top: 8px; margin-bottom: -10px;
+  background: currentColor; border-radius: 2px;
+}
+/* 하위 메뉴 — 마우스를 올리거나 키보드로 들어오면 펼칩니다 */
+.gnb2__sub {
+  position: absolute; left: 50%; top: calc(100% + 6px);
+  min-width: 156px; padding: 8px;
+  background: #fff; border: 1px solid var(--line-neutral); border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
+}
+/* 메뉴와 하위 메뉴 사이 틈에서 호버가 끊기지 않게 */
+.gnb2__sub::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+.gnb2__item:hover > .gnb2__sub, .gnb2__item:focus-within > .gnb2__sub {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0);
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
+}
+.gnb2__sub a {
+  display: block; padding: 10px 14px; border-radius: 8px; white-space: nowrap;
+  font-family: var(--font-title); font-size: 15px; color: var(--ink-2);
+}
+.gnb2__sub a:hover, .gnb2__sub a:focus-visible { background: var(--bg-brand-normal); color: var(--ink); }
+.gnb2__sub a[aria-current="page"] { color: var(--accent); font-weight: 700; }
+
+.gnb2__util {
+  position: absolute; right: var(--gutter); top: 10px;
+  display: flex; gap: 2px;
+}
+.gnb2__util a {
+  padding: 3px 9px; font-size: 12px; line-height: 1.5; color: var(--label-alternative, #6b6866);
+  border-radius: 4px;
+}
+.gnb2__util a:first-child { background: var(--bg-brand-heavy); }
+.gnb2__util a:hover { color: var(--ink); }
+.gnb2__burger { display: none; }
+
+@media (max-width: 1024px) {
+  .gnb2__nav, .gnb2__util { display: none; }
+  .gnb2__brand .logo-prime { width: 82.7px; height: 30.6px; }
+  .gnb2__burger {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 44px; height: 44px; margin-right: -10px; padding: 0 10px;
+  }
+  .gnb2__burger span { display: block; height: 2px; border-radius: 2px; background: var(--ink); }
+}
+
+/* ── 전체 메뉴 (모바일) ─────────────────────────────────────────── */
+.mnav {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; flex-direction: column;
+  background: #fff; overflow-y: auto;
+  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
+}
+.mnav[hidden] { display: none; }
+.mnav__head {
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--header-h); padding: 0 var(--gutter); border-bottom: 1px solid var(--line-neutral);
+}
+.mnav__head .logo-prime { width: 82.7px; height: 30.6px; }
+.mnav__close { width: 44px; height: 44px; margin-right: -12px; padding: 13px; }
+.mnav__list { padding: 8px var(--gutter) 24px; }
+.mnav__list > li { border-bottom: 1px solid var(--line-alternative); }
+.mnav__top { display: block; padding: 18px 0; font-family: var(--font-title); font-size: 20px; font-weight: 700; }
+.mnav__list ul { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 18px; }
+.mnav__list ul a {
+  display: block; padding: 8px 12px; border-radius: 8px; background: var(--bg-brand-normal);
+  font-size: 14px; color: var(--ink-2);
+}
+.mnav__util { display: flex; gap: 16px; padding: 0 var(--gutter) 32px; font-size: 14px; color: var(--muted); }
+body.mnav-open { overflow: hidden; }
+
+/* ── 버튼 ─────────────────────────────────────────────────────────
+   기획서의 버튼은 두 가지 — 테두리형(「교육 프로그램 안내」)과 문서 아이콘이 붙은
+   관심고객 등록. 둘 다 높이 56, 모서리 10. */
+.btn2 {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-width: 240px; height: 56px; padding: 0 28px;
+  border: 1px solid var(--ink); border-radius: 10px;
+  font-size: 18px; font-weight: 700; color: var(--ink); background: #fff;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease-out);
+}
+.btn2:hover { background: var(--ink); color: #fff; }
+.btn2:active { transform: scale(0.98); }
+.btn2--dark { background: var(--ink); color: #fff; }
+.btn2--dark:hover { background: #000; }
+.btn2 svg { width: 18px; height: 18px; flex: none; }
+.btn2__arrow { transition: transform 0.3s var(--ease-out); }
+.btn2:hover .btn2__arrow { transform: translateX(4px); }
+@media (max-width: 640px) { .btn2 { min-width: 0; width: 100%; height: 52px; font-size: 16px; } }
+
+/* 섹션 머리 — 기획서의 「제목 + 한 줄 소개」 */
+.sec-head { text-align: center; }
+.sec-head h2 { font-size: clamp(28px, 3vw, 40px); font-weight: 700; line-height: 1.3; color: var(--ink); }
+.sec-head p { margin-top: 14px; font-size: clamp(15px, 1.2vw, 18px); color: var(--ink-2); }
+.eyebrow {
+  display: inline-block; margin-bottom: 14px;
+  font-family: var(--font-title); font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+/* ── 퀵메뉴 (기획서 4p ⑤) ───────────────────────────────────────── */
+.quick {
+  position: fixed; right: 24px; top: 50%; z-index: 45;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: stretch;
+  width: 84px; padding: 8px 6px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--line-neutral); border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  transition: opacity 0.4s, transform 0.5s var(--ease-out);
+}
+body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(24px, -50%); }
+.quick__btn, .quick__top {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 100%; padding: 10px 2px;
+  font-family: var(--font); font-size: 11.5px; font-weight: 500; line-height: 1.25; text-align: center;
+  color: var(--ink-2); border-radius: 10px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.quick__btn svg, .quick__top svg { width: 24px; height: 24px; }
+.quick__btn:hover, .quick__top:hover { background: var(--bg-brand-normal); color: var(--ink); }
+.quick__btn--lead { background: var(--ink); color: #fff; }
+.quick__btn--lead:hover { background: #000; color: #fff; }
+.quick__list li + li { border-top: 1px solid var(--line-alternative); }
+.quick__list li:first-child + li { border-top: 0; }
+.quick__list li:first-child { margin-bottom: 4px; }
+.quick__top { margin-top: 4px; border-top: 1px solid var(--line-neutral); border-radius: 0 0 10px 10px; font-family: var(--font-title); font-weight: 700; }
+@media (max-width: 1024px) {
+  /* 모바일: 오른쪽 아래 둥근 버튼 둘(관심고객 등록 · 맨 위로)만 */
+  .quick {
+    top: auto; bottom: calc(16px + env(safe-area-inset-bottom)); right: 16px; transform: none;
+    width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none;
+  }
+  body.intro-on .quick { transform: translateY(24px); }
+  .quick__list li:not(:first-child) { display: none; }
+  .quick__list li:first-child { margin: 0; }
+  .quick__btn--lead, .quick__top {
+    width: 64px; height: 64px; padding: 0; justify-content: center; border-radius: 50%;
+    box-shadow: var(--shadow-md); font-size: 10.5px;
+  }
+  .quick__btn--lead svg { width: 20px; height: 20px; }
+  .quick__btn--lead br { display: none; }
+  .quick__top { order: 2; width: 48px; height: 48px; margin: 0 0 0 auto; background: #fff; border: 1px solid var(--line-neutral); }
+}
+
+/* ── 푸터 ──────────────────────────────────────────────────────── */
+.site-footer { background: var(--bg-brand-normal); }
+.footer-info {
+  display: flex; flex-wrap: wrap; gap: 6px 20px;
+  font-size: 14px; color: var(--ink-2);
+}
+.footer-info span + span::before { content: ""; display: inline-block; width: 1px; height: 11px; margin-right: 20px; background: var(--line); vertical-align: -1px; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a:hover { color: var(--ink); text-decoration: underline; }
+@media (max-width: 640px) {
+  .footer-info { flex-direction: column; }
+  .footer-info span + span::before { display: none; }
+}
+
+/* ── 자리 페이지(기존 서비스 연동 예정) ─────────────────────────── */
+.stub { min-height: calc(100vh - var(--header-h) - 240px); display: grid; place-items: center; padding: 96px var(--gutter); text-align: center; }
+.stub__box { max-width: 560px; }
+.stub__box h1 { font-size: clamp(30px, 3.4vw, 44px); font-weight: 700; color: var(--ink); }
+.stub__box p { margin-top: 16px; color: var(--ink-2); }
+.stub__tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 28px; }
+.stub__tabs span { padding: 8px 14px; border-radius: 999px; background: var(--bg-brand-normal); font-size: 14px; color: var(--ink-2); scroll-margin-top: calc(var(--header-h) + 24px); }
+.stub__tabs span:target { background: var(--ink); color: #fff; }
+.stub__note { display: inline-block; margin-top: 28px; padding: 6px 12px; border: 1px dashed var(--line-strong); border-radius: 8px; font-size: 13px; color: var(--muted); }
+.stub .btn2 { margin-top: 36px; }

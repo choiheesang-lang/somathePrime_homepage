@@ -1,0 +1,841 @@
+/* ─────────────────────────────────────────────
+   Main content scrolls over the fixed stage
+   ───────────────────────────────────────────── */
+/* main(z 1)이 고정 스테이지(z 0) 위에 흐릅니다. #s-spacer만 클릭을 통과시켜 그 한 화면에서
+   스테이지(START 버튼·슬라임)에 손이 닿습니다.
+   21차: 장면 13이 맨 위로 오면서 그 화면은 이제 **첫 화면이 아니라 두 번째 화면**입니다.
+   규칙은 그대로 유효합니다 — 배경이 없는 섹션이 #s-spacer 하나뿐인 것이 요점이었지
+   맨 위라는 것이 요점이 아니었습니다. */
+main { position: relative; z-index: 1; pointer-events: none; }
+main > *:not(#s-spacer) { pointer-events: auto; }
+
+.section {
+  position: relative;
+  min-height: 100vh; min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--header-h) + var(--space-4)) var(--gutter) var(--space-5);
+}
+.section__inner { width: 100%; max-width: var(--max-w); margin: 0 auto; text-align: center; }
+
+/* 배경이 **없어야** 합니다. 여기는 고정 스테이지(z 0)를 들여다보는 창이고 이 섹션은
+   main(z 1) 안이라, 색을 깔면 히어로를 통째로 덮습니다. 22.1차에 그 실수를 했고
+   히어로가 민무늬 #4F4D4C 판으로 보였습니다. 아이보리가 비치는 문제는 색으로 가리는 게
+   아니라 스테이지를 **창이 열리기 전에** 켜서 해결합니다(js/scroll.js). */
+#s-spacer { min-height: 100vh; min-height: 100svh; padding: 0; pointer-events: none; }
+
+/* ─────────────────────────────────────────────
+   장면 10 — Figma 17683:3582
+   The column is 1117.26 wide (346.672 + 16 + 391.918 + 16 + 346.672) with gap 40.
+   Everything inside a card is a fraction of `--card`, written as the Figma px over 320 so the
+   source numbers stay readable. (A `--u: card/320` multiplier would be a *length*, and
+   `length * length` is invalid — that is why these are written as `--card * N / 320`.)
+   ───────────────────────────────────────────── */
+#s-intro {
+  position: relative;
+  overflow: hidden;
+  /* Figma scene 10 sits on pure white — the pale wordmark IS --bg-brand-heavy, so a
+     --bg-hero background would make it invisible. Fade into the copy sections at both ends. */
+  /* Figma scene 10 sits on pure white — the pale wordmark IS --bg-brand-heavy, so a
+     --bg-hero background would make it invisible. */
+  background: var(--static-white);
+}
+
+/* The pale wordmark behind the cards (Figma 17683:2898), running as a horizontal marquee.
+   The h1 spans the full width instead of being centred with translateX(-50%): the parallax in
+   js/scroll.js writes yPercent to this element, so leaving a translateX here would put two
+   owners on one property. Now the OUTER element is GSAP's (vertical parallax) and the INNER
+   track is the ticker's (horizontal drift) — see js/scroll.js.
+   No overflow here: #s-intro already clips, and a clip on this box would cut the p descender
+   off a 252px line-height:1 line. The copies are cloned by JS and justify-content keeps a
+   single one centred, which is what a no-JS or reduced-motion page shows. */
+.intro__bg {
+  position: absolute;
+  left: 0;
+  top: 59%;                                        /* Figma y 566 / 960 */
+  width: 100%;
+  margin: 0;
+  font-size: min(13.1vw, 252px);                   /* Figma 251.583 on a 1920 frame */
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--bg-brand-heavy);
+  pointer-events: none;
+  user-select: none;
+}
+.intro__bg__track { display: flex; justify-content: center; gap: 0.35em; white-space: nowrap; }
+
+.intro {
+  position: relative;
+  width: 100%;
+  max-width: 1117.26px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  text-align: center;
+  color: var(--label-neutral);
+}
+/* Figma 17748:3056 — one component, used by scene 10 (in flow) and scenes 11–12 (sticky).
+   Shape and type live here so the two can't drift; only the background/border, which answer
+   to what is behind them (white section vs photo), stay with each use. */
+.pill {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 62px; padding: 0 24px;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  line-height: 24px; white-space: nowrap;
+}
+.pill small { font-size: 13px; font-weight: 500; color: var(--label-alternative); margin-bottom: -4px; }
+.pill span  { font-size: 14px; font-weight: 700; color: var(--label-neutral); }
+
+/* the column's first item, not sticky */
+.intro__pill {
+  background: rgba(241, 238, 236, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.intro__slogan { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.3; }
+.intro__slogan .dot { color: var(--label-alternative); }
+.intro__list { display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 16px; font-weight: 300; line-height: 1.2; }
+
+/* ── the three cards (Figma 17832:4680) ───────────────── */
+.keywords {
+  /* The row never exceeds the column, and stays short enough to fit a laptop viewport.
+     No % here: a percentage inside a custom property is re-resolved at every use site, so it
+     would mean the container's width in `width:` and its height in `height:`. */
+  /* 16차: gap 16 → 24. 카드가 ±15°로 흔들리면 320 카드의 바운딩 박스가 391.9라
+     1·3번 슬롯(346.7)을 한쪽으로 22.6px씩 넘칩니다 — 24면 1.4px 여유로 지나갑니다.
+     상한 1117.26 → 1133.26은 늘어난 gap 16px을 되돌려 카드를 320으로 유지하기 위한 것. */
+  --row: min(1133.26px, calc(100vw - 2 * var(--gutter)));
+  --card: min(320px, calc((var(--row) - 48px) / 3.3916), calc((100svh - 430px) / 1.2248));
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;                         /* Figma items-start — slot 2 is taller downward */
+  gap: 24px;
+  width: 100%;
+}
+/* each slot is the rotated card's bounding box, so tilted cards never overlap:
+   320 x (cos5 + sin5) = 346.672  ·  320 x (cos15 + sin15) = 391.918 */
+.kw-slot { flex: none; display: grid; place-items: center; width: calc(var(--card) * var(--bb, 1.0834)); height: calc(var(--card) * var(--bb, 1.0834)); }
+.kw-slot > * { grid-area: 1 / 1; }                 /* glass and card share the one cell */
+.kw-slot:nth-child(2) { --bb: 1.2248; }
+
+/* The frosted pane is a SIBLING of the card, not the card itself and not a child of it.
+   backdrop-filter promotes whatever subtree it sits in to a render surface, and a promoted
+   surface is rasterised once un-rotated and then rotated as a texture — which resamples every
+   stroke and glyph inside. Measured: blur on the card 76.7 % detail, blur on a sibling 97.9 %.
+   (An ::before does NOT work — it is a descendant, so the card goes with it.)
+   The pane itself is promoted and resampled, but it is a blur, so nothing shows. */
+.kw-glass {
+  width: var(--card); height: var(--card);
+  border-radius: calc(var(--card) * 64 / 320);
+  background: rgba(241, 238, 236, 0.3);
+  border: 1px solid #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transform: rotate(var(--tilt));        /* resting tilt; the ticker overrides it inline */
+  pointer-events: none;
+}
+.kw-card {
+  width: var(--card); height: var(--card);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(var(--card) * 24 / 320);
+  /* no background, no border, NO filter — see .kw-glass above. The ticker (js/scroll.js) writes
+     the same rotation to both so they stay locked; two CSS animations would drift apart. */
+  transform: rotate(var(--tilt));
+}
+
+.kw-card__icon { display: block; width: calc(var(--card) * 160 / 320); height: calc(var(--card) * 160 / 320); border-radius: calc(var(--card) * 56 / 320); overflow: hidden; }
+.kw-card__icon .ic { display: block; width: 100%; height: 100%; }
+.kw-card__text { display: flex; flex-direction: column; align-items: center; gap: calc(var(--card) * 8 / 320); color: #000; }
+.kw-card__text b { font-size: calc(var(--card) * 28 / 320); font-weight: 700; line-height: normal; }
+.kw-card__text i { font-size: calc(var(--card) * 13 / 320); font-weight: 400; font-style: normal; line-height: normal; }
+
+/* ── icon layers (Figma: color · line · point · light) ──
+   `line` draws itself with the same pathLength=100 convention as the OPEN gauge ring. */
+.ic-line path { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; }
+/* The colour blob breathes like the hero slime — also driven from the ticker, for the same
+   compositing reason as the card above (one CSS keyframe here is enough to undo all of it).
+   Inner group so GSAP can own the outer one's entrance scale without the two transforms fighting. */
+.ic-breathe { transform-box: fill-box; transform-origin: center; }
+
+/* Hidden only once scroll.js is alive to bring them back — no JS, no blank section.
+   13차: one rule for all four scenes. Until then only scene 10 had a CSS hidden state and
+   11–13 leaned on gsap.from()'s immediate render, which is why their timing drifted apart. */
+body.has-reveal [data-step] { opacity: 0; }
+body.has-reveal #s-intro .ic-line path { stroke-dashoffset: 100; }
+body.has-reveal #s-intro .ic-color,
+body.has-reveal #s-intro .ic-point,
+body.has-reveal #s-intro .ic-light { opacity: 0; }
+
+/* ── 장면 10 → 11 (Figma 17895:7774) ─────────────────────
+   The composite frame measures scene 10 at 1660×830 against scene 11's 1920×960 — scale
+   0.8646 about the TOP centre — with scene 11 riding up over it. So scene 10 stops scrolling
+   and recedes. Its containing block for `sticky` is <main>, which means it stays pinned for
+   the rest of the page; every section below already paints an opaque background over it, and
+   js/scroll.js parks it (visibility + ticker) once scene 11 covers it.
+   Narrow screens opt out: there #s-intro grows with its content (min-height: 0 below), and
+   pinning a box taller than the viewport just clips the cards. */
+/* 14차: the column sat low (measured 219 above / 167 below at 1080). .section centres its
+   content, so the shift is decided by the padding PAIR alone — rise = (52 − top + bottom) / 2,
+   independent of viewport height. 192 − 84 = 108 gives exactly 80.
+   12차 gated this behind min-height: 1000px because −80 put the column under the GNB on short
+   screens. The gate was the wrong tool: `align-items: flex-start` + an auto block margin on the
+   column centres it when there is room and stops it at padding-top when there is not, so it can
+   never ride up under the header. Plain centring overflows BOTH ways, which was the hazard. */
+#s-intro {
+  align-items: flex-start;
+  /* 16.1차: 위 8 → 30. 장면 10은 밀려나며 0.8646배로 **축소**되므로(transform-origin:
+     top center) 여백도 같이 줄어듭니다 — 8이면 밀려난 뒤 6px까지 좁아져 알약이 화면
+     위에 붙었습니다. 밀려난 상태에서 GNB 아래 16px을 얻으려면 축소 전 (76+30)입니다.
+     아래를 같은 22px 올리는 것이 핵심 — 14차의 "컬럼 80px 상승"은
+     rise = (padBottom − padTop) / 2 이므로, 위만 키우면 긴 화면에서 컬럼이 11px
+     내려가 그 작업이 절반 풀립니다. 둘을 같이 올리면 차이가 보존됩니다. */
+  padding-top: calc(var(--header-h) + 30px);
+  padding-bottom: calc(var(--space-5) + 150px);
+}
+.intro { margin-block: auto; }
+@media (min-width: 641px) {
+  #s-intro { position: sticky; top: 0; height: 100svh; }
+  /* The gutters the shrinking frame opens up must read as the page, not as the hero photo
+     still sitting behind <main> in the fixed #stage. A spread shadow paints them: it is part
+     of this element's own box, so it scales and parks with it, and needs no extra node.
+     But a spread grows in EVERY direction, 100vw upward included — and #s-intro sits right
+     after the 100vh hero spacer with <main> above the fixed stage, so leaving it on covered
+     the whole intro with a sheet of ivory. js/scroll.js adds the class only once scene 11 is
+     on its way in, which is the same boundary the scale tween starts at. */
+  #s-intro.is-receding { box-shadow: 0 0 0 100vw var(--bg-hero); }
+}
+.copy-wrap { position: relative; z-index: 1; background: var(--bg-hero); }
+#s-open { z-index: 1; }
+
+/* ─────────────────────────────────────────────
+   Copy sections — 장면 11 (Figma 17708:4069) · 장면 12 (17708:4070)
+   ───────────────────────────────────────────── */
+/* 16차: 알약이 장면 11과 12를 관통합니다. .copy-wrap(11+12) 직계라 sticky의 컨테이닝
+   블록이 두 씬을 함께 덮고, 래퍼 끝에서 스스로 풀립니다. 11차에 #s-copy-1 안으로 좁혔던
+   것을 되돌린 것 — 그때 필요했던 음수 마진(섹션 패딩 상쇄)은 여기서는 상쇄할 패딩이
+   없으므로 뺍니다. height: 0이라 흐름 높이를 먹지 않는 것은 그대로입니다. */
+.copy-caption {
+  --pill-lead: 40px;   
+  position: sticky;
+  top: calc(var(--header-h) + 8px - var(--pill-lead));
+  height: 0;
+  z-index: 2;
+  display: flex; justify-content: center;
+  pointer-events: none;
+}
+#s-copy-1 { flex-direction: column; justify-content: flex-start; }
+#s-copy-1 .section__inner { margin-block: auto; }
+/* over the scene 11 photo, so a touch more body than scene 10's and a shadow to lift it */
+.copy-caption__pill {
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--pill-lead);
+}
+
+/* 장면 11 — the photo is 1920×1281 sitting at y −321 in a 960 frame, i.e. bottom-aligned.
+   The clip lives on the photo layer, NOT on the section: `overflow: hidden` would make the
+   section the scrollport for the sticky pill inside it, and sticky would then resolve its
+   `top` against the section's padding box instead of the viewport (measured 224 vs 108). */
+.s11-photo { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.s11-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+.s11-photo::after { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.1); }
+#s-copy-1 .section__inner { position: relative; z-index: 1; }
+
+/* Figma Shadow/Normal (11차 — was Emphasize, too heavy), as text-shadow rather than a
+   filter: drop-shadow() chain. `filter` would promote the block to its own layer and resample
+   an 88px glyph — the same trap the scene 10 cards hit. text-shadow paints in place.
+   The local effect style's numbers aren't readable over MCP, so this is Emphasize's own ladder
+   (0 1 4 8% / 0 2 8 12%) with the offsets and blurs halved — the same family, one step down. */
+.copy-sub, .copy-lead { text-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.12); }
+.copy-sub {
+  font-size: clamp(1.9rem, 4.58vw, 88px);          /* Figma 88 on a 1920 frame; the floor keeps
+                                                      the second line inside a 360px gutter */
+  font-weight: 700; letter-spacing: normal; line-height: 1.19;
+  color: var(--static-white);
+}
+/* Everything in the row is 1920-relative so the rule keeps the Figma proportion instead of
+   swallowing the slack as the labels shrink: 768 / 24 / 16 are 40vw / 1.25vw / 0.83vw. */
+.copy-lead {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(12px, 1.25vw, 24px);
+  width: min(100%, clamp(380px, 40vw, 768px));
+  margin: 24px auto 0;
+  padding-right: clamp(8px, 0.83vw, 16px);
+  font-size: clamp(1.05rem, 1.67vw, 32px);         /* Figma 32 */
+  font-weight: 700; letter-spacing: normal; line-height: 1.2;
+  color: var(--static-white);
+}
+.copy-lead span { flex: none; }
+.copy-lead__rule {
+  flex: 1 0 0; min-width: 1px; height: 4px;
+  background: var(--static-white);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  transform-origin: left center;
+}
+/* 장면 12 — Figma 17708:4070. 「더」 / 1200 bar / 「소마를 경험할 차례」, 56 apart, 88px Bold.
+   Sizes follow the same 1920-relative ladder as scene 11 so the bar keeps its proportion. */
+.copy-big {
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(24px, 2.92vw, 56px);                  /* Figma 56 */
+  font-size: clamp(2.25rem, 4.58vw, 88px);         /* Figma 88 */
+  font-weight: 700; letter-spacing: normal; line-height: 1.19;
+}
+.copy-big .line { display: block; width: 100%; transition: color 0.35s var(--ease-out); }
+/* 20차: 승격은 등장 구간에만. clamp 88px 전폭 텍스트 3줄이 세션 내내 승격돼
+   있었습니다 — 필요한 건 reveal이 도는 동안뿐입니다. */
+body.has-reveal .copy-big .line[data-step] { will-change: transform, opacity; }
+.copy-big .dim { color: var(--ink-2); }
+#s-copy-2.has-bg .copy-big .line { color: var(--static-white); }
+
+/* the bar's gradient is standing, not a hover state — Figma paints it in every variant.
+   Scoped under .copy-big so it outranks `.copy-big .line { display: block }` — the bar carries
+   both classes, and losing `display: flex` left the 880 row hard against the bar's left edge. */
+.copy-big .copy-bar {
+  position: relative;
+  z-index: 1;                                      /* 배지가 뒤따르는 줄에 가리지 않도록 */
+  /* 16차: 「더」와 바 사이만 40px로 좁힙니다. gap은 열 전체에 걸리므로 이 칸에만 음수
+     마진을 얹되, 좁은 화면에서 gap이 이미 40 미만이면 값이 양수가 되어 되레 벌어지므로
+     min()으로 0을 상한으로 둡니다. 바 아래와 Scroll Down 앞 간격은 그대로입니다. */
+  margin-top: min(0px, calc(40px - clamp(24px, 2.92vw, 56px)));
+  height: clamp(56px, 5.47vw, 105px);              /* Figma 105 */
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(90deg,
+    var(--pal-brand-yellow)     0      21.504%,
+    var(--pal-brand-sage-green) 29.323% 70.075%,
+    var(--pal-brand-dusty-blue) 78.647% 100%);
+}
+.copy-bar__row {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(10px, 1.25vw, 24px);                  /* Figma 24 */
+  width: 73.34%;                                   /* Figma 880 / 1200 */
+}
+.copy-bar b { flex: none; font-weight: 700; color: var(--static-white); }
+.copy-bar__rule {
+  flex: 1 0 0; min-width: 1px;
+  height: clamp(4px, 0.47vw, 9px);                 /* Figma 9 */
+  background: var(--static-white);
+}
+
+/* ── 장면 12 — 고정 + 4단계 스크롤 시퀀스 (Figma box_scroll 17918:5667) ────────
+   The wrapper's surplus height IS the scrub range; the section sticks inside it. Same CSS
+   sticky idiom as scene 10 rather than ScrollTrigger's pin, which would inject its own
+   wrapper and inline styles. Narrow screens opt out — the section grows with its content
+   there, and pinning a box taller than the viewport just clips it. */
+.s12-wrap { position: relative; }
+/* Unlike scene 10 this pins on narrow screens too — scene 12's content is short (~300px at
+   390), so there is nothing to clip. The sticky is bounded by .s12-wrap, not by <main>, so it
+   releases on its own at the end of the scrub. */
+@media (min-height: 520px) {
+  .s12-wrap { height: 450vh; }   /* 16차: 마지막 '무배경' 단계가 붙어 4마디가 됐습니다 */
+  #s-copy-2 { position: sticky; top: 0; height: 100svh; }
+}
+
+/* the brand badge under the bar — 120x120, travelling left 0 → 45 % → 90 % of the 1200 bar
+   (Figma 17918:4900 · box_scroll 17918:5667). One element: js/scroll.js slides it and tweens
+   the triangle's fill while the three logos crossfade. All in %, because the bar is a
+   fraction of the viewport below 1200. */
+.s12-badge {
+  position: absolute;
+  left: 0;
+  top: 91.43%;                                     /* Figma 96 / 105 */
+  /* 10 % of the bar is 120 at 1920 but only 35 at 390, where the wordmark inside stops being
+     readable — hold a floor so the brand still reads on a phone. */
+  width: max(10%, 64px);                           /* Figma 120 / 1200 */
+  aspect-ratio: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+/* 각 단계의 배경이 곧 그 브랜드 색이라(초록 방 위의 초록 배지) 그냥 두면 묻힙니다.
+   피그마는 배지를 평면 위에서만 보여 주므로 이 그림자는 사진 위에 얹기 위한 추가입니다. */
+.s12-badge svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
+}
+.s12-badge__tri { fill: var(--pal-brand-yellow); }
+/* the symbols carry currentColor, so the lockups just need to be told they are white */
+.s12-badge__logo { color: #fff; }
+.s12-badge__logo[data-logo="1"], .s12-badge__logo[data-logo="2"] { opacity: 0; }
+
+/* the three sister-brand grounds, crossfading under the copy */
+/* 22차: 장면 12의 Scroll Down 큐를 뺐습니다(요청). 장면 9의 큐는 그대로입니다. */
+#s-copy-2 { overflow: hidden; }
+.s12-photo { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.s12-photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 50%;
+  opacity: 0;                                      /* 13차: GSAP scrubs these, not a transition */
+}
+/* one shared veil rather than one per photo, so crossfading never doubles the dim */
+.s12-photo::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.12);
+  opacity: 0; transition: opacity 0.5s var(--ease-out);
+}
+#s-copy-2.has-bg .s12-photo::after { opacity: 1; }
+#s-copy-2 .section__inner { position: relative; z-index: 1; }
+
+/* ─────────────────────────────────────────────
+   OPEN section (interior photo + CTA)
+   ───────────────────────────────────────────── */
+#s-open {
+  --open-dim: 0.18;              /* 피그마 scene 13 실측: 전면 균일. 어둡기는 여기 한 곳만 */
+  padding: 0;
+  align-items: stretch;
+  overflow: hidden;
+  color: var(--white);
+  background: var(--ink);
+}
+/* 11차: one storefront still (Figma 17708:4071). The two-layer crossfade moved to the modal. */
+.open-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.open-bg > img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 50%;     /* Figma frames the storefront centred */
+  /* 20차: 승격 힌트 제거. 값이 고정 scale(1.06)이라 애니메이션이 아닌데도
+     1920x1080 텍스처를 세션 내내 GPU에 상주시키고 있었습니다. */
+  transform: scale(1.06);
+}
+/* two stacked layers inside the modal; js/open.js crossfades by moving .is-on between them */
+.open-shot {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 45%;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease-out);
+}
+.open-shot.is-on { opacity: 1; }
+.open-shot.no-fade { transition: none; }
+@media (prefers-reduced-motion: reduce) { .open-shot { transition: none; } }
+/* 피그마와 같은 평면 딤 하나뿐입니다. 11차에 바닥 그라디언트를 얹었다가 12차에 뺐습니다 —
+   배경이 피그마보다 중앙 62 %, 하단 81 % 어두워졌기 때문입니다. 대신 흰 카피는 그림자로
+   버팁니다(설명문 대비는 피그마와 같은 2.3:1 수준 — 사진 가시성을 택한 결정입니다). */
+.open-bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: rgba(30, 30, 32, var(--open-dim));
+}
+/* ── OPEN section — Figma scene 13 (17708:4071).
+      1920 프레임에서 콘텐츠 열은 x 364..1564 = 1200 = --max-w 이므로 아래 px는 1:1이다.
+      타이틀 y283 / 하단 블록 y535..737 / 사진 y0..891(그 아래는 푸터). */
+/* 11차: everything is one centred column now (Figma 17905:5260 — 431 wide, gaps 64/16/32). */
+.open-inner {
+  position: relative; z-index: 1;
+  width: 100%; max-width: var(--max-w); margin: 0 auto;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: clamp(32px, 3.33vw, 64px);                  /* Figma 64 */
+  /* Figma puts the block at y 434..827 of 1080 — bottom-anchored with ~23 % clear, not
+     centred. Centring landed it on the storefront sign, with 전경 더보기 in the dark band.
+     17차: 「전경 더보기」가 블록 맨 끝으로 내려가 아래 끝이 819 → 827이 되었습니다. */
+  padding: calc(var(--header-h) + var(--space-4)) var(--gutter) clamp(3.5rem, 23.4vh, 16rem);
+  text-align: center;
+}
+/* 11차: 「11월 목동」 and 「OPEN」 share one 64px line now, 8 apart (Figma 17905:4986) */
+/* 13차: 그림자를 장면 11과 같은 Figma Shadow/Normal로 통일했습니다(.open-title · .open-more
+   · .open-lead). 12차의 타이트한 헤일로가 밝은 유리 위에서 흰 글자를 붙들고 있었으므로
+   가독은 그만큼 내려갑니다 — 배경 가시성을 우선한 결정의 연장입니다. */
+.open-title {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+.open-title__line { display: block; font-size: clamp(2rem, 3.33vw, 64px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.19; }
+.open-more {
+  /* 4px 상하 패딩은 히트 영역용이고 레이아웃에는 안 실리게 상쇄합니다 — 안 그러면 블록이
+     피그마보다 8px 길어져 bottom 앵커가 위아래 양쪽에서 어긋납니다. 잉크 간격은 그대로 32. */
+  padding: 4px 8px;
+  margin-block: -4px;
+  color: #fff;
+  font-size: clamp(0.875rem, 0.83vw, 16px); font-weight: 500; line-height: 1.2;
+  text-decoration: underline; text-underline-offset: 3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+.open-more:hover { opacity: 0.8; }
+.open-more:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.9); outline-offset: 2px; border-radius: 4px; }
+
+.open-lead {
+  display: flex; flex-direction: column; align-items: center; gap: 32px;   /* Figma 32 */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+.open-brand { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.open-brand__title { font-size: clamp(1.25rem, 1.56vw, 30px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; }
+.open-brand__desc { font-size: clamp(0.8125rem, 0.73vw, 14px); font-weight: 500; line-height: 1.715; opacity: 0.92; text-wrap: pretty; }
+
+/* CTA — 11차에 반전됐습니다(Figma 17905:4779): 흰 바탕 + Primary/Strong 글자, radius 8 */
+.open-cta {
+  text-shadow: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-width: 186px; height: 70px; padding: 0 32px;
+  border-radius: 8px;
+  background: var(--static-white);
+  color: var(--primary-strong);
+  font-size: clamp(0.9375rem, 0.94vw, 18px); font-weight: 700; letter-spacing: -0.02em;
+  text-decoration: none;
+  /* 23차: <span>에서 <button>으로 바뀌었습니다(관심고객 등록 팝업을 엽니다).
+     버튼 기본값을 지우고 커서를 손가락으로 되돌립니다 — 12차의 `cursor: default`는
+     「링크가 아니다」를 뜻했는데 이제는 진짜 누르는 것입니다. */
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.open-cta:hover { background: var(--pal-stone-gray-90); transform: translateY(-2px); }
+.open-cta:active { transform: translateY(0); background: var(--pal-stone-gray-50); }
+.open-cta:focus-visible { outline: 2px solid var(--static-white); outline-offset: 3px; }
+
+/* ── carousel controls — 11차부터 모달 안, 카드 아래 16px에 가운데 정렬 (Figma 17905:5223) */
+.open-nav {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+/* tab — Figma 17846:4508. min 64 wide, 18px, active는 하단 3px 흰 바 */
+.open-tabs { display: flex; gap: 8px; align-self: center; }
+.open-tab {
+  position: relative;
+  min-width: 64px; padding: 8px 0 0;
+  background: none; border: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(0.875rem, 0.94vw, 18px); font-weight: 400; letter-spacing: -0.02em; line-height: 1.6;
+  white-space: nowrap; cursor: pointer;
+  transition: color 0.3s var(--ease-out);
+}
+.open-tab.is-on { font-weight: 700; }
+.open-tab::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: #fff; transform: scaleX(0); transform-origin: 50% 50%;
+  transition: transform 0.35s var(--ease-out);
+}
+.open-tab:hover { color: rgba(255, 255, 255, 0.95); }
+.open-tab.is-on { color: #fff; }
+.open-tab.is-on::after { transform: scaleX(1); }
+.open-tab:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.85); outline-offset: 2px; border-radius: 3px; }
+
+/* step_button — Figma 17745:3025. 80 + 8 + 124 + 8 + 80 = 300 */
+.open-step { display: flex; align-items: center; gap: 8px; }
+.open-step__toggle {
+  width: 48px; height: 80px; margin-right: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; border: 0; border-radius: 14px;
+  background: transparent; color: #fff; cursor: pointer;
+  transition: background-color 0.25s var(--ease-out);
+}
+.open-step__toggle svg { width: 22px; height: 22px; }
+.open-step__toggle .i-play { display: none; }
+.open-step__toggle[aria-pressed="true"] .i-play { display: block; }
+.open-step__toggle[aria-pressed="true"] .i-pause { display: none; }
+.open-step__toggle:hover { background: rgba(255, 255, 255, 0.12); }
+.open-step__toggle:active { background: rgba(255, 255, 255, 0.2); }
+.open-step__toggle:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.85); outline-offset: -4px; }
+@media (prefers-reduced-motion: reduce) { .open-step__toggle { display: none; } }
+.open-step__arrow {
+  width: 80px; height: 80px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; border: 0; border-radius: 16px;
+  background: transparent; color: #fff; cursor: pointer;
+  transition: background-color 0.25s var(--ease-out);
+}
+.open-step__arrow svg { width: 32px; height: 32px; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
+.open-step__arrow:hover { background: rgba(255, 255, 255, 0.12); }
+.open-step__arrow:active { background: rgba(255, 255, 255, 0.2); }
+.open-step__arrow:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.85); outline-offset: -4px; }
+
+/* gauge — 124×53 스타디움. 테두리가 한 바퀴 차면 다음 사진 (js/open.js) */
+/* Figma 17846:4538 draws the count as a 124×53 outlined pill.
+   14차: that outline is the SVG track again, not a CSS border. A border follows the border box
+   (radius 999 → 26.5) while the progress arc follows the path (inset 1.5, radius 25) — two
+   different shapes, so the thick arc bulged outside the thin line, and the mismatch grew when
+   the box shrank to 104×44 on mobile. Sharing one `d` makes them concentric at every size. */
+.open-gauge { position: relative; width: 124px; height: 53px; flex: 0 0 124px; }
+.open-gauge__ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
+.open-gauge__track { fill: none; stroke: rgba(255, 255, 255, 0.5); stroke-width: 1.5; }
+.open-gauge__fill {
+  fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 100; stroke-dashoffset: 100;   /* js가 100 → 0 으로 줄인다 */
+}
+.open-gauge__num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font-variant-numeric: tabular-nums; letter-spacing: 0.01em;
+}
+.open-gauge__num b { font-size: 16px; font-weight: 700; }
+.open-gauge__num i { font-style: normal; font-size: 16px; font-weight: 400; opacity: 0.5; }
+.open-gauge__num em { font-style: normal; font-size: 16px; font-weight: 400; opacity: 0.5; }
+
+/* ─────────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   장면 13-1 — 전경 더보기 모달 (Figma 17905:5031 / 17905:5221)
+   1024×768 card, radius 32, controls pinned 16 from its bottom, close button 64 top-right.
+   ───────────────────────────────────────────── */
+.shots {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--gutter);
+}
+.shots[hidden] { display: none; }
+.shots__scrim { position: absolute; inset: 0; background: rgba(23, 23, 25, 0.62); }
+.shots__card {
+  position: relative;
+  width: min(1024px, 100%);
+  aspect-ratio: 4 / 3;                              /* Figma 1024×768 */
+  max-height: 100%;
+  border-radius: 32px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45);
+}
+.shots__stage { position: absolute; inset: 0; }
+/* the controls sit on whatever the photo happens to show; a foot gradient gives them a floor.
+   It lives on the stage, so .open-nav and the close button (later siblings) stay above it. */
+.shots__stage::after {
+  content: ''; position: absolute; inset: auto 0 0 0; height: 42%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.66), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+/* Figma 17905:5235 — a 64 circle on Primary/Heavy with a #D9D9D9 cross */
+.shots__close {
+  position: absolute; top: 16px; right: 16px;
+  width: 64px; height: 64px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; border: 0; border-radius: 999px;
+  background: var(--primary-heavy);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease-out);
+}
+.shots__close svg { width: 64px; height: 64px; }
+.shots__close:hover { background: var(--primary-strong); }
+.shots__close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+/* the page must not scroll behind the card */
+body.shots-open { overflow: hidden; }
+
+@media (max-width: 640px) {
+  .shots { padding: 12px; }
+  .shots__card { aspect-ratio: 3 / 4; border-radius: 20px; }
+  .shots__close { top: 10px; right: 10px; width: 44px; height: 44px; }
+  .shots__close svg { width: 44px; height: 44px; }
+}
+
+@media (max-width: 900px) {
+  .intro { gap: 32px; }
+}
+@media (max-width: 640px) {
+  :root { --header-h: 68px; }
+
+  /* 18.1차: 배경 워드마크는 **예전처럼 섹션과 함께 스크롤**합니다(position: absolute 유지).
+     18차에 화면 붙박이(fixed + is-onscreen 토글)로 만들었다가 되돌렸습니다 — fixed는
+     장면 10이 화면 **바닥에 닿는 순간**부터 그려지는데 그때는 아직 장면 9가 보이는
+     중이라, 히어로 위에 워드마크가 얹혔습니다. 붙박이를 유지하면서 이걸 막으려면
+     "장면 10이 화면을 채운 뒤"라는 별도 경계가 필요한데, 그 값이 스크롤 속도에 따라
+     들쭉날쭉해 얻는 것보다 잃는 게 큽니다.
+     움직임(가로 마퀴 · 세로 패럴랙스)은 계속 꺼 둡니다 — 그쪽이 「밀리는 효과」였습니다. */
+  #s-intro { min-height: 0; padding-top: calc(var(--header-h) + 88px); }
+  .intro { gap: 28px; }
+  .intro__slogan { font-size: 20px; }
+  /* cards stack; the tilt, sway and icon motion all stay */
+  /* stacked: align-items is now the horizontal axis, so re-centre */
+  .keywords { flex-direction: column; align-items: center; --card: min(260px, 66vw); }
+  /* 장면 11 (18차 · 피그마 17884:6722) : 모바일도 **한 줄**입니다 — 라벨 101 / 선 67 /
+     라벨 132, 간격 12. 10차에 세로 2단으로 접었던 것은 글자가 32px일 때 안 들어갔기
+     때문인데, 피그마 모바일은 19px이라 한 줄에 들어갑니다(101+12+67+12+132 = 324 < 332). */
+  .copy-sub { font-size: 1.75rem; line-height: 1.6; }      /* 피그마 332x90 두 줄 */
+  .copy-lead {
+    flex-direction: row; gap: 12px; padding-right: 0;
+    width: min(100%, 332px); margin-top: 12px;
+    font-size: 1rem;                                       /* Figma 19 → 375 기준 */
+  }
+  .copy-lead__rule { flex: none; width: 67px; height: 2px; }
+  /* 장면 12 (18차 · 피그마 17884:6891) : 「더」→바 64 · 바→「소마를 경험할 차례」 96.
+     피그마는 64 / 86.5인데 그 값이면 배지(바 아래로 59px 내려옴)와 겹칩니다 — 피그마
+     프레임 안에서도 3.5px 겹쳐 있어, 겹치지 않는 쪽으로 96을 씁니다. */
+  .copy-big { gap: 64px; }
+  .copy-big .copy-bar { margin-top: 0; }
+  .copy-big .copy-bar + .line { margin-top: 32px; }        /* 64 + 32 = 96 */
+
+  .open-lead { gap: 24px; }
+  .open-cta { height: 60px; padding: 0 24px; }
+  .open-nav { gap: 10px; }
+  .open-tabs { gap: 4px; }
+  .open-tab { min-width: 0; flex: 0 0 auto; padding: 6px 8px 0; font-size: 0.875rem; }
+  .open-step { justify-content: center; gap: 0; }
+  .open-step__arrow { width: 48px; height: 56px; }
+  .open-step__toggle { width: 40px; height: 56px; margin-right: 0; }
+  .open-step__arrow svg { width: 24px; height: 24px; }
+  .open-gauge { width: 104px; flex-basis: 104px; height: 44px; }
+}
+
+/* ─────────────────────────────────────────────
+   관심고객 등록 팝업 (23차 · 피그마 17956:6855 / 17959:7083)
+   684 카드 · 안쪽 여백 48 · 제목 아래 2px 구분선 · 입력은 밑줄형.
+   세로 수치는 피그마 그대로입니다: 머리 32, 머리→본문 16, 구분선 2, 구분선→목록 16,
+   항목 사이 16, 라벨 19.2 + 3 + 컨트롤 40, 목록→동의 16, 동의 두 줄 40 + 8,
+   본문→버튼 16, 버튼 60. 48+32+16+419+16+60+48 = 639.
+   ───────────────────────────────────────────── */
+.lead {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--gutter);
+  /* 피그마에 없는 값은 토큰에 맞춘 것이 아니라 여기 한 곳에 모읍니다 */
+  --lead-rule: #222222;          /* 제목 아래 구분선 (Figma stroke/dark) */
+  --lead-line: #EDEDED;          /* 입력 밑줄 */
+  --lead-hint: #999CA1;          /* 플레이스홀더 · 약관 본문 (Figma font/lightGray) */
+  --lead-box: #DDDDDD;           /* 약관 상자 테두리 */
+}
+.lead[hidden] { display: none; }
+/* 피그마 렌더에서 역산한 값입니다(사진 여섯 지점 평균 α 0.17). 「전경 더보기」 모달의
+   0.62보다 훨씬 옅은데, 그쪽은 어두운 사진 카드라 바닥을 눌러야 했고 여기는 흰 카드가
+   스스로 서기 때문입니다. 장면 13 자신의 딤(0.18) 위에 더해집니다. */
+.lead__scrim { position: absolute; inset: 0; background: rgba(23, 23, 25, 0.18); }
+
+.lead__card {
+  position: relative;
+  width: min(684px, 100%);
+  max-height: 100%;
+  overflow: auto;                                  /* 짧은 화면에서는 카드 안에서 스크롤 */
+  padding: 48px;
+  border-radius: 12px;
+  background: var(--static-white);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── 머리 ── */
+.lead__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 32px; }
+.lead__title {
+  margin: 0; color: var(--label-strong);
+  font-size: 24px; font-weight: 700; line-height: 1.2; letter-spacing: -0.3px;
+}
+.lead__close {
+  flex: none; width: 32px; height: 32px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; background: none; color: var(--label-strong); cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.15s var(--ease-out);
+}
+.lead__close svg { width: 17px; height: 17px; }
+@media (hover: hover) { .lead__close:hover { background: var(--pal-stone-gray-60); } }
+.lead__close:active { background: var(--pal-stone-gray-50); }
+
+/* ── 본문 ── */
+.lead__body { margin-top: 16px; }
+.lead__list {
+  display: flex; flex-direction: column; gap: 16px;
+  padding-top: 16px;
+  border-top: 2px solid var(--lead-rule);
+}
+.lead-f { display: flex; flex-direction: column; gap: 3px; }
+/* 피그마에서 성함 칸만 다른 컴포넌트(input/default)라 1px 높습니다 — 그 한 칸만 4 */
+.lead-f:first-child { gap: 4px; }
+.lead-f__label {
+  color: var(--primary-heavy);
+  font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px;
+}
+.lead-f__input {
+  width: 100%; height: 40px; padding: 0 8px; margin: 0;
+  border: 0; border-bottom: 1px solid var(--lead-line); border-radius: 0;
+  background: none; color: var(--primary-normal);
+  font-family: var(--font); font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px;
+  appearance: none; -webkit-appearance: none;
+}
+.lead-f__input::placeholder { color: var(--lead-hint); }
+.lead-f__input:focus-visible { outline: none; border-bottom-color: var(--primary-heavy); }
+/* 세 칸을 정확히 3등분합니다(피그마 185.33 × 3, gap 16). flex `1 1 0`으로는 select를
+   감싼 span과 input 둘의 성장분이 고르게 나뉘지 않아 174.66/190.67/190.67이 됐습니다. */
+.lead-f__tel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.lead-f__tel > * { min-width: 0; }
+
+/* select는 네이티브를 쓰고 화살표만 우리가 그립니다 (모바일 기본 UI가 그대로 살아납니다) */
+.lead-sel { position: relative; display: block; }
+/* 23.2차: 셀렉트 값은 항상 볼드입니다. 기본값(「선택」)이 보통 굵기면 빈 칸처럼 보여
+   누를 수 있는 것으로 안 읽힙니다. 고른 뒤에도 유지하는 이유는 두 가지 — 고르는 순간
+   굵기가 변하면 흔들려 보이고, 피그마의 이미 고른 값 「010」도 진한 잉크입니다.
+   직접 입력칸은 그대로 둡니다: 그쪽은 플레이스홀더가 옅은 회색이라 구분이 이미 섭니다. */
+.lead-sel select { padding-right: 32px; cursor: pointer; font-weight: 700; }
+.lead-sel .lead-chev {
+  position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+  width: 20px; height: 20px; color: var(--primary-heavy); pointer-events: none;
+}
+
+/* ── 동의 ── */
+.lead__agree { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.lead-a__row { display: flex; align-items: center; gap: 8px; min-height: 40px; }
+.lead-a__check {
+  flex: none; width: 20px; height: 20px; margin: 0;
+  appearance: none; -webkit-appearance: none;
+  border: 1.5px solid var(--pal-stone-gray-40); border-radius: 4px;
+  background: none; cursor: pointer;
+}
+.lead-a__check:checked {
+  border-color: var(--primary-heavy); background: var(--primary-heavy);
+  /* 흰 체크 — 배경 이미지라 색 반전이 필요 없고 요소도 늘지 않습니다 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 10.5L8.5 14L15 6.5' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+}
+.lead-a__check:focus-visible { outline: 2px solid var(--primary-heavy); outline-offset: 2px; }
+/* 23.2차: 문구와 화살표가 버튼 하나입니다. 둘 다 같은 일을 하는데 따로 두면 키보드에서
+   탭이 두 번 걸리고, 묶으면 그 사이 빈 공간까지 눌러지는 큰 표적이 됩니다. */
+.lead-a__toggle {
+  flex: 1 1 auto; min-width: 0; padding: 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  border: 0; background: none; text-align: left; cursor: pointer;
+  border-radius: 4px;
+}
+.lead-a__toggle:focus-visible { outline: 2px solid var(--primary-heavy); outline-offset: 2px; }
+.lead-a__text {
+  color: var(--primary-heavy);
+  font-family: var(--font);
+  font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px;
+}
+.lead-a__text b { color: var(--primary-normal); font-weight: 700; }
+.lead-a__toggle .lead-chev {
+  flex: none; width: 20px; height: 20px; color: var(--primary-heavy);
+  transition: transform 0.2s var(--ease-out);
+}
+.lead-a__toggle[aria-expanded="true"] .lead-chev { transform: rotate(180deg); }
+/* 약관 본문 (피그마 17959:7157 · 펼친 상태). 체크박스 행 바로 아래 588x106 상자로,
+   제목과 본문이 **한 상자 안에서 함께** 스크롤합니다 — 피그마도 본문 84가 상자 106을
+   넘겨 잘려 있습니다. 안쪽 여백 16, 제목 아래 8. */
+.lead-a__body {
+  height: 106px; padding: 16px; overflow: auto;
+  border: 1px solid var(--lead-box); border-radius: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.lead-a__body[hidden] { display: none; }
+.lead-a__h {
+  margin: 0 0 8px; color: var(--primary-normal);
+  font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px;
+}
+.lead-a__p {
+  margin: 0; white-space: pre-line;                /* 줄바꿈은 마크업의 줄 그대로 */
+  color: var(--lead-hint);
+  font-size: 14px; font-weight: 400; line-height: 1.5; letter-spacing: -0.3px;
+}
+
+/* ── 버튼 ── */
+.lead__submit {
+  margin-top: 16px;
+  display: flex; align-items: center; justify-content: center;
+  height: 60px; border-radius: 8px;
+  background: var(--primary-heavy); color: var(--static-white);
+  font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px;
+  user-select: none;
+}
+
+body.lead-open { overflow: hidden; }
+
+@media (max-width: 640px) {
+  /* 피그마는 1920만 있습니다. 684 카드가 안 들어가므로 화면 폭에 맞추고 안쪽 여백만
+     48 → 24로 줄입니다. 연락처 세 칸은 그대로 한 줄에 둡니다(gap도 16 → 8). */
+  .lead { padding: 16px; }
+  .lead__card { padding: 24px; border-radius: 12px; }
+  .lead__title { font-size: 20px; }
+  .lead-f__tel { gap: 8px; }
+  .lead__submit { height: 52px; }
+}

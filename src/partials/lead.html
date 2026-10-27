@@ -1,0 +1,94 @@
+<div class="lead" id="lead" hidden>
+    <div class="lead__scrim" data-lead-close></div>
+    <div class="lead__card" role="dialog" aria-modal="true" aria-labelledby="lead-title">
+      <div class="lead__head">
+        <h2 class="lead__title" id="lead-title">관심고객 등록</h2>
+        <button type="button" class="lead__close" id="lead-close" data-lead-close aria-label="닫기">
+          <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M1 1L17 17M17 1L1 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="lead__body">
+        <div class="lead__list">
+          <div class="lead-f">
+            <label class="lead-f__label" for="lead-name">성함</label>
+            <input class="lead-f__input" id="lead-name" type="text" autocomplete="name" placeholder="성함을 입력해주세요." />
+          </div>
+          <div class="lead-f">
+            <span class="lead-f__label" id="lead-tel-label">연락처</span>
+            <div class="lead-f__tel" role="group" aria-labelledby="lead-tel-label">
+              <span class="lead-sel">
+                <select class="lead-f__input" id="lead-tel0" aria-label="앞자리"><option>010</option><option>011</option><option>016</option><option>017</option><option>018</option><option>019</option></select><svg class="lead-chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 8L10 12.5L14.5 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <input class="lead-f__input" id="lead-tel1" inputmode="numeric" maxlength="4" aria-label="가운데 자리" placeholder="1234" />
+              <input class="lead-f__input" id="lead-tel2" inputmode="numeric" maxlength="4" aria-label="뒷자리" placeholder="5678" />
+            </div>
+          </div>
+          <div class="lead-f">
+            <label class="lead-f__label" for="lead-enrolled">소마 재원 여부</label>
+            <span class="lead-sel">
+              <select class="lead-f__input" id="lead-enrolled"><option value="">선택</option></select><svg class="lead-chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 8L10 12.5L14.5 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+          <div class="lead-f">
+            <label class="lead-f__label" for="lead-age">자녀 나이</label>
+            <span class="lead-sel">
+              <select class="lead-f__input" id="lead-age"><option value="">선택</option><option>유아 5</option><option>유아 6</option><option>유아 7</option><option>초1</option><option>초2</option><option>초3</option></select><svg class="lead-chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 8L10 12.5L14.5 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="lead__agree">
+          <div class="lead-a">
+            <div class="lead-a__row">
+              <!-- 23.2차: 체크와 펼침을 갈랐습니다. 예전에는 문구가 <label for>라서
+                   누르면 약관이 아니라 **체크가 꺼졌습니다**. 이제 문구와 화살표는
+                   버튼 하나로 묶어 약관만 여닫고, 체크는 체크박스만 바꿉니다.
+                   보이는 문구가 더는 라벨이 아니므로 체크박스에 이름을 따로 줍니다. -->
+              <input class="lead-a__check" type="checkbox" id="lead-agree-1" checked
+                     aria-label="[필수] 개인정보 수집 · 이용에 동의합니다" />
+              <button type="button" class="lead-a__toggle" aria-expanded="false" aria-controls="lead-terms-1">
+                <span class="lead-a__text"><b>[필수]</b> 개인정보 수집 · 이용에 동의합니다.</span><svg class="lead-chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 8L10 12.5L14.5 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="lead-a__body" id="lead-terms-1" hidden><h3 class="lead-a__h">개인정보 수집 및 이용 동의</h3><p class="lead-a__p">1. 기본수집항목
+- [필수] 이름, (휴대)전화번호
+- [선택] 소마재원여부, 학생 나이
+2. 수집 및 이용목적 :
+- 관심고객 등록 및 관리
+3. 보관기간
+- 등록 시점으로부터 2년간 보유하며, 보유기간 경과 후 지체 없이 파기합니다.
+4. 동의 거부권 등에 대한 고지
+- 귀하는 개인정보 수집 및 이용 동의를 거부할 권리가 있습니다. 다만 거부 시 관심고객 등록이 제한됩니다.</p></div>
+          </div>
+          <div class="lead-a">
+            <div class="lead-a__row">
+              <!-- 23.2차: 체크와 펼침을 갈랐습니다. 예전에는 문구가 <label for>라서
+                   누르면 약관이 아니라 **체크가 꺼졌습니다**. 이제 문구와 화살표는
+                   버튼 하나로 묶어 약관만 여닫고, 체크는 체크박스만 바꿉니다.
+                   보이는 문구가 더는 라벨이 아니므로 체크박스에 이름을 따로 줍니다. -->
+              <input class="lead-a__check" type="checkbox" id="lead-agree-2" checked
+                     aria-label="[선택] 마케팅정보 활용에 동의합니다" />
+              <button type="button" class="lead-a__toggle" aria-expanded="false" aria-controls="lead-terms-2">
+                <span class="lead-a__text"><b>[선택]</b> 마케팅정보 활용에 동의합니다.</span><svg class="lead-chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5.5 8L10 12.5L14.5 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="lead-a__body" id="lead-terms-2" hidden><h3 class="lead-a__h">마케팅 정보 활용 동의</h3><p class="lead-a__p">1. 개인정보의 처리항목
+- 이름, (휴대)전화번호, 소마 재원 여부, 학생 나이(입력하신 경우)
+2. 개인정보의 처리목적
+가. 학원 개강, 설명회, 교육프로그램 등 관련 소식 안내
+나. 이벤트 및 프로모션 등 학원 관련 맞춤형 혜택 정보 제공
+3. 개인정보의 처리 및 보유기간
+- 수신 동의 일자로부터 2년 간 보유하며, 보유기간 경과 후 지체 없이 파기합니다.
+4. 전송수단
+- SMS/MMS/LMS (문자 메시지를 통한 광고·이벤트 안내)
+
+※ 귀하는 마케팅 정보 활용 및 광고성 정보 수신에 대한 동의를 거부할 권리가 있습니다. 동의를 거부하시더라도 관심고객 등록은 가능하나, 개강·설명회·이벤트·프로모션 등 혜택 안내를 받으실 수 없습니다.
+
+※ 광고성 정보 수신동의는 이후 발송되는 문자에 안내된 방법으로 언제든지 철회하실 수 있습니다.</p></div>
+          </div>
+        </div>
+        <!-- 티저 단계라 보낼 곳이 없습니다. 장면 13의 예전 CTA와 같은 처리 — 모양만 두고
+             보조기기에도 누를 수 있는 것으로 알리지 않습니다. -->
+        <span class="lead__submit" aria-disabled="true">등록하기</span>
+      </div>
+    </div>
+  </div>
