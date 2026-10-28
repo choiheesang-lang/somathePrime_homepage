@@ -30,19 +30,57 @@
      랜딩의 START 대기 화면 그대로 — 슬라임 마스크가 커서(모바일은 손가락)를 따라다니며
      저절로 넘어가지 않습니다. 화면 아래 가운데 SKIP을 누르면 곧바로 홈, 마스크를 누르면
      오프닝을 1.6배속으로 재생하고 장면 9의 로고를 잠깐 보여 준 뒤 막을 걷습니다. */
-  const SPEED = 1.6, HOLD = 900, FADE = 900;
+  const SPEED = 1.6, HOLD = 900, FADE = 900, MASK_OPEN = 1.1;
   let leaving = false;
+  /* 막이 걷힌 뒤: 인트로 클래스를 떼면 CSS가 GNB(위) · 메인 비주얼 글 패널(왼쪽) ·
+     퀵메뉴(오른쪽)를 차례로 들여보냅니다(home.css 「인트로 → 메인 등장」). */
+  const finishIntro = () => {
+    body.classList.add('intro-entering');
+    body.classList.remove('intro-on', 'intro-leaving', 'intro-revealing', 'intro-light', 'hero-on');
+    const stage = document.getElementById('stage');
+    stage.style.webkitMaskImage = stage.style.maskImage = '';
+    if (window.STP && STP.hero) {
+      // SKIP으로 걷었으면 히어로가 아직 대기(armed)·재생 중입니다 — 끝 상태로 보내 포인터 추적을 끊고
+      if (body.classList.contains('is-armed') || body.classList.contains('is-intro')) STP.hero.finish();
+      STP.hero.setActive(false);                                // 전면 블러 네 겹을 멈춥니다
+    }
+    body.classList.remove('ptr-on', 'intro-light');            // finish()가 장면 9 훅을 부르며 다시 붙입니다
+    window.scrollTo(0, 0);
+    ScrollTrigger.refresh();
+    setTimeout(() => body.classList.remove('intro-entering'), 1600);
+    window.dispatchEvent(new Event('stp:intro-done'));
+    autoLead(1400);                                            // 등장이 끝난 뒤에
+  };
+  // 오프닝을 끝까지 본 경우: 장면 9의 밝은 화면을 페이드로 걷습니다
   const leave = () => {
     if (leaving) return;
     leaving = true;
-    body.classList.add('intro-leaving');
-    setTimeout(() => {
-      body.classList.remove('intro-on', 'intro-leaving', 'intro-light', 'hero-on');
-      if (window.STP && STP.hero) STP.hero.setActive(false);   // 전면 블러 네 겹을 멈춥니다
-      window.scrollTo(0, 0);
-      ScrollTrigger.refresh();
-      autoLead(500);
-    }, FADE);
+    body.classList.add('intro-leaving', 'intro-revealing');
+    setTimeout(finishIntro, FADE);
+  };
+  /* SKIP: 슬라임 마스크가 화면 끝까지 커지며 그 안으로 메인이 보입니다. #stage에 「가운데가
+     뚫린」 원형 마스크를 걸고 반지름을 키웁니다 — 마스크 안쪽이 이미 캠퍼스 사진이라 그대로
+     메인 비주얼 사진으로 이어집니다. 재생 중이라 슬라임이 없으면 화면 가운데에서. */
+  const maskOpen = () => {
+    if (leaving) return;
+    leaving = true;
+    body.classList.add('intro-revealing');
+    const stage = document.getElementById('stage');
+    const sr = stage.getBoundingClientRect();
+    const slime = body.classList.contains('is-armed') && document.getElementById('slime');
+    let cx = sr.width / 2, cy = sr.height / 2, r0 = 0;
+    if (slime) {
+      const b = slime.getBoundingClientRect();
+      cx = b.left + b.width / 2 - sr.left; cy = b.top + b.height / 2 - sr.top; r0 = b.width * 0.42;
+    }
+    const r1 = Math.hypot(Math.max(cx, sr.width - cx), Math.max(cy, sr.height - cy)) + 24;
+    const m = { r: r0 };
+    const paint = () => {
+      const g = `radial-gradient(circle at ${cx.toFixed(1)}px ${cy.toFixed(1)}px, transparent ${m.r.toFixed(1)}px, #000 ${(m.r + 1.5).toFixed(1)}px)`;
+      stage.style.webkitMaskImage = stage.style.maskImage = g;
+    };
+    paint();
+    gsap.to(m, { r: r1, duration: MASK_OPEN, ease: 'power2.in', onUpdate: paint, onComplete: finishIntro });
   };
   if (body.classList.contains('intro-on')) {
     store.set('stp-intro');
@@ -95,8 +133,7 @@
       e.stopPropagation();
       window.removeEventListener('wheel', ff);
       window.removeEventListener('touchstart', ff);
-      hero.finish();             // onComplete → leave (HOLD 없이 바로 걷히도록 leaving 표시는 leave가)
-      leave();
+      maskOpen();                  // 재생 중이던 타임라인은 마스크 뒤에서 그대로 끝나고, leave는 leaving으로 막힙니다
     });
   } else {
     autoLead(800);
@@ -132,7 +169,7 @@
     const run = () => {
       if (barTw) barTw.kill();
       gsap.set(bar, { scaleX: 0 });
-      if (paused) return;
+      if (paused || body.classList.contains('intro-on')) return;   // 인트로 동안은 첫 장(입구)에 머뭅니다
       barTw = gsap.to(bar, { scaleX: 1, duration: DUR, ease: 'none', onComplete: () => show(i + 1) });
     };
     const setPaused = (p) => {
@@ -147,6 +184,7 @@
     // 나머지 두 장은 첫 장이 뜬 뒤에 받아 둡니다
     window.addEventListener('load', () => slides.forEach((s) => { const im = s.querySelector('img'); im.loading = 'eager'; }), { once: true });
     setPaused(paused);
+    window.addEventListener('stp:intro-done', run);   // 인트로가 걷히면 그때부터 5초를 셉니다
   })();
 
   /* ── 영역 클릭 이동 (5p ③ 브랜드 소개 · 7p ② 캠퍼스 안내) ───────────

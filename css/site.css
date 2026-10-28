@@ -240,7 +240,7 @@ body.mnav-open { overflow: hidden; }
   box-shadow: var(--shadow-md);
   transition: opacity 0.4s, transform 0.5s var(--ease-out);
 }
-body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(24px, -50%); }
+body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(calc(100% + 32px), -50%); }   /* 인트로 뒤 오른쪽에서 들어옵니다 */
 .quick__btn, .quick__top {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   width: 100%; padding: 10px 2px;
@@ -262,7 +262,7 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(24
     top: auto; bottom: calc(16px + env(safe-area-inset-bottom)); right: 16px; transform: none;
     width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none;
   }
-  body.intro-on .quick { transform: translateY(24px); }
+  body.intro-on .quick { transform: translateX(calc(100% + 24px)); }
   .quick__list li:not(:first-child) { display: none; }
   .quick__list li:first-child { margin: 0; }
   /* 등록 버튼은 글자가 들어가는 알약, 맨 위로는 원 */

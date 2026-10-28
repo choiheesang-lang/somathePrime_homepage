@@ -15,6 +15,24 @@ main { pointer-events: auto; }
 body:not(.intro-on) #stage { visibility: hidden; }
 body.intro-on { overflow: hidden; }
 body.intro-on.intro-leaving #stage { opacity: 0; transition: opacity 0.9s var(--ease-in-out); }
+/* SKIP 마스크가 커지는 동안: 버튼 · 커서 디스크를 치우고 클릭을 막고, GNB는 위로 비켜 둡니다 */
+body.intro-revealing #stage { pointer-events: none; }
+body.intro-revealing, body.intro-revealing #stage { cursor: auto !important; }
+body.intro-revealing .intro-skip, body.intro-revealing #play-btn, body.intro-revealing .hero-ctl { opacity: 0 !important; pointer-events: none; transition: opacity 0.2s; }
+body.intro-revealing .gnb2 { transform: translateY(-100%); }
+
+/* ── 인트로 → 메인 등장 ─────────────────────────────────────────
+   인트로 동안 GNB는 그대로 보이고(위로 비키는 것은 걷힐 때), 메인 비주얼 글 패널은 왼쪽 밖,
+   퀵메뉴는 오른쪽 밖에 있습니다. intro-on이 떨어지면 아래 지연대로 들어옵니다. */
+body.intro-on .kv__panel { transform: translateX(-100%); }
+body.intro-on .kv__panel > * { opacity: 0; transform: translateX(-32px); }
+body.intro-entering .gnb2 { transition: transform 0.7s var(--ease-out); }
+body.intro-entering .kv__panel { transition: transform 0.9s var(--ease-out) 0.15s; }
+body.intro-entering .kv__panel > * { transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out); }
+body.intro-entering .kv__lead { transition-delay: 0.45s; }
+body.intro-entering .kv__copy { transition-delay: 0.55s; }
+body.intro-entering .kv__ctrl { transition-delay: 0.65s; }
+body.intro-entering .quick { transition: opacity 0.5s 0.35s, transform 0.8s var(--ease-out) 0.35s; }
 /* 랜딩의 START 대기 화면을 그대로 씁니다 — 커서 디스크(START/SKIP)와 터치용 고정 디스크.
    손가락 드래그가 스크롤로 끊기지 않도록 인트로 동안 스테이지의 터치 동작을 막습니다. */
 body.intro-on #stage { touch-action: none; }
