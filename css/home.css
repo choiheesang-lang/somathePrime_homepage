@@ -15,26 +15,36 @@ main { pointer-events: auto; }
 body:not(.intro-on) #stage { visibility: hidden; }
 body.intro-on { overflow: hidden; }
 body.intro-on.intro-leaving #stage { opacity: 0; transition: opacity 0.9s var(--ease-in-out); }
-/* START 대기 화면이 없으므로 랜딩의 커서 디스크·고정 컨트롤은 쓰지 않습니다.
-   OS 커서도 숨기지 않습니다(랜딩의 ptr-on). */
-#hero-top, .hero-ctl { display: none !important; }
-body.home.ptr-on, body.home.ptr-on #stage { cursor: auto !important; }
+/* 랜딩의 START 대기 화면을 그대로 씁니다 — 커서 디스크(START/SKIP)와 터치용 고정 디스크.
+   손가락 드래그가 스크롤로 끊기지 않도록 인트로 동안 스테이지의 터치 동작을 막습니다. */
+body.intro-on #stage { touch-action: none; }
 
+/* SKIP — 아래 가운데 큰 버튼. 누르면 오프닝을 건너뛰고 바로 홈 */
 .intro-skip {
-  position: absolute; right: 32px; bottom: 32px; z-index: 5;
-  display: inline-flex; align-items: center; gap: 6px;
-  height: 44px; padding: 0 18px 0 20px;
-  font-family: var(--font-title); font-size: 15px; font-weight: 700; color: #fff;
-  background: rgba(44, 42, 41, 0.55); border: 1px solid rgba(255, 255, 255, 0.28); border-radius: var(--r-pill);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  transition: background-color 0.2s, opacity 0.4s;
+  position: fixed; left: 50%; bottom: 48px; z-index: 5; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 56px; padding: 0 28px 0 32px;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-1); font-weight: 700; letter-spacing: 0.04em; color: #fff;
+  background: rgba(44, 42, 41, 0.62); border: 1px solid rgba(255, 255, 255, 0.32); border-radius: var(--r-pill);
+  box-shadow: var(--shadow-md);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.4s, transform 0.25s var(--ease-out);
 }
-.intro-skip svg { width: 18px; height: 18px; }
-.intro-skip:hover { background: rgba(44, 42, 41, 0.8); }
+.intro-skip svg { width: 20px; height: 20px; }
+.intro-skip:hover { background: rgba(44, 42, 41, 0.86); transform: translateX(-50%) scale(1.03); }
+.intro-skip:active { transform: translateX(-50%) scale(0.97); }
 .intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+/* 버튼 위에서는 따라다니는 디스크를 숨기고 OS 커서를 돌려줍니다 */
+body:has(.intro-skip:hover) #play-btn { opacity: 0 !important; }
+body.ptr-on .intro-skip { cursor: pointer; }
 /* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
-body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.7); border-color: var(--line-neutral); }
-@media (max-width: 640px) { .intro-skip { right: 16px; bottom: calc(20px + env(safe-area-inset-bottom)); } }
+body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); border-color: var(--line-neutral); }
+@media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
+/* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
+/* 인트로 동안 커서가 디스크로 바뀌어도 GNB 위에서는 보통 커서를 돌려줍니다 */
+body.intro-on .gnb2 { cursor: auto; }
+body.intro-on .gnb2 :is(a, button) { cursor: pointer; }
 
 /* ── 상단 배너 (4p ②) ───────────────────────────────────────────── */
 .topbanner { background: var(--text-normal); color: #fff; }

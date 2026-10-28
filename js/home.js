@@ -27,8 +27,9 @@
   };
 
   /* ── 인트로 (기획서 3p) ───────────────────────────────────────────
-     랜딩의 히어로를 그대로 쓰되 START를 기다리지 않고 1.6배속으로 자동 재생합니다.
-     끝나면 장면 9의 로고를 잠깐 보여 준 뒤 막을 걷고, 그 아래 메인 비주얼이 첫 화면입니다. */
+     랜딩의 START 대기 화면 그대로 — 슬라임 마스크가 커서(모바일은 손가락)를 따라다니며
+     저절로 넘어가지 않습니다. 화면 아래 가운데 SKIP을 누르면 곧바로 홈, 마스크를 누르면
+     오프닝을 1.6배속으로 재생하고 장면 9의 로고를 잠깐 보여 준 뒤 막을 걷습니다. */
   const SPEED = 1.6, HOLD = 900, FADE = 900;
   let leaving = false;
   const leave = () => {
@@ -36,7 +37,7 @@
     leaving = true;
     body.classList.add('intro-leaving');
     setTimeout(() => {
-      body.classList.remove('intro-on', 'intro-leaving', 'intro-light');
+      body.classList.remove('intro-on', 'intro-leaving', 'intro-light', 'hero-on');
       if (window.STP && STP.hero) STP.hero.setActive(false);   // 전면 블러 네 겹을 멈춥니다
       window.scrollTo(0, 0);
       ScrollTrigger.refresh();
@@ -47,12 +48,39 @@
     store.set('stp-intro');
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+    body.classList.add('hero-on');      // 랜딩 scroll.js가 붙이던 「히어로가 화면의 주인」 — 커서 디스크가 이걸 봅니다
     const hero = STP.hero.init({
       reduce: reduceMQ.matches,
+      speed: SPEED,
+      touchMask: true,
       onToLight: () => body.classList.add('intro-light'),
       onComplete: () => setTimeout(leave, leaving ? 0 : HOLD),
     });
-    const go = () => hero.autoplay(SPEED, 0.7);
+    const go = () => {
+      if (reduceMQ.matches) { leave(); return; }      // 동작 감소면 대기 화면 없이 곧바로 홈
+      hero.arm();
+      setTimeout(placeSkip, 800);                     // 블롭이 다 튀어나온 뒤에 잽니다
+    };
+    /* SKIP은 아래 가운데 — 단 아래 블롭(myON)과 겹치지 않게, 유리 카드와 그 블롭 사이 틈의
+       가운데에 둡니다. 틈이 좁으면(세로 태블릿) 블롭 아래, 그것도 안 되면 화면 맨 아래. */
+    const skipBtn = document.getElementById('intro-skip');
+    const placeSkip = () => {
+      if (leaving || !body.classList.contains('is-armed')) return;
+      const panel = document.querySelector('#stage .panel');
+      const sats = [...document.querySelectorAll('#hero .b-sat')].map((e) => e.getBoundingClientRect());
+      if (!panel || !sats.length) return;
+      const p = panel.getBoundingClientRect();
+      const b = sats.reduce((a, r) => (r.top > a.top ? r : a));   // 가장 아래 블롭
+      const H = skipBtn.offsetHeight, M = 12, vh = window.innerHeight;
+      let top;
+      if (b.top - p.bottom >= H + M * 2) top = (p.bottom + b.top - H) / 2;
+      else if (vh - b.bottom >= H + M * 2) top = (b.bottom + vh - H) / 2;
+      else top = vh - H - M * 2;
+      skipBtn.style.top = Math.round(top) + 'px';
+      skipBtn.style.bottom = 'auto';
+    };
+    let skipT;
+    window.addEventListener('resize', () => { clearTimeout(skipT); skipT = setTimeout(placeSkip, 300); });
     // 히어로 사진이 디코드된 뒤 시작합니다(최대 0.9초 대기) — 랜딩 main.js와 같은 이유
     const photo = new Image(); photo.src = '/img/hero.webp';
     let started = false;

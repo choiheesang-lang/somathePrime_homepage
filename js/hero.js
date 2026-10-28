@@ -457,7 +457,15 @@ STP.hero = (function () {
 
   function onPointerMove(e) {
     if (reduce) return;
-    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') {
+      /* 홈(touchMask): 대기 화면에서는 손가락으로도 마스크를 끌어 봅니다. 디스크 · OS 커서 ·
+         카드 스포트라이트는 마우스 전용이라 건드리지 않습니다. */
+      if (hooks.touchMask && armed && slimeX) {
+        const v = clientToVB(e.clientX, e.clientY);
+        slimeX(v.x); slimeY(v.y);
+      }
+      return;
+    }
     /* 22차: 좌표는 **ctlState 이전에도** 기억합니다. 21차에 arm이 「로드 직후」에서
        「히어로에 닿았을 때」로 옮겨가면서, 장면 13에서 움직인 마우스가 전부 여기서
        버려졌습니다 — 그래서 히어로에 도착했을 때 디스크가 원점에 opacity 0으로 남아
@@ -498,8 +506,9 @@ STP.hero = (function () {
     if (els && els.panel) els.panel.style.setProperty('--spot-a', '0');
   }
 
-  function onPointerLeave() {
+  function onPointerLeave(e) {
     if (!ctlState) return;
+    if (hooks.touchMask && e && e.pointerType === 'touch') return;   // 손가락을 떼도 마스크는 그 자리에
     ptr.has = false;                                    // re-entry goes through the "first move" branch again
     ptr.v = null;
     lastClient = null;                                  // 창을 벗어났으니 「거기 있다」는 보장이 끝납니다
@@ -861,7 +870,7 @@ STP.hero = (function () {
     els.body.classList.remove('is-armed');
     els.body.classList.add('is-intro');
     tl.invalidate();                                  // re-evaluate coverR() for this start position
-    tl.timeScale(1).play(0);
+    tl.timeScale(hooks.speed || 1).play(0);          // 홈은 1.6배속(init의 speed), 랜딩은 1
   }
 
   /* 홈페이지 · 클릭 없이 자동 재생 (기획서 3p 「애니메이션 속도를 높여 오프닝으로」).
