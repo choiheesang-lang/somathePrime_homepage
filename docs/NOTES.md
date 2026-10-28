@@ -62,10 +62,19 @@
 | Typography font/brand · font/system | `--font-title` · `--font` | (같음) |
 | 텍스트 스타일 Brand/* · System/* | `--fs-brand-*` · `--fs-system-*` · `--lh-*` | `--fs-body` · `--fs-tiny` · `--lh-body` |
 | space/8 ~ 160 | `--space-8` ~ `--space-160` | `--space-4` → 40, `--space-5` → 64 |
-| layout/max-width · content · gutter · header | `--layout-max` 1240 · `--layout-content` 1160 · `--gutter` 40/20 · `--header-h` 100/64 | `--max-w` 1200 |
+| layout/max-width · content · gutter · header | `--layout-max` 1240 · `--layout-content` 1160 · `--gutter` 40/20 · `--header-h` 128/64 | `--max-w` 1200 |
 | radius/0 ~ pill | `--r-0` ~ `--r-32` · `--r-pill` | `--r-sm/md/lg`, 모서리 10 → 8 |
 | Shadow/sm · md · lg | `--shadow-sm · md · lg` | (같음) |
 
 - `.wrap`은 `max-width: var(--layout-max)` + 좌우 `--gutter` → 콘텐츠 1160 (1440 화면에서 x 140).
 - 모바일(≤768) gutter 20, content는 화면 폭 − 40 (피그마 375 기준 335).
 - 15 · 17 · 22px 같은 단계 밖 크기는 숫자로 남겨 두었습니다.
+
+## GNB = 피그마 GNB/login (2026-10-28)
+
+- 위 28px 유틸 바(`--gnb-util-h`, 코드 전용) + 100px 메뉴 바 → `--header-h` 128. 피그마 `layout/header` Desktop도 128로 맞춤.
+- 유틸 바: 홍길동 ▾(마이페이지 · 수강료 납부 · 로그아웃) · 교육기관 ▾(소마 더 프라임 목동) · 센터 바로가기 | 알림 3. **로그인 상태 견본** — 회원 연동 때 실제 값으로.
+- 메뉴: 브랜드 · 교육 프로그램 · 소식 · 센터 찾기(`/center.html`, 연동 예정 페이지) · 선생님 · 마이페이지. 「수강료 납부」는 메뉴에서 빠지고 홍길동 메뉴 · 퀵메뉴 · 모바일 메뉴 아래 줄에 남음.
+- 현재 메뉴는 주황 형광펜(#F08C32 50%, 글자 아래 12px). 다른 메뉴는 호버 때 그어짐.
+- 피그마 유틸 바 왼쪽의 「수강료 결제 · 교재구매」는 투명도 0이라 옮기지 않음.
+- 모바일(≤1024): 유틸 바 숨김, 전체 메뉴 위에 홍길동 · 기관 · 알림 줄.

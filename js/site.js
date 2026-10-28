@@ -36,6 +36,28 @@
   }, { passive: true });
   header && header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
 
+  /* 유틸 바 드롭다운(홍길동 · 교육기관) — 누르면 열고, 바깥을 누르거나 Esc면 닫습니다.
+     키보드로 안에서 빠져나가도 닫힙니다. */
+  const dds = [...document.querySelectorAll('.gnb2__dd')];
+  const setDD = (dd, open) => {
+    dd.classList.toggle('is-open', open);
+    dd.querySelector('.gnb2__dd-btn').setAttribute('aria-expanded', String(open));
+  };
+  dds.forEach((dd) => {
+    dd.querySelector('.gnb2__dd-btn').addEventListener('click', () => {
+      const open = !dd.classList.contains('is-open');
+      dds.forEach((o) => setDD(o, false));
+      setDD(dd, open);
+    });
+    dd.addEventListener('focusout', (e) => { if (!dd.contains(e.relatedTarget)) setDD(dd, false); });
+  });
+  document.addEventListener('click', (e) => { dds.forEach((dd) => { if (!dd.contains(e.target)) setDD(dd, false); }); });
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = dds.find((dd) => dd.classList.contains('is-open'));
+    if (open) { setDD(open, false); open.querySelector('.gnb2__dd-btn').focus(); }
+  });
+
   const top = document.getElementById('quick-top');
   top && top.addEventListener('click', () => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

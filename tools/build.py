@@ -22,7 +22,7 @@ MENU = [
     ("brand", "브랜드", "/brand/", [("브랜드 소개", "/brand/"), ("캠퍼스 안내", "/brand/campus.html"), ("오시는 길", "/brand/location.html")]),
     ("program", "교육 프로그램", "/program.html", []),
     ("news", "소식", "/news.html", [("시간표", "/news.html#timetable"), ("공지사항", "/news.html#notice"), ("홍보자료", "/news.html#press"), ("FAQ", "/news.html#faq"), ("1:1 문의", "/news.html#qna")]),
-    ("tuition", "수강료 납부", "/tuition.html", []),
+    ("center", "센터 찾기", "/center.html", []),
     ("teacher", "선생님", "/teacher.html", []),
     ("mypage", "마이페이지", "/mypage.html", []),
 ]

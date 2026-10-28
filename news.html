@@ -158,7 +158,32 @@
   </defs></svg>
 
   <a class="skip-link" href="#content">본문 바로가기</a>
+  <!-- 피그마 GNB/login (web 섹션). 위 28px 유틸 바 + 아래 100px 메뉴 바.
+       홍길동 · 교육기관 · 알림 3건은 로그인 상태 견본입니다 — 회원 연동 때 실제 값으로 바뀝니다. -->
   <header class="gnb2" id="site-header">
+    <div class="gnb2__top">
+      <div class="gnb2__top-in">
+        <ul class="gnb2__acct">
+          <li class="gnb2__dd">
+            <button type="button" class="gnb2__dd-btn" aria-expanded="false" aria-controls="gnb-user">홍길동<span class="gnb2__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor"/></svg></span></button>
+            <ul class="gnb2__drop" id="gnb-user">
+              <li><a href="/mypage.html">마이페이지</a></li>
+              <li><a href="/tuition.html">수강료 납부</a></li>
+              <li><a href="/mypage.html#logout">로그아웃</a></li>
+            </ul>
+          </li>
+          <li class="gnb2__dd">
+            <button type="button" class="gnb2__dd-btn" aria-expanded="false" aria-controls="gnb-org">교육기관<span class="gnb2__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor"/></svg></span></button>
+            <ul class="gnb2__drop" id="gnb-org">
+              <li><a href="/" aria-current="true">소마 더 프라임 목동</a></li>
+            </ul>
+          </li>
+          <li><a class="gnb2__center" href="/center.html">센터 바로가기<svg viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M5 1a4 4 0 0 1 2.67 6.98L5 11.1 2.33 7.98A4 4 0 0 1 5 1Zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" fill="#F19A2F"/></svg></a></li>
+        </ul>
+        <span class="gnb2__vr" aria-hidden="true"></span>
+        <a class="gnb2__alert" href="/mypage.html#alert" aria-label="알림 3건"><svg viewBox="0 0 19 19" aria-hidden="true" focusable="false"><circle cx="9.5" cy="4.33" r="1.96" fill="currentColor"/><path d="M9.5 3.35c-2.68 0-4.88 2.2-4.88 4.88v.97c0 1.7-.49 3.24-1.26 4.31-.47.65-.02 1.55.78 1.55h10.72c.8 0 1.25-.9.78-1.55-.77-1.07-1.26-2.6-1.26-4.31v-.97c0-2.68-2.2-4.88-4.88-4.88Zm0 1.58c1.82 0 3.3 1.48 3.3 3.3v.97c0 1.56.34 3.04.97 4.28H5.23c.63-1.24.97-2.72.97-4.28v-.97c0-1.82 1.48-3.3 3.3-3.3ZM9.5 13.12c-1.62 0-2.93.87-2.93 1.95S7.88 17.03 9.5 17.03s2.93-.87 2.93-1.96-1.31-1.95-2.93-1.95Zm0 1.58c.65 0 1.1.21 1.28.37-.18.15-.63.37-1.28.37s-1.1-.21-1.28-.37c.18-.16.63-.37 1.28-.37Z" fill="currentColor"/></svg><span class="gnb2__badge">3</span></a>
+      </div>
+    </div>
     <div class="gnb2__inner">
       <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
       <nav class="gnb2__nav" aria-label="주요 메뉴">
@@ -166,14 +191,11 @@
           <li class="gnb2__item has-sub"><a class="gnb2__link" href="/brand/">브랜드</a><ul class="gnb2__sub"><li><a href="/brand/">브랜드 소개</a></li><li><a href="/brand/campus.html">캠퍼스 안내</a></li><li><a href="/brand/location.html">오시는 길</a></li></ul></li>
           <li class="gnb2__item"><a class="gnb2__link" href="/program.html">교육 프로그램</a></li>
           <li class="gnb2__item has-sub is-active"><a class="gnb2__link" href="/news.html" aria-current="page">소식</a><ul class="gnb2__sub"><li><a href="/news.html#timetable">시간표</a></li><li><a href="/news.html#notice">공지사항</a></li><li><a href="/news.html#press">홍보자료</a></li><li><a href="/news.html#faq">FAQ</a></li><li><a href="/news.html#qna">1:1 문의</a></li></ul></li>
-          <li class="gnb2__item"><a class="gnb2__link" href="/tuition.html">수강료 납부</a></li>
+          <li class="gnb2__item"><a class="gnb2__link" href="/center.html">센터 찾기</a></li>
           <li class="gnb2__item"><a class="gnb2__link" href="/teacher.html">선생님</a></li>
           <li class="gnb2__item"><a class="gnb2__link" href="/mypage.html">마이페이지</a></li>
         </ul>
       </nav>
-      <div class="gnb2__util">
-        <a href="/mypage.html">로그인</a><a href="/mypage.html">회원가입</a>
-      </div>
       <button type="button" class="gnb2__burger" id="mnav-open" aria-label="전체 메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </header>
@@ -183,15 +205,19 @@
       <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
       <button type="button" class="mnav__close" id="mnav-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M1 1L17 17M17 1L1 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
     </div>
+    <div class="mnav__acct">
+      <a class="mnav__user" href="/mypage.html"><b>홍길동</b> 님 · 소마 더 프라임 목동</a>
+      <a class="gnb2__alert" href="/mypage.html#alert" aria-label="알림 3건"><svg viewBox="0 0 19 19" aria-hidden="true" focusable="false"><circle cx="9.5" cy="4.33" r="1.96" fill="currentColor"/><path d="M9.5 3.35c-2.68 0-4.88 2.2-4.88 4.88v.97c0 1.7-.49 3.24-1.26 4.31-.47.65-.02 1.55.78 1.55h10.72c.8 0 1.25-.9.78-1.55-.77-1.07-1.26-2.6-1.26-4.31v-.97c0-2.68-2.2-4.88-4.88-4.88Zm0 1.58c1.82 0 3.3 1.48 3.3 3.3v.97c0 1.56.34 3.04.97 4.28H5.23c.63-1.24.97-2.72.97-4.28v-.97c0-1.82 1.48-3.3 3.3-3.3ZM9.5 13.12c-1.62 0-2.93.87-2.93 1.95S7.88 17.03 9.5 17.03s2.93-.87 2.93-1.96-1.31-1.95-2.93-1.95Zm0 1.58c.65 0 1.1.21 1.28.37-.18.15-.63.37-1.28.37s-1.1-.21-1.28-.37c.18-.16.63-.37 1.28-.37Z" fill="currentColor"/></svg><span class="gnb2__badge">3</span></a>
+    </div>
     <ul class="mnav__list">
         <li><a class="mnav__top" href="/brand/">브랜드</a><ul><li><a href="/brand/">브랜드 소개</a></li><li><a href="/brand/campus.html">캠퍼스 안내</a></li><li><a href="/brand/location.html">오시는 길</a></li></ul></li>
         <li><a class="mnav__top" href="/program.html">교육 프로그램</a></li>
         <li><a class="mnav__top" href="/news.html">소식</a><ul><li><a href="/news.html#timetable">시간표</a></li><li><a href="/news.html#notice">공지사항</a></li><li><a href="/news.html#press">홍보자료</a></li><li><a href="/news.html#faq">FAQ</a></li><li><a href="/news.html#qna">1:1 문의</a></li></ul></li>
-        <li><a class="mnav__top" href="/tuition.html">수강료 납부</a></li>
+        <li><a class="mnav__top" href="/center.html">센터 찾기</a></li>
         <li><a class="mnav__top" href="/teacher.html">선생님</a></li>
         <li><a class="mnav__top" href="/mypage.html">마이페이지</a></li>
     </ul>
-    <div class="mnav__util"><a href="/mypage.html">로그인</a><a href="/mypage.html">회원가입</a></div>
+    <div class="mnav__util"><a href="/center.html">센터 바로가기</a><a href="/tuition.html">수강료 납부</a><a href="/mypage.html#logout">로그아웃</a></div>
   </div>
 
   <main id="content" class="page">

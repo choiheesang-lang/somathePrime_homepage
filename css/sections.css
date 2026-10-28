@@ -627,7 +627,6 @@ body.shots-open { overflow: hidden; }
   .intro { gap: 32px; }
 }
 @media (max-width: 640px) {
-  :root { --header-h: 68px; }
 
   /* 18.1차: 배경 워드마크는 **예전처럼 섹션과 함께 스크롤**합니다(position: absolute 유지).
      18차에 화면 붙박이(fixed + is-onscreen 토글)로 만들었다가 되돌렸습니다 — fixed는

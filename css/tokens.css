@@ -162,7 +162,8 @@
   --layout-max:     1240px;
   --layout-content: 1160px;
   --gutter:         40px;
-  --header-h:       100px;
+  --gnb-util-h:     28px;    /* GNB/login 위 유틸 바 (27 + 아래 선 1) */
+  --header-h:       128px;   /* 고정 헤더 전체 = 유틸 바 28 + 메뉴 바 100 */
 
   /* Radius 컬렉션 — radius/* (4의 배수 ~ pill) */
   --r-0: 0; --r-4: 4px; --r-8: 8px; --r-12: 12px; --r-16: 16px;
@@ -189,6 +190,6 @@
 }
 
 /* Spacing 컬렉션 Mobile 모드 */
-@media (max-width: 1024px) { :root { --header-h: 64px; } }
+@media (max-width: 1024px) { :root { --header-h: 64px; --gnb-util-h: 0px; } }
 /* layout/content Mobile 335는 375 화면 기준 — 코드에서는 화면 폭에서 여백을 뺀 값 */
 @media (max-width: 768px)  { :root { --gutter: 20px; --layout-content: calc(100vw - 2 * var(--gutter)); } }

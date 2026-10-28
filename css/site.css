@@ -39,10 +39,13 @@ address { font-style: normal; }
 .page { padding-top: var(--header-h); }
 
 /* ── GNB ─────────────────────────────────────────────────────────
-   기획서 3~16p: 흰 바, 왼쪽 로고, 오른쪽 6개 메뉴, 그 위에 로그인 · 회원가입. */
+   피그마 GNB/login: 위 28 유틸 바(#F7F7F7, 아래 선 #EEE) + 100 메뉴 바.
+   유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ · 센터 바로가기 | 알림.
+   메뉴 바는 왼쪽 로고 119×44, 오른쪽 메뉴 6개(간격 72), 현재 메뉴는 주황 형광펜. */
 .gnb2 {
   position: fixed; inset: 0 0 auto; z-index: 50;
   height: var(--header-h);
+  display: flex; flex-direction: column;
   background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid var(--line-neutral);
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
@@ -51,31 +54,88 @@ address { font-style: normal; }
   transition: transform 0.35s var(--ease-out);
 }
 .gnb2.is-hidden { transform: translateY(-100%); }
+.gnb2, .mnav {
+  --gnb-sub: rgba(0, 0, 0, 0.58);     /* 유틸 바 글자 · 화살표 */
+  --gnb-mark: rgba(240, 140, 50, 0.5); /* 현재 메뉴 형광펜 */
+  --gnb-badge: #F19A2F;
+}
+
+.gnb2__top { flex: none; height: var(--gnb-util-h); background: #F7F7F7; border-bottom: 1px solid #EEEEEE; }
+.gnb2__top-in {
+  height: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--gutter);
+  display: flex; align-items: center; justify-content: flex-end; gap: var(--space-16);
+}
+.gnb2__acct { display: flex; align-items: center; gap: var(--space-16); }
+.gnb2__dd { position: relative; }
+.gnb2__dd-btn, .gnb2__center {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-title); font-weight: 400; font-size: 13px; line-height: 16px; letter-spacing: 0;
+  color: var(--gnb-sub);
+}
+.gnb2__chev {
+  display: grid; place-items: center; width: 16px; height: 16px;
+  background: #fff; border: 1px solid #D8D8D8; border-radius: var(--r-4);
+}
+.gnb2__chev svg { width: 16px; height: 16px; flex: none; transition: transform 0.2s; }
+.gnb2__dd.is-open .gnb2__chev svg { transform: rotate(180deg); }
+.gnb2__center {
+  gap: 2px; height: 18px; padding: 0 4px; font-size: var(--fs-system-caption);
+  background: #fff; border: 1px solid #DDDDDD; border-radius: var(--r-4);
+}
+.gnb2__center svg { width: 10px; height: 12px; }
+.gnb2__dd-btn:hover, .gnb2__center:hover { color: var(--text-normal); }
+.gnb2__drop {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 2;
+  min-width: 132px; padding: 6px;
+  background: #fff; border: 1px solid var(--line-neutral); border-radius: var(--r-8);
+  box-shadow: var(--shadow-md);
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
+}
+.gnb2__dd.is-open > .gnb2__drop {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
+}
+.gnb2__drop a {
+  display: block; padding: 8px 10px; border-radius: var(--r-4); white-space: nowrap;
+  font-size: var(--fs-system-label-2); color: var(--text-neutral);
+}
+.gnb2__drop a:hover, .gnb2__drop a:focus-visible { background: var(--bg-brand-normal); color: var(--text-normal); }
+.gnb2__drop a[aria-current] { color: var(--text-normal); font-weight: 700; }
+.gnb2__vr { width: 1px; height: 8px; background: #DDDDDD; }
+.gnb2__alert { position: relative; display: inline-flex; align-items: center; color: #555555; }
+.gnb2__alert svg { width: 19px; height: 19px; }
+.gnb2__badge {
+  display: grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px;
+  font-family: var(--font-title); font-size: var(--fs-system-caption); line-height: 1; color: #fff;
+  background: var(--gnb-badge); border-radius: var(--r-4);
+}
+
 .gnb2__inner {
-  position: relative; height: 100%;
-  max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--gutter);
+  position: relative; flex: 1;
+  width: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 8px var(--gutter) 0;
   display: flex; align-items: center; justify-content: space-between;
 }
-.gnb2__brand { display: block; line-height: 0; padding: 8px 0; }
-.gnb2__brand .logo-prime { width: 108px; height: 40px; }
-.gnb2__menu { display: flex; gap: 8px; margin-top: 18px; }
+.gnb2__brand { display: block; line-height: 0; }
+.gnb2__brand .logo-prime { width: 119px; height: 44px; }
+.gnb2__menu { display: flex; gap: 72px; }
 .gnb2__item { position: relative; }
 .gnb2__link {
-  display: block; padding: 14px 16px;
-  font-family: var(--font-title); font-size: var(--fs-brand-body-1); font-weight: 700; line-height: 1;
-  color: var(--text-normal);
-  border-radius: var(--r-8);
-  transition: background-color 0.2s, color 0.2s;
+  position: relative; isolation: isolate; display: block; padding: 12px 0;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-1); font-weight: 700; line-height: 18px;
+  color: var(--text-strong);
 }
-.gnb2__link:hover, .gnb2__item:focus-within > .gnb2__link { background: var(--bg-brand-normal); }
-.gnb2__item.is-active > .gnb2__link { color: var(--text-accent); }
-.gnb2__item.is-active > .gnb2__link::after {
-  content: ""; display: block; height: 2px; margin-top: 8px; margin-bottom: -10px;
-  background: currentColor; border-radius: 2px;
+/* 형광펜 — 글자 아래 절반(위 12px부터 12px 높이)을 칠합니다. 현재 메뉴는 늘 보이고, 나머지는 호버 때 그어집니다 */
+.gnb2__link::before {
+  content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 24px; height: 12px;
+  background: var(--gnb-mark);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.3s var(--ease-out);
 }
+.gnb2__link:hover::before, .gnb2__item:focus-within > .gnb2__link::before,
+.gnb2__item.is-active > .gnb2__link::before { transform: none; }
 /* 하위 메뉴 — 마우스를 올리거나 키보드로 들어오면 펼칩니다 */
 .gnb2__sub {
-  position: absolute; left: 50%; top: calc(100% + 6px);
+  position: absolute; left: 50%; top: calc(100% + 14px);
   min-width: 156px; padding: 8px;
   background: #fff; border: 1px solid var(--line-neutral); border-radius: var(--r-12);
   box-shadow: var(--shadow-md);
@@ -83,7 +143,7 @@ address { font-style: normal; }
   transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
 }
 /* 메뉴와 하위 메뉴 사이 틈에서 호버가 끊기지 않게 */
-.gnb2__sub::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+.gnb2__sub::before { content: ""; position: absolute; left: 0; right: 0; top: -18px; height: 18px; }
 .gnb2__item:hover > .gnb2__sub, .gnb2__item:focus-within > .gnb2__sub {
   opacity: 1; visibility: visible; transform: translate(-50%, 0);
   transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
@@ -94,21 +154,12 @@ address { font-style: normal; }
 }
 .gnb2__sub a:hover, .gnb2__sub a:focus-visible { background: var(--bg-brand-normal); color: var(--text-normal); }
 .gnb2__sub a[aria-current="page"] { color: var(--text-accent); font-weight: 700; }
-
-.gnb2__util {
-  position: absolute; right: var(--gutter); top: 10px;
-  display: flex; gap: 2px;
-}
-.gnb2__util a {
-  padding: 3px 9px; font-size: var(--fs-system-caption); line-height: 1.5; color: var(--label-alternative, #6b6866);
-  border-radius: var(--r-4);
-}
-.gnb2__util a:first-child { background: var(--bg-brand-heavy); }
-.gnb2__util a:hover { color: var(--text-normal); }
 .gnb2__burger { display: none; }
 
+@media (max-width: 1280px) { .gnb2__menu { gap: 48px; } }
 @media (max-width: 1024px) {
-  .gnb2__nav, .gnb2__util { display: none; }
+  .gnb2__top, .gnb2__nav { display: none; }
+  .gnb2__inner { padding-top: 0; }
   .gnb2__brand .logo-prime { width: 82.7px; height: 30.6px; }
   .gnb2__burger {
     display: flex; flex-direction: column; justify-content: center; gap: 5px;
@@ -131,6 +182,13 @@ address { font-style: normal; }
 }
 .mnav__head .logo-prime { width: 82.7px; height: 30.6px; }
 .mnav__close { width: 44px; height: 44px; margin-right: -12px; padding: 13px; }
+.mnav__acct {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px var(--gutter); background: #F7F7F7; border-bottom: 1px solid #EEEEEE;
+}
+.mnav__user { font-size: var(--fs-system-label-1); color: var(--text-neutral); }
+.mnav__user b { font-family: var(--font-title); color: var(--text-normal); }
+.mnav__acct .gnb2__alert { padding: 4px; margin-right: -4px; }
 .mnav__list { padding: 8px var(--gutter) 24px; }
 .mnav__list > li { border-bottom: 1px solid var(--line-alternative); }
 .mnav__top { display: block; padding: 18px 0; font-family: var(--font-title); font-size: var(--fs-brand-heading); font-weight: 700; }
