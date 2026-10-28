@@ -7,14 +7,16 @@
 /* ── 서체 — 사고력소마(new.somai.co.kr)와 같은 두 벌 ─────────────────
    제목·메뉴·버튼·강조는 세방고딕, 본문은 Noto Sans KR. 기획서 9p의 「본문은 타이틀과
    다른 깔끔한 고딕체」와도 맞습니다. */
+/* 프로젝트 /font 폴더의 세방고딕(OTF)을 직접 씁니다 — 피그마(SEBANG Gothic OTF)와 같은 파일.
+   TTF(약 2MB)보다 OTF(약 0.9MB)가 가벼워 OTF만 씁니다. */
 @font-face {
   font-family: "SebangGothic";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Regular.woff") format("woff");
+  src: url("/font/SEBANG%20Gothic%20OTF.otf") format("opentype");
   font-weight: 400; font-display: swap;
 }
 @font-face {
   font-family: "SebangGothic";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff") format("woff");
+  src: url("/font/SEBANG%20Gothic%20OTF%20Bold.otf") format("opentype");
   font-weight: 700; font-display: swap;
 }
 :root {
