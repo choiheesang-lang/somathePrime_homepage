@@ -15,9 +15,9 @@ main > *:not(#s-spacer) { pointer-events: auto; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--header-h) + var(--space-4)) var(--gutter) var(--space-5);
+  padding: calc(var(--header-h) + var(--space-40)) var(--gutter) var(--space-64);
 }
-.section__inner { width: 100%; max-width: var(--max-w); margin: 0 auto; text-align: center; }
+.section__inner { width: 100%; max-width: var(--layout-content); margin: 0 auto; text-align: center; }
 
 /* 배경이 **없어야** 합니다. 여기는 고정 스테이지(z 0)를 들여다보는 창이고 이 섹션은
    main(z 1) 안이라, 색을 깔면 히어로를 통째로 덮습니다. 22.1차에 그 실수를 했고
@@ -195,7 +195,7 @@ body.has-reveal #s-intro .ic-light { opacity: 0; }
      rise = (padBottom − padTop) / 2 이므로, 위만 키우면 긴 화면에서 컬럼이 11px
      내려가 그 작업이 절반 풀립니다. 둘을 같이 올리면 차이가 보존됩니다. */
   padding-top: calc(var(--header-h) + 30px);
-  padding-bottom: calc(var(--space-5) + 150px);
+  padding-bottom: calc(var(--space-64) + 150px);
 }
 .intro { margin-block: auto; }
 @media (min-width: 641px) {
@@ -207,9 +207,9 @@ body.has-reveal #s-intro .ic-light { opacity: 0; }
      after the 100vh hero spacer with <main> above the fixed stage, so leaving it on covered
      the whole intro with a sheet of ivory. js/scroll.js adds the class only once scene 11 is
      on its way in, which is the same boundary the scale tween starts at. */
-  #s-intro.is-receding { box-shadow: 0 0 0 100vw var(--bg-hero); }
+  #s-intro.is-receding { box-shadow: 0 0 0 100vw var(--bg-brand-heavy); }
 }
-.copy-wrap { position: relative; z-index: 1; background: var(--bg-hero); }
+.copy-wrap { position: relative; z-index: 1; background: var(--bg-brand-heavy); }
 #s-open { z-index: 1; }
 
 /* ─────────────────────────────────────────────
@@ -290,7 +290,7 @@ body.has-reveal #s-intro .ic-light { opacity: 0; }
 /* 20차: 승격은 등장 구간에만. clamp 88px 전폭 텍스트 3줄이 세션 내내 승격돼
    있었습니다 — 필요한 건 reveal이 도는 동안뿐입니다. */
 body.has-reveal .copy-big .line[data-step] { will-change: transform, opacity; }
-.copy-big .dim { color: var(--ink-2); }
+.copy-big .dim { color: var(--text-neutral); }
 #s-copy-2.has-bg .copy-big .line { color: var(--static-white); }
 
 /* the bar's gradient is standing, not a hover state — Figma paints it in every variant.
@@ -388,8 +388,8 @@ body.has-reveal .copy-big .line[data-step] { will-change: transform, opacity; }
   padding: 0;
   align-items: stretch;
   overflow: hidden;
-  color: var(--white);
-  background: var(--ink);
+  color: var(--static-white);
+  background: var(--text-normal);
 }
 /* 11차: one storefront still (Figma 17708:4071). The two-layer crossfade moved to the modal. */
 .open-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
@@ -420,19 +420,19 @@ body.has-reveal .copy-big .line[data-step] { will-change: transform, opacity; }
   background: rgba(30, 30, 32, var(--open-dim));
 }
 /* ── OPEN section — Figma scene 13 (17708:4071).
-      1920 프레임에서 콘텐츠 열은 x 364..1564 = 1200 = --max-w 이므로 아래 px는 1:1이다.
+      1920 프레임에서 콘텐츠 열은 x 364..1564 = 1200(랜딩 기준. 홈페이지는 layout/content 1160).
       타이틀 y283 / 하단 블록 y535..737 / 사진 y0..891(그 아래는 푸터). */
 /* 11차: everything is one centred column now (Figma 17905:5260 — 431 wide, gaps 64/16/32). */
 .open-inner {
   position: relative; z-index: 1;
-  width: 100%; max-width: var(--max-w); margin: 0 auto;
+  width: 100%; max-width: var(--layout-content); margin: 0 auto;
   min-height: 100vh; min-height: 100svh;
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   gap: clamp(32px, 3.33vw, 64px);                  /* Figma 64 */
   /* Figma puts the block at y 434..827 of 1080 — bottom-anchored with ~23 % clear, not
      centred. Centring landed it on the storefront sign, with 전경 더보기 in the dark band.
      17차: 「전경 더보기」가 블록 맨 끝으로 내려가 아래 끝이 819 → 827이 되었습니다. */
-  padding: calc(var(--header-h) + var(--space-4)) var(--gutter) clamp(3.5rem, 23.4vh, 16rem);
+  padding: calc(var(--header-h) + var(--space-40)) var(--gutter) clamp(3.5rem, 23.4vh, 16rem);
   text-align: center;
 }
 /* 11차: 「11월 목동」 and 「OPEN」 share one 64px line now, 8 apart (Figma 17905:4986) */
@@ -588,8 +588,8 @@ body.has-reveal .copy-big .line[data-step] { will-change: transform, opacity; }
   max-height: 100%;
   border-radius: 32px;
   overflow: hidden;
-  background: var(--ink);
-  color: var(--white);
+  background: var(--text-normal);
+  color: var(--static-white);
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45);
 }
 .shots__stage { position: absolute; inset: 0; }

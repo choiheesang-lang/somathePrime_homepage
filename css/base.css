@@ -12,10 +12,10 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   font-family: var(--font);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  color: var(--ink);
-  background: var(--bg-hero);
+  font-size: var(--fs-system-body-2);
+  line-height: var(--lh-system-body);
+  color: var(--text-normal);
+  background: var(--bg-brand-heavy);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -79,7 +79,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 .gnb__inner {
-  max-width: var(--max-w);
+  max-width: var(--layout-content);
   margin: 0 auto;
   height: 60px;
   display: flex;
@@ -194,9 +194,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .btn:hover { transform: translateY(-2px) scale(1.02); }
 .btn:active { transform: translateY(0) scale(0.99); }
-.btn--primary { background: var(--ink); color: var(--white); box-shadow: var(--shadow-md); }
+.btn--primary { background: var(--text-normal); color: var(--static-white); box-shadow: var(--shadow-md); }
 .btn--primary:hover { box-shadow: var(--shadow-lg); }
-.btn--light { background: var(--white); color: var(--ink); box-shadow: var(--shadow-md); }
+.btn--light { background: var(--static-white); color: var(--text-normal); box-shadow: var(--shadow-md); }
 .btn--block { width: 100%; }
 .btn__arrow { transition: transform 0.35s var(--ease-out); }
 .btn:hover .btn__arrow { transform: translateX(4px); }
@@ -207,16 +207,16 @@ ul { margin: 0; padding: 0; list-style: none; }
 .site-footer {
   position: relative;
   z-index: 1;
-  background: var(--bg-hero);
-  border-top: 1px solid var(--line);
-  padding: var(--space-5) var(--gutter) var(--space-4);
+  background: var(--bg-brand-heavy);
+  border-top: 1px solid var(--line-normal);
+  padding: var(--space-64) var(--gutter) var(--space-40);
 }
 .site-footer__inner {
-  max-width: var(--max-w);
+  max-width: var(--layout-content);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-40);
 }
 /* 참조 전용 스프라이트 — 그려지지 않지만 문서에 살아 있어야 <use>가 찾습니다.
    display: none이나 visibility: hidden은 쓰지 않습니다(참조가 깨집니다). */
@@ -234,10 +234,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   /* 24차: 텍스트 → 로고 108x40 (피그마 17701:3883), 어두운 단색. 로고 0 · 구분선 140 ·
      형제 로고 173 이라 기존 gap 32가 그대로 맞습니다(108 + 32 = 140). */
   margin: 0; line-height: 0;
-  --lp-ink: var(--ink); --lp-o: var(--ink); --lp-g: var(--ink); --lp-c: var(--ink);
+  --lp-ink: var(--text-normal); --lp-o: var(--text-normal); --lp-g: var(--text-normal); --lp-c: var(--text-normal);
 }
 .footer-mark .logo-prime { width: 108px; height: 40px; }
-.footer-div { width: 1px; height: 32px; background: var(--line); }
+.footer-div { width: 1px; height: 32px; background: var(--line-normal); }
 /* 피그마는 네 로고 사이가 **모두 정확히 56**입니다(x 0→151.26→255.84→418.98).
    간격을 vw에 연동해 뒀던 게 1440에서 49로 좁아진 원인 — 이 행은 max-width 1200으로
    고정이고 그게 곧 피그마 프레임 폭이라, 뷰포트를 따라갈 이유가 없었습니다. */
@@ -251,7 +251,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .footer-brands .fb--read { width: 86px; }   /* 25차: 에듀 배지가 붙은 새 로고(151×50), 피그마 86×28. 위 `.footer-brands .fb`의 width:auto를 이기려면 같은 특이도가 필요합니다 */
 .site-footer__meta {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
-  color: var(--muted); font-size: var(--fs-tiny); letter-spacing: 0.02em;
+  color: var(--text-alternative); font-size: var(--fs-system-caption); letter-spacing: 0.02em;
 }
 
 @media (max-width: 640px) {

@@ -50,3 +50,22 @@
 - Text 색 8개(`Semantic/Text/*`, Stone Gray alias) · Spacing(8의 배수, layout 1240 = 1160 + gutter 40) · Radius(4의 배수 ~ pill) · Shadow sm/md/lg. 쓰이지 않던 `shape` 컬렉션과 그림자 3개는 삭제, 티저가 쓰는 `Shadow/Normal`은 유지
 - 표 · 페이지네이션 · 통합검색은 사이트에 없어 만들지 않음
 - 코드에 남은 일: GNB를 `GNB/login` 구성으로, 레이아웃 1240/40, CSS 토큰 이름을 피그마와 맞추기
+
+## CSS 토큰 = 피그마 토큰 (2026-10-28)
+
+`css/tokens.css`의 변수 이름은 피그마 변수의 code syntax(WEB)와 같습니다.
+
+| 피그마 | CSS | 예전 이름 |
+|---|---|---|
+| Semantic/Text/* | `--text-strong · normal · neutral · alternative · assistive · disable · inverse · accent` | `--ink` → normal, `--ink-2` → neutral, `--muted` → alternative, `--accent` → accent |
+| Palette/Brand/Leaf | `--pal-brand-leaf` | `--accent` 값 |
+| Typography font/brand · font/system | `--font-title` · `--font` | (같음) |
+| 텍스트 스타일 Brand/* · System/* | `--fs-brand-*` · `--fs-system-*` · `--lh-*` | `--fs-body` · `--fs-tiny` · `--lh-body` |
+| space/8 ~ 160 | `--space-8` ~ `--space-160` | `--space-4` → 40, `--space-5` → 64 |
+| layout/max-width · content · gutter · header | `--layout-max` 1240 · `--layout-content` 1160 · `--gutter` 40/20 · `--header-h` 100/64 | `--max-w` 1200 |
+| radius/0 ~ pill | `--r-0` ~ `--r-32` · `--r-pill` | `--r-sm/md/lg`, 모서리 10 → 8 |
+| Shadow/sm · md · lg | `--shadow-sm · md · lg` | (같음) |
+
+- `.wrap`은 `max-width: var(--layout-max)` + 좌우 `--gutter` → 콘텐츠 1160 (1440 화면에서 x 140).
+- 모바일(≤768) gutter 20, content는 화면 폭 − 40 (피그마 375 기준 335).
+- 15 · 17 · 22px 같은 단계 밖 크기는 숫자로 남겨 두었습니다.

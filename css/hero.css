@@ -440,7 +440,7 @@ body.stage-parked #bg-light { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { #hero-top, .hero-ctl { display: none; } }
 
 /* No-JS: final light state */
-html.no-js #stage { background: var(--bg-hero); }
+html.no-js #stage { background: var(--bg-brand-heavy); }
 html.no-js #hero, html.no-js .panel { display: none; }
 
 /* ── scene 9 scroll cue (Figma 17879:5257). The line/label visual is the shared .scroll-cue
