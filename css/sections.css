@@ -818,14 +818,8 @@ body.shots-open { overflow: hidden; }
 }
 
 /* ── 버튼 ── */
-.lead__submit {
-  margin-top: 16px;
-  display: flex; align-items: center; justify-content: center;
-  height: 60px; border-radius: 8px;
-  background: var(--primary-heavy); color: var(--static-white);
-  font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px;
-  user-select: none;
-}
+/* 채움 버튼(.btn2--fill, site.css) — 높이만 피그마 팝업의 60 */
+.lead__submit.btn2 { margin-top: 16px; --h: 60px; --tip: 17px; --fs: 16px; user-select: none; }
 
 body.lead-open { overflow: hidden; }
 
@@ -836,5 +830,5 @@ body.lead-open { overflow: hidden; }
   .lead__card { padding: 24px; border-radius: 12px; }
   .lead__title { font-size: 20px; }
   .lead-f__tel { gap: 8px; }
-  .lead__submit { height: 52px; }
+  .lead__submit.btn2 { --h: 52px; --tip: 15px; }
 }

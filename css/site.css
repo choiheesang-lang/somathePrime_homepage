@@ -202,23 +202,58 @@ address { font-style: normal; }
 body.mnav-open { overflow: hidden; }
 
 /* ── 버튼 ─────────────────────────────────────────────────────────
-   기획서의 버튼은 두 가지 — 테두리형(「교육 프로그램 안내」)과 문서 아이콘이 붙은
-   관심고객 등록. 둘 다 높이 56, 모서리 8(radius/8). */
+   피그마 Button/Fill · Button/Line · Button/Ghost(DESIGN.md 4). 모양은 모두 아이덴티티
+   육각형 — 좌우 끝을 접은 띠입니다. 호버 · 누름은 **자기 종류 안에서만** 변합니다
+   (라인이 채움으로 바뀌지 않음). 크기 56(기본) · 48 · 40 · 32.
+   선은 clip-path가 border를 잘라 버리므로, 버튼 바탕을 선 색으로 칠하고 1px 안쪽에
+   같은 육각형(::before)을 바탕색으로 덮어 만듭니다. */
 .btn2 {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  min-width: 240px; height: 56px; padding: 0 28px;
-  border: 1px solid var(--text-normal); border-radius: var(--r-8);
-  font-size: var(--fs-brand-body-1); font-weight: 700; color: var(--text-normal); background: #fff;
-  transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease-out);
+  --h: 56px; --tip: 16px; --pad: 32px; --fs: 18px; --ico: 20px;
+  --stroke: var(--primary-heavy); --bw: 1px; --bg: #fff; --ink: var(--text-normal);   /* 종류 없이 쓰면 라인 */
+  --hex: polygon(var(--tip) 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, var(--tip) 100%, 0 50%);
+  position: relative; isolation: isolate;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: var(--h); padding: 0 var(--pad);
+  font-family: var(--font-title); font-size: var(--fs); font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; white-space: nowrap;
+  color: var(--ink); background: var(--stroke); clip-path: var(--hex);
+  transition: color 0.2s, background-color 0.2s, transform 0.2s var(--ease-out);
 }
-.btn2:hover { background: var(--text-normal); color: #fff; }
+.btn2::before {
+  content: ""; position: absolute; inset: var(--bw); z-index: -1;
+  background: var(--bg); clip-path: var(--hex); transition: background-color 0.2s;
+}
 .btn2:active { transform: scale(0.98); }
-.btn2--dark { background: var(--text-normal); color: #fff; }
-.btn2--dark:hover { background: #000; }
-.btn2 svg { width: 18px; height: 18px; flex: none; }
+.btn2 svg { width: var(--ico); height: var(--ico); flex: none; }
 .btn2__arrow { transition: transform 0.3s var(--ease-out); }
 .btn2:hover .btn2__arrow { transform: translateX(4px); }
-@media (max-width: 640px) { .btn2 { min-width: 0; width: 100%; height: 52px; font-size: var(--fs-brand-body-2); } }
+.btn2:focus-visible { outline: none; --stroke: var(--primary-normal); }
+.btn2:focus-visible::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 8px; height: 2px; background: currentColor; }
+
+/* 채움 — Primary/Heavy → 호버 Strong → 누름 Normal, 흰 글자 */
+.btn2--fill { --stroke: transparent; --bw: 0px; --bg: var(--primary-heavy); --ink: #fff; }
+.btn2--fill:hover { --bg: var(--primary-strong); }
+.btn2--fill:active { --bg: var(--primary-normal); }
+/* 라인 — 1px 선. 호버해도 채워지지 않고 Heavy 8%(누름 16%)만 깔립니다 */
+.btn2--line { --stroke: var(--primary-heavy); --bw: 1px; --bg: #fff; --ink: var(--text-normal); }
+.btn2--line:hover { --stroke: var(--primary-strong); --bg: color-mix(in srgb, var(--primary-heavy) 8%, #fff); }
+.btn2--line:active { --stroke: var(--primary-normal); --bg: color-mix(in srgb, var(--primary-heavy) 16%, #fff); }
+/* 고스트 — 선 · 바탕 없음. 호버 때만 Heavy 8%(누름 16%) */
+.btn2--ghost { --stroke: transparent; --bw: 0px; --bg: transparent; --ink: var(--text-normal); }
+.btn2--ghost:hover { --bg: color-mix(in srgb, var(--primary-heavy) 8%, transparent); }
+.btn2--ghost:active { --bg: color-mix(in srgb, var(--primary-heavy) 16%, transparent); }
+/* 비활성 */
+.btn2:is(:disabled, .is-disabled) { pointer-events: none; --ink: var(--text-disable); }
+.btn2--fill:is(:disabled, .is-disabled) { --bg: var(--interaction-disable); }
+.btn2--line:is(:disabled, .is-disabled) { --stroke: var(--line-normal); }
+
+/* 크기 — 끝 접힘 · 좌우 여백 · 글자는 피그마 Size 56/48/40/32 */
+.btn2--48 { --h: 48px; --tip: 14px; --pad: 30px; --fs: 16px; --ico: 16px; }
+.btn2--40 { --h: 40px; --tip: 12px; --pad: 24px; --fs: 16px; --ico: 16px; }
+.btn2--32 { --h: 32px; --tip: 9px;  --pad: 20px; --fs: 14px; --ico: 14px; }
+/* 섹션 대표 버튼(교육 프로그램 안내 · 관심고객 등록 · 홈으로) — 폭 240, 모바일은 꽉 차게 */
+.btn2--wide { min-width: 240px; }
+.btn2--block { width: 100%; }
+@media (max-width: 640px) { .btn2--wide { min-width: 0; width: 100%; --h: 52px; --fs: 16px; } }
 
 /* 섹션 머리 — 기획서의 「제목 + 한 줄 소개」 */
 .sec-head { text-align: center; }
