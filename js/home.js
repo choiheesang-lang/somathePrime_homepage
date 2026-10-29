@@ -185,6 +185,7 @@
   /* ── 메인 비주얼 롤링 (기획서 4p ③) — 텍스트 고정, 사진 3장 ─────────── */
   (function kv() {
     const slides = [...document.querySelectorAll('.kv__slide')];
+    const copies = [...document.querySelectorAll('.kv__copy')];   // 사진마다 문구 한 벌
     if (slides.length < 2) return;
     const count = document.querySelector('#kv-count b');
     const toggle = document.getElementById('kv-toggle');
@@ -197,6 +198,7 @@
       const s = slides[i];
       const img = s.querySelector('img'); if (img.loading === 'lazy') img.loading = 'eager';
       s.classList.add('is-on');
+      copies.forEach((c, k) => { c.classList.toggle('is-on', k === i); c.setAttribute('aria-hidden', String(k !== i)); });
       count.textContent = i + 1;
       run();
     };

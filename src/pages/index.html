@@ -36,26 +36,42 @@ body: home
       </div>
     </div>
 
-    <!-- 메인 비주얼 (기획서 4p ③④) — 텍스트는 고정, 사진 세 장이 돌아갑니다 -->
+    <!-- 메인 비주얼 (기획서 4p ③④) — 미래탐구 브랜드 사이트 비주얼 구성(피그마 18155-8475).
+         사진 세 장과 문구 세 벌이 함께 넘어가고, 사진 아래는 사이트 아이덴티티인 V 꺾임입니다. -->
     <section class="kv" id="s-main" aria-roledescription="carousel" aria-label="소마 더 프라임 캠퍼스">
-      <div class="kv__slides" id="kv-slides">
-        <figure class="kv__slide is-on" aria-roledescription="slide" aria-label="1 / 3"><img src="/img/campus/entrance-01.webp" alt="소마 더 프라임 캠퍼스 입구" fetchpriority="high" /></figure>
+      <div class="kv__slides is-folded" id="kv-slides">
+        <figure class="kv__slide is-on" aria-roledescription="slide" aria-label="1 / 3"><img src="/img/campus/entrance-hero.webp" alt="SOMA THE PRIME 간판이 걸린 캠퍼스 입구 정면" fetchpriority="high" /></figure>
         <figure class="kv__slide" aria-roledescription="slide" aria-label="2 / 3"><img src="/img/campus/lounge-01.webp" alt="라운지 — 천장의 SOMA THE PRIME 사인과 TV 책장" loading="lazy" /></figure>
         <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/lounge-07.webp" alt="나무 그늘 아래 아치형 책장의 독서 공간" loading="lazy" /></figure>
       </div>
       <div class="kv__panel">
         <button type="button" class="kv__lead" data-lead-open><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><g transform="translate(2 1)"><rect x="0.5" y="0.5" width="10" height="13" rx="1.5" stroke="currentColor"/><path d="M3 5h5M3 8h5M3 11h3" stroke="currentColor" stroke-linecap="round"/></g></svg>관심고객 등록</button>
-        <div class="kv__copy">
-          <h1 class="kv__title"><span>소마 더 프라임</span><span>12월 OPEN</span></h1>
-          <p class="kv__sub">아이의 성장에서<br />가장 중요한 시기, 프라임</p>
+        <div class="kv__copies">
+          <div class="kv__copy is-on">
+            <p class="kv__eyebrow">SOMA THE PRIME</p>
+            <h1 class="kv__title"><span>소마 더 프라임</span><span>12월 OPEN</span></h1>
+            <p class="kv__sub">아이의 성장에서<br />가장 중요한 시기,<br />프라임</p>
+          </div>
+          <div class="kv__copy" aria-hidden="true">
+            <p class="kv__eyebrow">SOMA THE PRIME</p>
+            <p class="kv__title"><span>네 개의 브랜드,</span><span>하나의</span><span>성장 여정</span></p>
+            <p class="kv__sub">사고력 수학 · 창의 교구 수학<br />글로벌 영어 독서 · 사고력 독서를<br />한 캠퍼스에서</p>
+          </div>
+          <div class="kv__copy" aria-hidden="true">
+            <p class="kv__eyebrow">SOMA THE PRIME</p>
+            <p class="kv__title"><span>6세부터 초4까지</span><span>사고력의</span><span>골든 타임</span></p>
+            <p class="kv__sub">정답을 빠르게 찾는 것을 넘어<br />스스로 생각하고 탐구하는 힘을<br />기릅니다</p>
+          </div>
         </div>
         <div class="kv__ctrl" role="group" aria-label="사진 넘기기">
-          <p class="kv__count" id="kv-count" aria-live="polite"><b>1</b> / 3</p>
-          <button type="button" class="kv__btn" id="kv-prev" aria-label="이전 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <i class="kv__sep" aria-hidden="true"></i>
-          <button type="button" class="kv__btn" id="kv-next" aria-label="다음 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <p class="kv__count" id="kv-count" aria-live="polite"><b>1</b><span>/</span>3</p>
+          <div class="kv__nav">
+            <button type="button" class="kv__btn" id="kv-prev" aria-label="이전 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <i class="kv__sep" aria-hidden="true"></i>
+            <button type="button" class="kv__btn" id="kv-next" aria-label="다음 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
           <button type="button" class="kv__btn kv__btn--toggle" id="kv-toggle" aria-pressed="false" aria-label="자동 넘김 멈춤">
-            <svg class="i-pause" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.2" height="12" rx="1"/><rect x="11.8" y="4" width="3.2" height="12" rx="1"/></svg>
+            <svg class="i-pause" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.2" height="12" rx="0.6"/><rect x="11.8" y="4" width="3.2" height="12" rx="0.6"/></svg>
             <svg class="i-play" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.5 4.6v10.8a.8.8 0 0 0 1.22.68l8.5-5.4a.8.8 0 0 0 0-1.36l-8.5-5.4A.8.8 0 0 0 6.5 4.6z"/></svg>
           </button>
           <span class="kv__bar" aria-hidden="true"><i id="kv-bar"></i></span>

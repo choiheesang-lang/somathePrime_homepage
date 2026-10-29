@@ -229,33 +229,47 @@ body.mnav-open { overflow: hidden; }
   color: var(--text-accent);
 }
 
-/* ── 퀵메뉴 (기획서 4p ⑤) ───────────────────────────────────────── */
+/* ── 아이덴티티: 아래로 꺾인 비주얼 ───────────────────────────────
+   큰 비주얼(메인 KV · 서브 상단 이미지)의 아래쪽 가운데가 V자로 내려옵니다(docs/DESIGN.md).
+   꺾여 잘린 양쪽에는 그 아래 바탕이 비칩니다. */
+.is-folded {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fold-depth)), 50% 100%, 0 calc(100% - var(--fold-depth)));
+}
+
+/* ── 퀵메뉴 (기획서 4p ⑤) ───────────────────────────────────────────
+   미래탐구 side_banner(피그마 18144-10173)를 따릅니다: 오른쪽 위, 폭 88의 흰 카드 하나에
+   항목들, 그 아래 따로 떨어진 작은 TOP 카드. 짧은 가로선(32 · 16)으로 묶음을 나눕니다. */
 .quick {
-  position: fixed; right: 24px; top: 50%; z-index: 45;
-  transform: translateY(-50%);
-  display: flex; flex-direction: column; align-items: stretch;
-  width: 84px; padding: 8px 6px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid var(--line-neutral); border-radius: var(--r-16);
-  box-shadow: var(--shadow-md);
+  position: fixed; right: 24px; top: calc(var(--header-h) + 24px); z-index: 45;
+  display: flex; flex-direction: column; align-items: stretch; gap: 12px;
+  width: 88px;
   transition: opacity 0.4s, transform 0.5s var(--ease-out);
 }
-body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(calc(100% + 32px), -50%); }   /* 인트로 뒤 오른쪽에서 들어옵니다 */
+body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(calc(100% + 32px)); }   /* 인트로 뒤 오른쪽에서 들어옵니다 */
+.quick__list, .quick__top {
+  background: #fff; border-radius: var(--r-16) var(--r-16) var(--r-24) var(--r-16);
+  box-shadow: 0 8px 24px rgba(44, 42, 41, 0.08), 0 0 0 1px rgba(44, 42, 41, 0.04);
+}
+.quick__list { padding: 12px 8px; }
 .quick__btn, .quick__top {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  width: 100%; padding: 10px 2px;
-  font-family: var(--font); font-size: 11.5px; font-weight: 500; line-height: 1.25; text-align: center;
-  color: var(--text-neutral); border-radius: var(--r-8);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  width: 100%; padding: 12px 0;
+  font-family: var(--font); font-size: 12px; font-weight: 500; line-height: 1.25; text-align: center;
+  color: var(--text-normal); border-radius: var(--r-12);
   transition: background-color 0.2s, color 0.2s;
 }
 .quick__btn svg, .quick__top svg { width: 24px; height: 24px; }
-.quick__btn:hover, .quick__top:hover { background: var(--bg-brand-normal); color: var(--text-normal); }
+.quick__btn:hover { background: var(--bg-brand-normal); }
 .quick__btn--lead { background: var(--text-normal); color: #fff; }
 .quick__btn--lead:hover { background: #000; color: #fff; }
-.quick__list li + li { border-top: 1px solid var(--line-alternative); }
-.quick__list li:first-child + li { border-top: 0; }
-.quick__list li:first-child { margin-bottom: 4px; }
-.quick__top { margin-top: 4px; border-top: 1px solid var(--line-neutral); border-radius: 0 0 var(--r-8) var(--r-8); font-family: var(--font-title); font-weight: 700; }
+/* 첫 항목(등록) 아래에만 짧은 선 32, 나머지는 여백으로 나눕니다 */
+.quick__list li:first-child { position: relative; margin-bottom: 21px; }
+.quick__list li:first-child::after { content: ""; position: absolute; left: 50%; bottom: -11px; width: 32px; height: 1px; margin-left: -16px; background: var(--line-neutral); }
+.quick__top { position: relative; padding: 10px 0 12px; gap: 2px; font-family: var(--font-title); font-size: 11px; font-weight: 700; }
+.quick__top::before { content: ""; position: absolute; left: 50%; top: -7px; width: 16px; height: 1px; margin-left: -8px; background: var(--line-neutral); }
+.quick__top svg { width: 20px; height: 20px; }
+.quick__top:hover { background: var(--bg-brand-normal); }
+
 @media (max-width: 1024px) {
   /* 모바일: 오른쪽 아래 둥근 버튼 둘(관심고객 등록 · 맨 위로)만 */
   .quick {
@@ -263,8 +277,10 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translate(ca
     width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none;
   }
   body.intro-on .quick { transform: translateX(calc(100% + 24px)); }
+  .quick__list { padding: 0; background: none; box-shadow: none; border-radius: 0; }
   .quick__list li:not(:first-child) { display: none; }
   .quick__list li:first-child { margin: 0; }
+  .quick__list li:first-child::after, .quick__top::before { display: none; }
   /* 등록 버튼은 글자가 들어가는 알약, 맨 위로는 원 */
   .quick__btn--lead {
     flex-direction: row; gap: 6px; height: 52px; padding: 0 20px 0 16px; border-radius: var(--r-pill);
