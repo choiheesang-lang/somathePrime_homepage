@@ -103,18 +103,29 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
   top: calc(var(--header-h) + 32px); bottom: calc(var(--fold-depth) + 48px);
   /* 글 시작선은 콘텐츠 1160의 왼쪽 끝, 글 영역은 시안의 400 패널 − 왼쪽 112 ≈ 290 + 오른쪽 여백 */
   width: calc(max(var(--gutter), (100vw - var(--layout-content)) / 2) + 360px);
-  display: flex; flex-direction: column; justify-content: space-between;
+  display: flex; flex-direction: column; justify-content: flex-start;
   padding: 40px 40px 40px max(var(--gutter), calc((100vw - var(--layout-content)) / 2));
-  background: rgba(238, 239, 236, 0.92);   /* 시안 bg/point 3 #EEEFEC */
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  border-radius: 0 60px 160px 0;            /* 시안 카드 모서리(60 · 180)를 오른쪽으로 옮김 */
-  box-shadow: var(--shadow-lg);
+  /* 바탕 모양 — 피그마 Main visual bg(18177-13589): 오른쪽 아래 모서리를 대각선으로 접은 판.
+     740×672에서 오른쪽 변 416까지 내려와 바닥 450으로 꺾입니다(비율 62% · 61%).
+     clip-path가 그림자를 잘라 버리므로 판(::before)과 그림자(::after)를 따로 그립니다.
+     그림자는 clip-path 대신 같은 모양의 SVG 바탕을 흐립니다(clip-path는 흐림 뒤에 잘라 가장자리가 딱딱해짐). */
+  --panel-cut: polygon(0 0, 100% 0, 100% 62%, 61% 100%, 0 100%);
+  --panel-shadow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpolygon points='0,0 100,0 100,62 61,100 0,100' fill='%232C2A29'/%3E%3C/svg%3E");
+  isolation: isolate;
 }
+.kv__panel::before, .kv__panel::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.kv__panel::before {
+  z-index: -1; clip-path: var(--panel-cut);
+  background: rgba(238, 239, 236, 0.8);    /* #EEEFEC 80% */
+  -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px);
+}
+/* 그림자 0 30 80 rgba(44,42,41,.18) — 같은 모양을 흐리게 깔아 흉내 냅니다 */
+.kv__panel::after { z-index: -2; background: var(--panel-shadow) 0 0 / 100% 100% no-repeat; opacity: 0.18; transform: translateY(30px); filter: blur(40px); }
 
 /* 문구 세 벌은 같은 칸에 겹쳐 두고 사진과 함께 크로스페이드 */
 /* 관심고객 등록 — 채움 버튼 48(.btn2--fill, site.css). 여기서는 자리만 */
 .kv__lead { align-self: flex-start; }
-.kv__copies { display: grid; margin: auto 0 48px; }
+.kv__copies { display: grid; margin: 98px 0 48px; }   /* 피그마처럼 버튼 아래 98, 위에서부터 쌓습니다 */
 .kv__copy { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out), visibility 0s 0.5s; }
 .kv__copy.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0.15s, 0.15s, 0s; }
 .kv__eyebrow { padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1; letter-spacing: -0.3px; color: var(--text-normal); }
@@ -146,7 +157,8 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
     position: relative; top: auto; bottom: auto; width: auto;
     margin: calc(-1 * var(--fold-depth) / 2) var(--gutter) 0 0;
     padding: 32px 24px 28px var(--gutter); gap: 24px;
-    border-radius: 0 32px 64px 0;
+    --panel-cut: polygon(0 0, 100% 0, 100% calc(100% - 64px), calc(100% - 72px) 100%, 0 100%);   /* 짧은 판이라 접힘만 작게 */
+    --panel-shadow: linear-gradient(#2C2A29, #2C2A29);   /* 그림자는 거의 안 보이는 크기라 네모로 */
   }
   .kv__copies { margin: 0; }
   .kv__copies { order: -1; }
