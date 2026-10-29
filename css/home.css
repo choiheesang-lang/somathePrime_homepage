@@ -54,16 +54,7 @@ body.intro-on #stage { touch-action: none; }
 .intro-skip:active { transform: translateX(-50%) scale(0.97); }
 .intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 /* 버튼 위에서는 따라다니는 디스크를 숨기고 OS 커서를 돌려줍니다 */
-body.disc-absorbed #play-btn { opacity: 0 !important; }
-body.intro-on #play-btn { transition: transform 0.28s var(--ease-out), filter 0.14s, visibility 0s, opacity 0.22s; }
-/* 동그라미가 빨려 든 순간 버튼이 한 번 반짝 — 가루 그림판은 버튼 바로 아래 층 */
-.intro-dust { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 4; pointer-events: none; }
-.intro-skip.is-charged { animation: skip-charge 0.6s var(--ease-out); }
-@keyframes skip-charge {
-  0%   { box-shadow: var(--shadow-md), 0 0 0 0 rgba(255, 255, 255, 0.45); }
-  40%  { box-shadow: var(--shadow-md), 0 0 0 10px rgba(255, 255, 255, 0.18); transform: translateX(-50%) scale(1.07); }
-  100% { box-shadow: var(--shadow-md), 0 0 0 16px rgba(255, 255, 255, 0); transform: translateX(-50%) scale(1.03); }
-}
+body:has(.intro-skip:hover) #play-btn { opacity: 0 !important; }
 body.ptr-on .intro-skip { cursor: pointer; }
 /* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
 body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); border-color: var(--line-neutral); }
