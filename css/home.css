@@ -19,10 +19,11 @@ body.intro-on.intro-leaving #stage { opacity: 0; transition: opacity 0.9s var(--
 body.intro-revealing #stage { pointer-events: none; }
 body.intro-revealing, body.intro-revealing #stage { cursor: auto !important; }
 body.intro-revealing .intro-skip, body.intro-revealing #play-btn, body.intro-revealing .hero-ctl { opacity: 0 !important; pointer-events: none; transition: opacity 0.2s; }
-body.intro-revealing .gnb2 { transform: translateY(-100%); }
+/* 인트로 동안 GNB는 화면 위로 비켜 두고, 걷힌 뒤 위에서 내려옵니다 */
+body:is(.intro-on, .intro-revealing) .gnb2 { transform: translateY(-100%); }
 
 /* ── 인트로 → 메인 등장 ─────────────────────────────────────────
-   인트로 동안 GNB는 그대로 보이고(위로 비키는 것은 걷힐 때), 메인 비주얼 글 패널은 왼쪽 밖,
+   인트로 동안 GNB는 위 밖, 메인 비주얼 글 패널은 왼쪽 밖,
    퀵메뉴는 오른쪽 밖에 있습니다. intro-on이 떨어지면 아래 지연대로 들어옵니다. */
 body.intro-on .kv__panel { transform: translateX(calc(-100% - 48px)); }   /* 그림자까지 화면 밖으로 */
 body.intro-on .kv__panel > * { opacity: 0; transform: translateX(-32px); }
@@ -73,21 +74,16 @@ body.ptr-on .intro-skip { cursor: none; }
 body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 @media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
 /* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
-/* 인트로 동안 커서가 디스크로 바뀌어도 GNB 위에서는 보통 커서를 돌려줍니다 */
-body.intro-on .gnb2 { cursor: auto; }
-body.intro-on .gnb2 :is(a, button) { cursor: pointer; }
 
 /* ── 상단 배너 (4p ②, 피그마 18126-6525) ──────────────────────────────
-   메인 비주얼 사진 위, GNB 바로 아래 한 줄(62). 처음엔 투명이고 마우스를 올리면
-   흰 바탕이 됩니다(elankorea.com 방식). 높이는 --banner-h(site.css)가 정하고
+   메인 비주얼 사진 위, GNB 바로 아래 흰 한 줄(62). 높이는 --banner-h(site.css)가 정하고
    메인 비주얼 패널 · 퀵메뉴가 그만큼 내려앉습니다. */
 .home-main { position: relative; padding-top: 0; }
 .topbanner {
   position: absolute; left: 0; right: 0; top: var(--header-h); z-index: 3;
   height: var(--banner-h);
-  transition: background-color 0.3s, box-shadow 0.3s;
+  background: #fff; box-shadow: inset 0 -1px 0 var(--line-neutral);
 }
-.topbanner:hover, .topbanner:focus-within { background: #fff; box-shadow: inset 0 -1px 0 var(--line-neutral); }
 .topbanner[hidden] { display: none; }
 .topbanner__inner {
   position: relative; height: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 0 calc(var(--gutter) + 36px);
@@ -122,7 +118,7 @@ body.intro-on .gnb2 :is(a, button) { cursor: pointer; }
    미래탐구 브랜드 사이트 비주얼(피그마 18155-8475)을 따릅니다 — 왼쪽 글 패널 400 · 제목 46 ·
    본문 14/2 · 「1 / 3 ‹ | › ❚❚」 한 줄 컨트롤. 다른 점: 패널이 사진 위에 떠 있고(왼쪽 화면 끝에서
    뻗어 나온 카드), 사진 아래는 사이트 아이덴티티인 V 꺾임(.is-folded, DESIGN.md)입니다. */
-/* 사진은 페이지 맨 위(흰 GNB · 투명 배너 뒤)부터 깔립니다 — 피그마 Main_visual도 GNB 124 위로 올라가 있습니다 */
+/* 사진은 페이지 맨 위(흰 GNB · 배너 뒤)부터 깔립니다 — 피그마 Main_visual도 GNB 124 위로 올라가 있습니다 */
 .kv {
   position: relative;
   height: 100svh; min-height: 760px; max-height: 1128px;
