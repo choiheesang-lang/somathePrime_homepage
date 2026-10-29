@@ -47,7 +47,7 @@ body:has(.topbanner:not([hidden])) { --banner-h: 62px; }
    유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ · 센터 바로가기 | 알림.
    메뉴 바는 왼쪽 로고 108×40, 오른쪽 메뉴 6개(16 Regular, 간격 72) — 피그마 18103-6570.
    메뉴에 올리면 굵어지고 주황(Primary/normal2) 2depth 판이 열리며, 2depth는 육각형으로 짚습니다(18166-8652).
-   메인 비주얼 위에서는 투명(.is-over, site.js)이고 마우스를 올리면 흰 바탕 — elankorea.com 방식. */
+   바탕은 늘 흰색입니다(투명 → 호버 흰색은 해 보고 되돌렸습니다). */
 .gnb2 {
   position: fixed; inset: 0 0 auto; z-index: 50;
   height: var(--header-h);
@@ -57,14 +57,8 @@ body:has(.topbanner:not([hidden])) { --banner-h: 62px; }
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   /* 랜딩과 같은 로고 컬러 벌 (base.css의 @property 등록을 그대로 씁니다) */
   --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
-  transition: transform 0.35s var(--ease-out), background-color 0.3s, border-color 0.3s;
+  transition: transform 0.35s var(--ease-out);
 }
-/* 투명 → 호버 흰색. 2depth를 여는 것도 호버라 판이 열리면 GNB도 함께 하얘집니다 */
-.gnb2.is-over { background: transparent; border-bottom-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
-.gnb2.is-over .gnb2__top { background: transparent; border-bottom-color: transparent; }
-.gnb2.is-over:is(:hover, :focus-within, :has(.gnb2__dd.is-open)) { background: #fff; border-bottom-color: var(--line-neutral); }
-.gnb2.is-over:is(:hover, :focus-within, :has(.gnb2__dd.is-open)) .gnb2__top { background: #F7F7F7; border-bottom-color: #EEEEEE; }
-.gnb2__top { transition: background-color 0.3s, border-color 0.3s; }
 .gnb2.is-hidden { transform: translateY(-100%); }
 .gnb2, .mnav {
   --gnb-sub: rgba(0, 0, 0, 0.58);     /* 유틸 바 글자 · 화살표 */

@@ -22,19 +22,6 @@
   // 같은 페이지 안의 앵커(소식 > 공지사항 등)로 가면 메뉴를 닫습니다
   mnav && mnav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
 
-  /* 메인 비주얼([data-gnb-over]) 위에 있는 동안 GNB는 투명(.is-over) — 사진이 GNB 아래로
-     다 지나가면 흰 바탕으로 돌아옵니다. 인트로가 덮고 있는 동안은 흰 바탕 그대로. */
-  const over = document.querySelector('[data-gnb-over]');
-  const setOver = () => {
-    if (!header || !over) return;
-    const on = !document.body.classList.contains('intro-on') && over.getBoundingClientRect().bottom > header.offsetHeight;
-    header.classList.toggle('is-over', on);
-  };
-  setOver();
-  window.addEventListener('scroll', setOver, { passive: true });
-  window.addEventListener('resize', setOver);
-  window.addEventListener('stp:intro-done', setOver);
-
   /* 내리면 GNB를 숨기고 올리면 다시 — 랜딩과 같은 규칙(6px 이하 흔들림은 무시).
      인트로가 화면을 덮고 있는 동안에는 건드리지 않습니다. */
   let lastY = window.scrollY;

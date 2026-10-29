@@ -78,8 +78,8 @@ body.intro-on .gnb2 { cursor: auto; }
 body.intro-on .gnb2 :is(a, button) { cursor: pointer; }
 
 /* ── 상단 배너 (4p ②, 피그마 18126-6525) ──────────────────────────────
-   메인 비주얼 사진 위, GNB 바로 아래 한 줄(62). GNB와 같은 규칙으로 처음엔 투명이고
-   마우스를 올리면 흰 바탕이 됩니다(elankorea.com 방식). 높이는 --banner-h(site.css)가 정하고
+   메인 비주얼 사진 위, GNB 바로 아래 한 줄(62). 처음엔 투명이고 마우스를 올리면
+   흰 바탕이 됩니다(elankorea.com 방식). 높이는 --banner-h(site.css)가 정하고
    메인 비주얼 패널 · 퀵메뉴가 그만큼 내려앉습니다. */
 .home-main { position: relative; padding-top: 0; }
 .topbanner {
@@ -122,7 +122,7 @@ body.intro-on .gnb2 :is(a, button) { cursor: pointer; }
    미래탐구 브랜드 사이트 비주얼(피그마 18155-8475)을 따릅니다 — 왼쪽 글 패널 400 · 제목 46 ·
    본문 14/2 · 「1 / 3 ‹ | › ❚❚」 한 줄 컨트롤. 다른 점: 패널이 사진 위에 떠 있고(왼쪽 화면 끝에서
    뻗어 나온 카드), 사진 아래는 사이트 아이덴티티인 V 꺾임(.is-folded, DESIGN.md)입니다. */
-/* 사진은 페이지 맨 위(투명 GNB · 배너 뒤)부터 깔립니다 — 피그마 Main_visual도 GNB 124 위로 올라가 있습니다 */
+/* 사진은 페이지 맨 위(흰 GNB · 투명 배너 뒤)부터 깔립니다 — 피그마 Main_visual도 GNB 124 위로 올라가 있습니다 */
 .kv {
   position: relative;
   height: 100svh; min-height: 760px; max-height: 1128px;
