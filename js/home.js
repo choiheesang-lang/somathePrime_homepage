@@ -175,13 +175,6 @@
   }
 
   /* ── 상단 배너 닫기 (세션 동안) ────────────────────────────────── */
-  const banner = document.getElementById('topbanner');
-  if (banner) {
-    if (store.get('stp-banner')) banner.hidden = true;
-    document.getElementById('topbanner-close').addEventListener('click', () => {
-      banner.hidden = true; store.set('stp-banner'); ScrollTrigger.refresh();
-    });
-  }
 
   /* ── 메인 비주얼 롤링 (기획서 4p ③) — 텍스트 고정, 사진 3장 ─────────── */
   (function kv() {

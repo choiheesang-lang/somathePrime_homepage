@@ -37,10 +37,6 @@ address { font-style: normal; }
 
 /* 본문이 고정 GNB 밑으로 들어가지 않게. 홈은 예외 — 메인 비주얼 사진이 투명 GNB 뒤 맨 위부터 깔립니다(home.css) */
 .page { padding-top: var(--header-h); }
-/* 홈 상단 배너 높이. 배너가 없는 페이지 · 닫은 뒤에는 0이라 퀵메뉴 · KV 패널이 제자리로 올라갑니다 */
-:root { --banner-h: 0px; }
-body:has(.topbanner:not([hidden])) { --banner-h: 62px; }
-@media (max-width: 1024px) { body:has(.topbanner:not([hidden])) { --banner-h: 52px; } }
 
 /* ── GNB ─────────────────────────────────────────────────────────
    피그마 GNB/login: 위 28 유틸 바(#F7F7F7, 아래 선 #EEE) + 100 메뉴 바.
@@ -245,7 +241,7 @@ body.mnav-open { overflow: hidden; }
    미래탐구 side_banner(피그마 18144-10173)를 따릅니다: 오른쪽 위, 폭 88의 흰 카드 하나에
    항목들, 그 아래 따로 떨어진 작은 TOP 카드. 짧은 가로선(32 · 16)으로 묶음을 나눕니다. */
 .quick {
-  position: fixed; right: 24px; top: calc(var(--header-h) + var(--banner-h) + 24px); z-index: 45;
+  position: fixed; right: 24px; top: calc(var(--header-h) + 24px); z-index: 45;
   display: flex; flex-direction: column; align-items: stretch; gap: 12px;
   width: 88px;
   transition: opacity 0.4s, transform 0.5s var(--ease-out);

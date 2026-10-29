@@ -492,17 +492,6 @@
 
   <main id="content" class="page home-main">
 
-    <!-- 상단 배너 (기획서 4p ②, 피그마 18126-6525) — 메인 비주얼 사진 위, GNB 바로 아래 흰 한 줄.
-         닫으면 세션 동안 숨깁니다 -->
-    <div class="topbanner" id="topbanner">
-      <div class="topbanner__inner">
-        <button type="button" class="topbanner__cta" data-lead-open>관심고객 등록<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <p class="topbanner__msg">관심고객으로 등록하시면 설명회 · 오픈 소식을 가장 먼저 알려 드립니다.</p>
-        <p class="topbanner__open">12월 목동 OPEN</p>
-        <button type="button" class="topbanner__close" id="topbanner-close" aria-label="배너 닫기"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-      </div>
-    </div>
-
     <!-- 메인 비주얼 (기획서 4p ③④) — 미래탐구 브랜드 사이트 비주얼 구성(피그마 18155-8475).
          사진 세 장과 문구 세 벌이 함께 넘어가고, 사진 아래는 사이트 아이덴티티인 V 꺾임입니다. -->
     <section class="kv" id="s-main" aria-roledescription="carousel" aria-label="소마 더 프라임 캠퍼스">
@@ -512,6 +501,8 @@
         <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/kv-lounge-03.webp" alt="구름 조명 아래 아치형 책장과 트랙 바닥이 이어진 라운지 전경" loading="lazy" /></figure>
       </div>
       <div class="kv__panel">
+        <!-- 관심고객 등록 — 문구 세 벌 바깥이라 사진이 바뀌어도 늘 보입니다. 아이덴티티 육각형(DESIGN.md) -->
+        <button type="button" class="kv__lead" data-lead-open>관심고객 등록<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="kv__copies">
           <div class="kv__copy is-on">
             <p class="kv__eyebrow">SOMA THE PRIME</p>
