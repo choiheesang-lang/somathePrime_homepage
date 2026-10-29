@@ -208,7 +208,8 @@ body.mnav-open { overflow: hidden; }
    선은 clip-path가 border를 잘라 버리므로, 버튼 바탕을 선 색으로 칠하고 1px 안쪽에
    같은 육각형(::before)을 바탕색으로 덮어 만듭니다. */
 .btn2 {
-  --h: 56px; --tip: 16px; --pad: 32px; --fs: 18px; --ico: 20px;
+  --h: 56px; --pad: 32px; --fs: 18px; --ico: 20px;
+  --tip: calc(var(--h) * 0.29);   /* 끝 접힘 = 높이 × 0.29 — 폭이 늘어도 크기가 바뀌어도 각도는 같습니다 */
   --stroke: var(--primary-heavy); --bw: 1px; --bg: #fff; --ink: var(--text-normal);   /* 종류 없이 쓰면 라인 */
   --hex: polygon(var(--tip) 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, var(--tip) 100%, 0 50%);
   position: relative; isolation: isolate;
@@ -246,10 +247,10 @@ body.mnav-open { overflow: hidden; }
 .btn2--fill:is(:disabled, .is-disabled) { --bg: var(--interaction-disable); }
 .btn2--line:is(:disabled, .is-disabled) { --stroke: var(--line-normal); }
 
-/* 크기 — 끝 접힘 · 좌우 여백 · 글자는 피그마 Size 56/48/40/32 */
-.btn2--48 { --h: 48px; --tip: 14px; --pad: 30px; --fs: 16px; --ico: 16px; }
-.btn2--40 { --h: 40px; --tip: 12px; --pad: 24px; --fs: 16px; --ico: 16px; }
-.btn2--32 { --h: 32px; --tip: 9px;  --pad: 20px; --fs: 14px; --ico: 14px; }
+/* 크기 — 좌우 여백 · 글자는 피그마 Size 56/48/40/32 (끝 접힘은 높이에서 계산) */
+.btn2--48 { --h: 48px; --pad: 30px; --fs: 16px; --ico: 16px; }
+.btn2--40 { --h: 40px; --pad: 24px; --fs: 16px; --ico: 16px; }
+.btn2--32 { --h: 32px; --pad: 20px; --fs: 14px; --ico: 14px; }
 /* 섹션 대표 버튼(교육 프로그램 안내 · 관심고객 등록 · 홈으로) — 폭 240, 모바일은 꽉 차게 */
 .btn2--wide { min-width: 240px; }
 .btn2--block { width: 100%; }
@@ -274,17 +275,21 @@ body.mnav-open { overflow: hidden; }
 
 /* ── 퀵메뉴 (기획서 4p ⑤) ───────────────────────────────────────────
    미래탐구 side_banner(피그마 18144-10173)를 따릅니다: 오른쪽 위, 폭 88의 흰 카드 하나에
-   항목들, 그 아래 따로 떨어진 작은 TOP 카드. 짧은 가로선(32 · 16)으로 묶음을 나눕니다. */
+   항목들, 그 아래 따로 떨어진 작은 TOP 카드. 짧은 가로선(32 · 16)으로 묶음을 나눕니다.
+   두 카드 모두 오른쪽 아래를 메인 패널과 같은 각도로 접습니다(DESIGN.md 1). clip-path가
+   box-shadow를 잘라 버리므로 그림자는 부모 .quick의 drop-shadow로 잘린 모양을 따라 그립니다. */
 .quick {
   position: fixed; right: 24px; top: calc(var(--header-h) + 24px); z-index: 45;
   display: flex; flex-direction: column; align-items: stretch; gap: 12px;
   width: 88px;
+  filter: drop-shadow(0 8px 24px rgba(44, 42, 41, 0.08)) drop-shadow(0 0 1px rgba(44, 42, 41, 0.12));
   transition: opacity 0.4s, transform 0.5s var(--ease-out);
 }
 body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(calc(100% + 32px)); }   /* 인트로 뒤 오른쪽에서 들어옵니다 */
 .quick__list, .quick__top {
-  background: #fff; border-radius: var(--r-16) var(--r-16) var(--r-24) var(--r-16);
-  box-shadow: 0 8px 24px rgba(44, 42, 41, 0.08), 0 0 0 1px rgba(44, 42, 41, 0.04);
+  --cut-x: 28px; --cut-y: 24px;
+  background: #fff; border-radius: var(--r-16) var(--r-16) 0 var(--r-16);
+  clip-path: polygon(0 -12px, 100% -12px, 100% calc(100% - var(--cut-y)), calc(100% - var(--cut-x)) 100%, 0 100%);   /* 위로 12 더 열어 두 카드 사이 짧은 선(::before)이 잘리지 않게 */
 }
 .quick__list { padding: 12px 8px; }
 .quick__btn, .quick__top {
@@ -301,7 +306,7 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(c
 /* 첫 항목(등록) 아래에만 짧은 선 32, 나머지는 여백으로 나눕니다 */
 .quick__list li:first-child { position: relative; margin-bottom: 21px; }
 .quick__list li:first-child::after { content: ""; position: absolute; left: 50%; bottom: -11px; width: 32px; height: 1px; margin-left: -16px; background: var(--line-neutral); }
-.quick__top { position: relative; padding: 10px 0 12px; gap: 2px; font-family: var(--font-title); font-size: 11px; font-weight: 700; }
+.quick__top { --cut-x: 16px; --cut-y: 14px; position: relative; padding: 10px 0 12px; gap: 2px; font-family: var(--font-title); font-size: 11px; font-weight: 700; }
 .quick__top::before { content: ""; position: absolute; left: 50%; top: -7px; width: 16px; height: 1px; margin-left: -8px; background: var(--line-neutral); }
 .quick__top svg { width: 20px; height: 20px; }
 .quick__top:hover { background: var(--bg-brand-normal); }
@@ -310,8 +315,9 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(c
   /* 모바일: 오른쪽 아래 둥근 버튼 둘(관심고객 등록 · 맨 위로)만 */
   .quick {
     top: auto; bottom: calc(16px + env(safe-area-inset-bottom)); right: 16px; transform: none;
-    width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none;
+    width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none; filter: none;
   }
+  .quick__list, .quick__top { clip-path: none; }
   body.intro-on .quick { transform: translateX(calc(100% + 24px)); }
   .quick__list { padding: 0; background: none; box-shadow: none; border-radius: 0; }
   .quick__list li:not(:first-child) { display: none; }
