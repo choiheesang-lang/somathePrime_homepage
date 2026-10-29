@@ -98,3 +98,4 @@
 - **SKIP 연출**: 슬라임 마스크 자리에서 원형 구멍이 1.1초 동안 화면 끝까지 커지며(`#stage`의 radial-gradient mask, `maskOpen()`) 그 안으로 메인이 보입니다. 재생 중 SKIP이면 화면 가운데에서.
 - **메인 등장**(두 경로 공통, `finishIntro()` → `body.intro-entering`): GNB 위에서 → 메인 비주얼 글 패널 왼쪽에서(관심고객 버튼 · 제목 · 넘김 컨트롤 순) → 퀵메뉴 오른쪽에서. 걷히는 동안 GNB는 위로 비켜 있다가 내려옵니다.
 - 메인 비주얼 사진 넘김은 인트로가 걷힌 뒤(`stp:intro-done`)부터 5초를 셉니다 — 마스크 안 입구 사진이 그대로 첫 장으로 이어지게.
+- **START → SKIP 접근 모션**: SKIP 가장자리 120px 안에서 커서 동그라미가 ease-in-out(cubic)으로 32px까지 작아지고(`hero.setDiscScale`), 영역에 들어오는 순간 START 글자가 0.3초에 사라집니다(`body.disc-near`). 버튼 위에서는 점과 겹친 부분만 반전 — 버튼 안 밝은 복제 `.intro-skip__inv`를 `clip-path: circle()`로 점 자리만 보여 줍니다. 점이 커서이므로 버튼 위 손가락은 숨김. (가루 효과 7b46154는 과해서 되돌림)

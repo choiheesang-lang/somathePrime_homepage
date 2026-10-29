@@ -39,6 +39,8 @@
     body.classList.remove('intro-on', 'intro-leaving', 'intro-revealing', 'intro-light', 'hero-on');
     const stage = document.getElementById('stage');
     stage.style.webkitMaskImage = stage.style.maskImage = '';
+    body.classList.remove('disc-near');
+    if (window.STP && STP.hero && STP.hero.setDiscScale) STP.hero.setDiscScale(1);
     if (window.STP && STP.hero) {
       // SKIP으로 걷었으면 히어로가 아직 대기(armed)·재생 중입니다 — 끝 상태로 보내 포인터 추적을 끊고
       if (body.classList.contains('is-armed') || body.classList.contains('is-intro')) STP.hero.finish();
@@ -117,6 +119,38 @@
       skipBtn.style.top = Math.round(top) + 'px';
       skipBtn.style.bottom = 'auto';
     };
+    /* START 동그라미 → SKIP: 버튼 가장자리 120px 안에서 ease-in-out으로 32px까지 줄이고,
+       영역에 들어오면 START 글자를 숨기고(CSS 0.3초), 버튼과 겹친 부분만 반전합니다.
+       마우스로 대기 중일 때만 — 터치 · 동작 감소에는 커서 동그라미가 없습니다. */
+    const NEAR = 120, DISC_MIN = 32;
+    const eio = (v) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
+    const discCircle = document.querySelector('#play-btn .pb-base circle');
+    const nearSkip = (e) => {
+      if (e.pointerType !== 'mouse' || leaving || !body.classList.contains('is-armed')) return;
+      const b = skipBtn.getBoundingClientRect();
+      const qx = Math.max(b.left - e.clientX, 0, e.clientX - b.right);
+      const qy = Math.max(b.top - e.clientY, 0, e.clientY - b.bottom);
+      const dist = Math.hypot(qx, qy);
+      const p = eio(Math.min(1, Math.max(0, 1 - dist / NEAR)));
+      const kMin = Math.min(1, DISC_MIN / hero.discPx());
+      hero.setDiscScale(1 - (1 - kMin) * p);
+      body.classList.toggle('disc-near', dist < NEAR);
+      let r = 0, x = 0, y = 0;
+      if (dist < 40 && discCircle) {                 // 겹칠 수 있는 거리에서만 잽니다
+        const c = discCircle.getBoundingClientRect();
+        r = c.width / 2; x = c.left + r - b.left; y = c.top + r - b.top;
+      }
+      skipBtn.style.setProperty('--inv-r', r.toFixed(1) + 'px');
+      skipBtn.style.setProperty('--inv-x', x.toFixed(1) + 'px');
+      skipBtn.style.setProperty('--inv-y', y.toFixed(1) + 'px');
+    };
+    const resetNear = () => {
+      hero.setDiscScale(1);
+      body.classList.remove('disc-near');
+      skipBtn.style.setProperty('--inv-r', '0px');
+    };
+    window.addEventListener('pointermove', nearSkip, { passive: true });
+    document.getElementById('stage').addEventListener('click', () => { if (!leaving) resetNear(); });   // 재생 시작
     let skipT;
     window.addEventListener('resize', () => { clearTimeout(skipT); skipT = setTimeout(placeSkip, 300); });
     // 히어로 사진이 디코드된 뒤 시작합니다(최대 0.9초 대기) — 랜딩 main.js와 같은 이유

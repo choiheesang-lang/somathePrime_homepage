@@ -450,8 +450,15 @@ STP.hero = (function () {
 
   /* 디스크를 viewBox 좌표 v에 놓습니다. 위치를 쓰는 곳이 두 군데(포인터 이동, arm의
      폴백)라 한 함수로 모읍니다. */
+  /* 홈: SKIP에 가까워질수록 디스크를 줄입니다(home.js). 1 = 원래 크기 */
+  let discK = 1;
+  function setDiscScale(kk) {
+    discK = kk;
+    if (ptr.v && els) placeDisc(ptr.v);
+  }
+  const discPx = () => discVB() * sPx;                 // 배율 1일 때 화면 지름(px)
   function placeDisc(v) {
-    const tr = `translate(${v.x.toFixed(1)} ${v.y.toFixed(1)}) scale(${(discVB() / 96).toFixed(4)})`;
+    const tr = `translate(${v.x.toFixed(1)} ${v.y.toFixed(1)}) scale(${(discVB() / 96 * discK).toFixed(4)})`;
     for (const g of els.pbBodies) g.setAttribute('transform', tr);
   }
 
@@ -905,7 +912,7 @@ STP.hero = (function () {
   }
 
   const api = {
-    init, arm, play, autoplay, finish, fastForward, replay, render, setActive,
+    init, arm, play, autoplay, finish, fastForward, replay, render, setActive, setDiscScale, discPx,
     get ctlState() { return ctlState; },
     get timeline() { return tl; }, get k() { return k; }, get rect() { return rect; }, get armed() { return armed; }, blobs,
   };

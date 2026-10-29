@@ -50,14 +50,28 @@ body.intro-on #stage { touch-action: none; }
   transition: background-color 0.2s, opacity 0.4s, transform 0.25s var(--ease-out);
 }
 .intro-skip svg { width: 20px; height: 20px; }
-.intro-skip:hover { background: rgba(44, 42, 41, 0.86); transform: translateX(-50%) scale(1.03); }
+.intro-skip:hover { background: rgba(44, 42, 41, 0.86); }
 .intro-skip:active { transform: translateX(-50%) scale(0.97); }
 .intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-/* 버튼 위에서는 따라다니는 디스크를 숨기고 OS 커서를 돌려줍니다 */
-body:has(.intro-skip:hover) #play-btn { opacity: 0 !important; }
-body.ptr-on .intro-skip { cursor: pointer; }
 /* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
 body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); border-color: var(--line-neutral); }
+
+/* START 동그라미 → SKIP (home.js nearSkip)
+   버튼 가장자리 120px 안에서 동그라미가 ease-in-out으로 32px까지 작아지고, 영역에 들어오는
+   순간 START 글자는 0.3초에 사라집니다. 버튼 위에서는 점과 겹친 부분만 반전 — 버튼 안의
+   밝은 복제(.intro-skip__inv)를 점 모양 원으로 잘라 보여 줍니다. 점이 커서이므로 손가락은 숨김. */
+#play-btn .pb-label, #play-btn .pb-icon { transition: opacity 0.3s var(--ease-out); }
+body.disc-near #play-btn .pb-label, body.disc-near #play-btn .pb-icon { opacity: 0; }
+body.ptr-on .intro-skip { cursor: none; }
+.intro-skip__inv {
+  position: absolute; inset: -1px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 28px 0 32px; border-radius: inherit;
+  background: #F1EEEC; color: var(--text-normal);
+  clip-path: circle(var(--inv-r, 0px) at var(--inv-x, 50%) var(--inv-y, 50%));
+  pointer-events: none;
+}
+body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 @media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
 /* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
 /* 인트로 동안 커서가 디스크로 바뀌어도 GNB 위에서는 보통 커서를 돌려줍니다 */
