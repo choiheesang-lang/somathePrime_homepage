@@ -117,6 +117,94 @@
       skipBtn.style.top = Math.round(top) + 'px';
       skipBtn.style.bottom = 'auto';
     };
+    /* START 동그라미 → SKIP: 커서가 SKIP에 올라가면 동그라미가 가루로 풀려 버튼 안으로
+       빨려 들고 버튼이 한 번 반짝입니다(「커서가 SKIP이 된다」). 벗어나면 가루가 커서 자리로
+       다시 모여 동그라미가 됩니다. 마우스가 있고 동작 감소가 아닐 때만 — 그 밖에는 그냥 숨김. */
+    const dust = (() => {
+      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (!fine || reduceMQ.matches) return null;
+      const cv = document.createElement('canvas');
+      cv.className = 'intro-dust'; cv.setAttribute('aria-hidden', 'true');
+      document.getElementById('stage').appendChild(cv);
+      const ctx = cv.getContext('2d');
+      const INK = '#2C2A29';
+      let parts = [], raf = 0, dpr = 1, glowT = 0;
+      const fit = () => {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+      fit(); window.addEventListener('resize', fit);
+      const discBox = () => {
+        const c = document.querySelector('#play-btn .pb-base circle');
+        const r = c && c.getBoundingClientRect();
+        return r && r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2, r: r.width / 2 } : null;
+      };
+      const tick = () => {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (const p of parts) {
+          if (p.wait > 0) { p.wait--; p.x += p.vx; p.y += p.vy; p.vx *= 0.94; p.vy *= 0.94; }
+          else { p.x += (p.tx - p.x) * p.k; p.y += (p.ty - p.y) * p.k; if (Math.hypot(p.tx - p.x, p.ty - p.y) < 2.5) p.a -= 0.16; }
+          if (p.a <= 0) continue;
+          ctx.globalAlpha = p.a; ctx.fillStyle = p.c;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        parts = parts.filter((p) => p.a > 0);
+        if (parts.length) raf = requestAnimationFrame(tick);
+        else { raf = 0; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+      };
+      const run = () => { if (!raf) raf = requestAnimationFrame(tick); };
+      // 동그라미 → 버튼 안
+      const absorb = () => {
+        const d = discBox(); if (!d) return;
+        const b = skipBtn.getBoundingClientRect();
+        parts = [];
+        for (let i = 0; i < 90; i++) {
+          const a = Math.random() * 6.2832, rr = Math.sqrt(Math.random()) * d.r, v = 0.6 + Math.random() * 1.4;
+          parts.push({
+            x: d.x + Math.cos(a) * rr, y: d.y + Math.sin(a) * rr, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+            tx: b.left + b.width * (0.15 + Math.random() * 0.7), ty: b.top + b.height * (0.25 + Math.random() * 0.5),
+            r: 1.2 + Math.random() * 2.4, c: Math.random() < 0.25 ? '#FFFFFF' : INK, a: 1,
+            wait: 4 + Math.random() * 12, k: 0.1 + Math.random() * 0.06,
+          });
+        }
+        run();
+        clearTimeout(glowT);
+        skipBtn.classList.remove('is-charged'); void skipBtn.offsetWidth;   // 연달아 들어와도 반짝임을 다시
+        glowT = setTimeout(() => skipBtn.classList.add('is-charged'), 260);
+      };
+      // 버튼 → 커서 자리로 다시 모여 동그라미
+      const gather = (x, y, done) => {
+        const b = skipBtn.getBoundingClientRect();
+        parts = [];
+        for (let i = 0; i < 60; i++) {
+          parts.push({
+            x: b.left + Math.random() * b.width, y: b.top + Math.random() * b.height, vx: 0, vy: 0,
+            tx: x + (Math.random() - 0.5) * 30, ty: y + (Math.random() - 0.5) * 30,
+            r: 1.2 + Math.random() * 2.2, c: INK, a: 1, wait: Math.random() * 6, k: 0.22,
+          });
+        }
+        run();
+        setTimeout(done, 240);
+      };
+      return { absorb, gather, stop: () => { parts = []; } };
+    })();
+    let overSkip = false;
+    skipBtn.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse' || leaving) return;
+      overSkip = true;
+      if (dust) dust.absorb();
+      body.classList.add('disc-absorbed');
+    });
+    skipBtn.addEventListener('pointerleave', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      overSkip = false;
+      skipBtn.classList.remove('is-charged');
+      if (leaving) return;
+      if (!dust) { body.classList.remove('disc-absorbed'); return; }
+      dust.gather(e.clientX, e.clientY, () => { if (!overSkip && !leaving) body.classList.remove('disc-absorbed'); });
+    });
     let skipT;
     window.addEventListener('resize', () => { clearTimeout(skipT); skipT = setTimeout(placeSkip, 300); });
     // 히어로 사진이 디코드된 뒤 시작합니다(최대 0.9초 대기) — 랜딩 main.js와 같은 이유
