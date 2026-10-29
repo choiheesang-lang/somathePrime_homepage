@@ -35,13 +35,19 @@ address { font-style: normal; }
 .wrap { max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--gutter); }   /* 1240 = 콘텐츠 1160 + 여백 40 × 2 */
 @media (max-width: 1280px) { .wrap { max-width: none; } }
 
-/* 본문이 고정 GNB 밑으로 들어가지 않게 — 홈은 인트로가 끝난 뒤 같은 자리부터 시작합니다 */
+/* 본문이 고정 GNB 밑으로 들어가지 않게. 홈은 예외 — 메인 비주얼 사진이 투명 GNB 뒤 맨 위부터 깔립니다(home.css) */
 .page { padding-top: var(--header-h); }
+/* 홈 상단 배너 높이. 배너가 없는 페이지 · 닫은 뒤에는 0이라 퀵메뉴 · KV 패널이 제자리로 올라갑니다 */
+:root { --banner-h: 0px; }
+body:has(.topbanner:not([hidden])) { --banner-h: 62px; }
+@media (max-width: 1024px) { body:has(.topbanner:not([hidden])) { --banner-h: 52px; } }
 
 /* ── GNB ─────────────────────────────────────────────────────────
    피그마 GNB/login: 위 28 유틸 바(#F7F7F7, 아래 선 #EEE) + 100 메뉴 바.
    유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ · 센터 바로가기 | 알림.
-   메뉴 바는 왼쪽 로고 119×44, 오른쪽 메뉴 6개(간격 72), 현재 메뉴는 주황 형광펜. */
+   메뉴 바는 왼쪽 로고 108×40, 오른쪽 메뉴 6개(16 Regular, 간격 72) — 피그마 18103-6570.
+   메뉴에 올리면 굵어지고 주황(Primary/normal2) 2depth 판이 열리며, 2depth는 육각형으로 짚습니다(18166-8652).
+   메인 비주얼 위에서는 투명(.is-over, site.js)이고 마우스를 올리면 흰 바탕 — elankorea.com 방식. */
 .gnb2 {
   position: fixed; inset: 0 0 auto; z-index: 50;
   height: var(--header-h);
@@ -51,13 +57,18 @@ address { font-style: normal; }
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   /* 랜딩과 같은 로고 컬러 벌 (base.css의 @property 등록을 그대로 씁니다) */
   --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
-  transition: transform 0.35s var(--ease-out);
+  transition: transform 0.35s var(--ease-out), background-color 0.3s, border-color 0.3s;
 }
+/* 투명 → 호버 흰색. 2depth를 여는 것도 호버라 판이 열리면 GNB도 함께 하얘집니다 */
+.gnb2.is-over { background: transparent; border-bottom-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.gnb2.is-over .gnb2__top { background: transparent; border-bottom-color: transparent; }
+.gnb2.is-over:is(:hover, :focus-within, :has(.gnb2__dd.is-open)) { background: #fff; border-bottom-color: var(--line-neutral); }
+.gnb2.is-over:is(:hover, :focus-within, :has(.gnb2__dd.is-open)) .gnb2__top { background: #F7F7F7; border-bottom-color: #EEEEEE; }
+.gnb2__top { transition: background-color 0.3s, border-color 0.3s; }
 .gnb2.is-hidden { transform: translateY(-100%); }
 .gnb2, .mnav {
   --gnb-sub: rgba(0, 0, 0, 0.58);     /* 유틸 바 글자 · 화살표 */
-  --gnb-mark: rgba(240, 140, 50, 0.5); /* 현재 메뉴 형광펜 */
-  --gnb-badge: #F19A2F;
+  --gnb-badge: var(--primary-normal2);
 }
 
 .gnb2__top { flex: none; height: var(--gnb-util-h); background: #F7F7F7; border-bottom: 1px solid #EEEEEE; }
@@ -117,43 +128,43 @@ address { font-style: normal; }
   display: flex; align-items: center; justify-content: space-between;
 }
 .gnb2__brand { display: block; line-height: 0; }
-.gnb2__brand .logo-prime { width: 119px; height: 44px; }
+.gnb2__brand .logo-prime { width: 108px; height: 40px; }
 .gnb2__menu { display: flex; gap: 72px; }
 .gnb2__item { position: relative; }
 .gnb2__link {
-  position: relative; isolation: isolate; display: block; padding: 12px 0;
-  font-family: var(--font-title); font-size: var(--fs-brand-body-1); font-weight: 700; line-height: 18px;
-  color: var(--text-strong);
+  display: inline-flex; flex-direction: column; padding: 12px 0;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-2); font-weight: 400; line-height: 1.4; letter-spacing: -0.32px;
+  color: rgba(0, 0, 0, 0.78);
 }
-/* 형광펜 — 글자 아래 절반(위 12px부터 12px 높이)을 칠합니다. 현재 메뉴는 늘 보이고, 나머지는 호버 때 그어집니다 */
-.gnb2__link::before {
-  content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 24px; height: 12px;
-  background: var(--gnb-mark);
-  transform: scaleX(0); transform-origin: left; transition: transform 0.3s var(--ease-out);
+/* 굵어져도 옆 메뉴가 밀리지 않게 — 굵은 글자 폭을 보이지 않는 줄로 미리 잡아 둡니다 */
+.gnb2__link::after, .gnb2__sub a::after {
+  content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 700; pointer-events: none;
 }
-.gnb2__link:hover::before, .gnb2__item:focus-within > .gnb2__link::before,
-.gnb2__item.is-active > .gnb2__link::before { transform: none; }
-/* 하위 메뉴 — 마우스를 올리거나 키보드로 들어오면 펼칩니다 */
+.gnb2__item:is(:hover, :focus-within, .is-active) > .gnb2__link { font-weight: 700; }
+/* 2depth — 주황 판(Primary/normal2) 위 흰 글자. 메뉴 글자 왼쪽 끝에 맞춰 바로 아래에 엽니다 */
 .gnb2__sub {
-  position: absolute; left: 50%; top: calc(100% + 14px);
-  min-width: 156px; padding: 8px;
-  background: #fff; border: 1px solid var(--line-neutral); border-radius: var(--r-12);
-  box-shadow: var(--shadow-md);
-  opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
+  position: absolute; left: 0; top: calc(100% - 4px);
+  display: flex; flex-direction: column; gap: var(--space-16);
+  min-width: 175px; padding: var(--space-16);
+  background: var(--primary-normal2); border-radius: var(--r-8);
+  box-shadow: 0 0 1px rgba(68, 68, 68, 0.21), 0 4px 12px rgba(68, 68, 68, 0.12);   /* 피그마 E200 */
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
   transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
 }
-/* 메뉴와 하위 메뉴 사이 틈에서 호버가 끊기지 않게 */
-.gnb2__sub::before { content: ""; position: absolute; left: 0; right: 0; top: -18px; height: 18px; }
 .gnb2__item:hover > .gnb2__sub, .gnb2__item:focus-within > .gnb2__sub {
-  opacity: 1; visibility: visible; transform: translate(-50%, 0);
+  opacity: 1; visibility: visible; transform: none;
   transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
 }
+/* 아이덴티티 — 육각형 호버. 좌우 끝이 7px 뾰족한 육각 띠(검정 16%)가 글자를 감쌉니다. DESIGN.md */
 .gnb2__sub a {
-  display: block; padding: 10px 14px; border-radius: var(--r-8); white-space: nowrap;
-  font-family: var(--font-title); font-size: 15px; color: var(--text-neutral);
+  display: inline-flex; flex-direction: column; padding: 0 15px; white-space: nowrap;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-2); line-height: 22px; color: #fff;
+  clip-path: var(--hex);
+  --hex: polygon(7px 0, calc(100% - 7px) 0, 100% 50%, calc(100% - 7px) 100%, 7px 100%, 0 50%);
+  transition: background-color 0.2s;
 }
-.gnb2__sub a:hover, .gnb2__sub a:focus-visible { background: var(--bg-brand-normal); color: var(--text-normal); }
-.gnb2__sub a[aria-current="page"] { color: var(--text-accent); font-weight: 700; }
+.gnb2__sub a:is(:hover, :focus-visible, [aria-current="page"]) { background: rgba(0, 0, 0, 0.16); font-weight: 700; }
+.gnb2__sub a:focus-visible { outline: none; }
 .gnb2__burger { display: none; }
 
 @media (max-width: 1280px) { .gnb2__menu { gap: 48px; } }
@@ -240,7 +251,7 @@ body.mnav-open { overflow: hidden; }
    미래탐구 side_banner(피그마 18144-10173)를 따릅니다: 오른쪽 위, 폭 88의 흰 카드 하나에
    항목들, 그 아래 따로 떨어진 작은 TOP 카드. 짧은 가로선(32 · 16)으로 묶음을 나눕니다. */
 .quick {
-  position: fixed; right: 24px; top: calc(var(--header-h) + 24px); z-index: 45;
+  position: fixed; right: 24px; top: calc(var(--header-h) + var(--banner-h) + 24px); z-index: 45;
   display: flex; flex-direction: column; align-items: stretch; gap: 12px;
   width: 88px;
   transition: opacity 0.4s, transform 0.5s var(--ease-out);

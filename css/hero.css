@@ -260,7 +260,7 @@ body[data-ctl="restart"] .hero-ctl__ico { width: 16px; height: 16px; }
 /* 15차: 대기·재생 중·완료 세 상태 모두 디스크가 커서를 대신하므로, 남은 조건은
    "상태가 살아 있고(body[data-ctl]) 첫 화면"뿐입니다. reduced motion에서는 data-ctl을
    아예 붙이지 않으므로 컨트롤이 존재하지 않습니다. */
-body:not([data-ctl]) #play-btn { visibility: hidden; }
+body:not([data-ctl]) #play-btn, body:not([data-ctl]) .hero-ctl { visibility: hidden; }   /* 홈은 끝나면 상태를 뗍니다(noRestart) */
 
 /* 21차: 판정이 scrollY<10 → `hero-on`(히어로 창이 화면의 주인)으로 바뀌었습니다. 장면 13이
    맨 위로 오면서 스크롤 0이 더는 히어로가 아닙니다 — 그대로 뒀다면 히어로에 도착하는

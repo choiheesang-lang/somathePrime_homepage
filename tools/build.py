@@ -39,9 +39,9 @@ def gnb(active):
         cls = "gnb2__item" + (" has-sub" if sub else "") + (" is-active" if key == active else "")
         subhtml = ""
         if sub:
-            links = "".join(f'<li><a href="{h}">{t}</a></li>' for t, h in sub)
+            links = "".join(f'<li><a href="{h}" data-label="{t}">{t}</a></li>' for t, h in sub)
             subhtml = f'<ul class="gnb2__sub">{links}</ul>'
-        items.append(f'<li class="{cls}"><a class="gnb2__link" href="{href}"{cur}>{label}</a>{subhtml}</li>')
+        items.append(f'<li class="{cls}"><a class="gnb2__link" href="{href}" data-label="{label}"{cur}>{label}</a>{subhtml}</li>')
     mob = []
     for key, label, href, sub in MENU:
         subs = "".join(f'<li><a href="{h}">{t}</a></li>' for t, h in sub)

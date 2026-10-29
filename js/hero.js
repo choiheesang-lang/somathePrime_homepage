@@ -759,7 +759,10 @@ STP.hero = (function () {
 
   function finishState() {
     armed = false;
-    setCtl('restart');
+    /* 홈의 인트로는 처음 한 번만 보여 주는 오프닝이라 RESTART가 없습니다(noRestart) —
+       상태를 떼면 data-ctl이 사라져 디스크 · 고정 버튼이 함께 숨고 커서도 돌아옵니다. */
+    if (hooks.noRestart) { ctlState = null; delete els.body.dataset.ctl; }
+    else setCtl('restart');
     els.body.classList.remove('is-intro', 'is-armed');
     render();
     hooks.onComplete && hooks.onComplete();

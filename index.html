@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- 본문 서체: Noto Sans KR (사고력소마 사이트와 같은 조합 — 제목은 세방고딕, css/site.css) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" />
-  <link rel="preload" as="image" href="/img/campus/entrance-01.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="/img/campus/entrance-hero.webp" fetchpriority="high" />
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/sections.css" />
@@ -201,12 +201,12 @@
       <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
       <nav class="gnb2__nav" aria-label="주요 메뉴">
         <ul class="gnb2__menu">
-          <li class="gnb2__item has-sub"><a class="gnb2__link" href="/brand/">브랜드</a><ul class="gnb2__sub"><li><a href="/brand/">브랜드 소개</a></li><li><a href="/brand/campus.html">캠퍼스 안내</a></li><li><a href="/brand/location.html">오시는 길</a></li></ul></li>
-          <li class="gnb2__item"><a class="gnb2__link" href="/program.html">교육 프로그램</a></li>
-          <li class="gnb2__item has-sub"><a class="gnb2__link" href="/news.html">소식</a><ul class="gnb2__sub"><li><a href="/news.html#timetable">시간표</a></li><li><a href="/news.html#notice">공지사항</a></li><li><a href="/news.html#press">홍보자료</a></li><li><a href="/news.html#faq">FAQ</a></li><li><a href="/news.html#qna">1:1 문의</a></li></ul></li>
-          <li class="gnb2__item"><a class="gnb2__link" href="/center.html">센터 찾기</a></li>
-          <li class="gnb2__item"><a class="gnb2__link" href="/teacher.html">선생님</a></li>
-          <li class="gnb2__item"><a class="gnb2__link" href="/mypage.html">마이페이지</a></li>
+          <li class="gnb2__item has-sub"><a class="gnb2__link" href="/brand/" data-label="브랜드">브랜드</a><ul class="gnb2__sub"><li><a href="/brand/" data-label="브랜드 소개">브랜드 소개</a></li><li><a href="/brand/campus.html" data-label="캠퍼스 안내">캠퍼스 안내</a></li><li><a href="/brand/location.html" data-label="오시는 길">오시는 길</a></li></ul></li>
+          <li class="gnb2__item"><a class="gnb2__link" href="/program.html" data-label="교육 프로그램">교육 프로그램</a></li>
+          <li class="gnb2__item has-sub"><a class="gnb2__link" href="/news.html" data-label="소식">소식</a><ul class="gnb2__sub"><li><a href="/news.html#timetable" data-label="시간표">시간표</a></li><li><a href="/news.html#notice" data-label="공지사항">공지사항</a></li><li><a href="/news.html#press" data-label="홍보자료">홍보자료</a></li><li><a href="/news.html#faq" data-label="FAQ">FAQ</a></li><li><a href="/news.html#qna" data-label="1:1 문의">1:1 문의</a></li></ul></li>
+          <li class="gnb2__item"><a class="gnb2__link" href="/center.html" data-label="센터 찾기">센터 찾기</a></li>
+          <li class="gnb2__item"><a class="gnb2__link" href="/teacher.html" data-label="선생님">선생님</a></li>
+          <li class="gnb2__item"><a class="gnb2__link" href="/mypage.html" data-label="마이페이지">마이페이지</a></li>
         </ul>
       </nav>
       <button type="button" class="gnb2__burger" id="mnav-open" aria-label="전체 메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -492,25 +492,26 @@
 
   <main id="content" class="page home-main">
 
-    <!-- 상단 배너 (기획서 4p ②) — 미래탐구·소마 홈페이지의 팝업 배너 자리. 닫으면 세션 동안 숨깁니다 -->
+    <!-- 상단 배너 (기획서 4p ②, 피그마 18126-6525) — 메인 비주얼 사진 위, GNB 바로 아래에 얹힙니다.
+         GNB와 같이 처음엔 투명, 마우스를 올리면 흰 바탕. 닫으면 세션 동안 숨깁니다 -->
     <div class="topbanner" id="topbanner">
       <div class="topbanner__inner">
-        <p class="topbanner__text"><b>12월 목동 OPEN</b><span>관심고객으로 등록하시면 설명회 · 오픈 소식을 가장 먼저 알려 드립니다.</span></p>
-        <button type="button" class="topbanner__cta" data-lead-open>관심고객 등록 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button type="button" class="topbanner__close" id="topbanner-close" aria-label="배너 닫기"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 3L15 15M15 3L3 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <button type="button" class="topbanner__cta" data-lead-open>관심고객 등록<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <p class="topbanner__msg">관심고객으로 등록하시면 설명회 · 오픈 소식을 가장 먼저 알려 드립니다.</p>
+        <p class="topbanner__open">12월 목동 OPEN</p>
+        <button type="button" class="topbanner__close" id="topbanner-close" aria-label="배너 닫기"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       </div>
     </div>
 
     <!-- 메인 비주얼 (기획서 4p ③④) — 미래탐구 브랜드 사이트 비주얼 구성(피그마 18155-8475).
          사진 세 장과 문구 세 벌이 함께 넘어가고, 사진 아래는 사이트 아이덴티티인 V 꺾임입니다. -->
-    <section class="kv" id="s-main" aria-roledescription="carousel" aria-label="소마 더 프라임 캠퍼스">
+    <section class="kv" id="s-main" data-gnb-over aria-roledescription="carousel" aria-label="소마 더 프라임 캠퍼스">
       <div class="kv__slides is-folded" id="kv-slides">
         <figure class="kv__slide is-on" aria-roledescription="slide" aria-label="1 / 3"><img src="/img/campus/entrance-hero.webp" alt="SOMA THE PRIME 간판이 걸린 캠퍼스 입구 정면" fetchpriority="high" /></figure>
-        <figure class="kv__slide" aria-roledescription="slide" aria-label="2 / 3"><img src="/img/campus/lounge-01.webp" alt="라운지 — 천장의 SOMA THE PRIME 사인과 TV 책장" loading="lazy" /></figure>
-        <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/lounge-07.webp" alt="나무 그늘 아래 아치형 책장의 독서 공간" loading="lazy" /></figure>
+        <figure class="kv__slide" aria-roledescription="slide" aria-label="2 / 3"><img src="/img/campus/kv-lounge-01.webp" alt="라운지 — 네 브랜드 이름이 둘러싼 SOMA THE PRIME 천장 사인과 TV 책장" loading="lazy" /></figure>
+        <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/kv-lounge-03.webp" alt="구름 조명 아래 아치형 책장과 트랙 바닥이 이어진 라운지 전경" loading="lazy" /></figure>
       </div>
       <div class="kv__panel">
-        <button type="button" class="kv__lead" data-lead-open><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><g transform="translate(2 1)"><rect x="0.5" y="0.5" width="10" height="13" rx="1.5" stroke="currentColor"/><path d="M3 5h5M3 8h5M3 11h3" stroke="currentColor" stroke-linecap="round"/></g></svg>관심고객 등록</button>
         <div class="kv__copies">
           <div class="kv__copy is-on">
             <p class="kv__eyebrow">SOMA THE PRIME</p>
@@ -519,13 +520,13 @@
           </div>
           <div class="kv__copy" aria-hidden="true">
             <p class="kv__eyebrow">SOMA THE PRIME</p>
-            <p class="kv__title"><span>네 개의 브랜드,</span><span>하나의</span><span>성장 여정</span></p>
-            <p class="kv__sub">사고력 수학 · 창의 교구 수학<br />글로벌 영어 독서 · 사고력 독서를<br />한 캠퍼스에서</p>
+            <p class="kv__title"><span>네 개의 브랜드,</span><span>하나의 성장 여정</span></p>
+            <p class="kv__sub">배움의 영역을 넓히고<br />성장의 깊이를 더하다</p>
           </div>
           <div class="kv__copy" aria-hidden="true">
             <p class="kv__eyebrow">SOMA THE PRIME</p>
-            <p class="kv__title"><span>6세부터 초4까지</span><span>사고력의</span><span>골든 타임</span></p>
-            <p class="kv__sub">정답을 빠르게 찾는 것을 넘어<br />스스로 생각하고 탐구하는 힘을<br />기릅니다</p>
+            <p class="kv__title"><span>목동 200평</span><span>프리미엄 캠퍼스</span></p>
+            <p class="kv__sub">교실의 경계를 넘어<br />하나로 이어지는 학습 생태계</p>
           </div>
         </div>
         <div class="kv__ctrl" role="group" aria-label="사진 넘기기">

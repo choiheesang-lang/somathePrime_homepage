@@ -93,6 +93,7 @@
       reduce: reduceMQ.matches,
       speed: SPEED,
       touchMask: true,
+      noRestart: true,                  // 오프닝은 처음 한 번만 — 끝나도 RESTART를 띄우지 않습니다
       onToLight: () => body.classList.add('intro-light'),
       onComplete: () => setTimeout(leave, leaving ? 0 : HOLD),
     });

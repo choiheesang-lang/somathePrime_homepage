@@ -65,6 +65,8 @@
   --primary-normal:        var(--pal-stone-gray-10);
   --primary-strong:        var(--pal-stone-gray-20);
   --primary-heavy:         var(--pal-stone-gray-30);
+  /* Primary 2번째 색 — 피그마 Semantic/Primary/normal2 (18166-8712). GNB 2depth 판 · 알림 배지 · 센터 핀. docs/DESIGN.md */
+  --primary-normal2:       #F19A2F;
 
   /* Primary / Lamp — 브랜드 액센트 4색 */
   --primary-lamp-coral:      var(--pal-brand-coral);
