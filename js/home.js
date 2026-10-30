@@ -345,11 +345,22 @@
         b.r = BACK_R; setFill(b, css(tok));
         return b;
       });
-      const placeBack = (t) => back.forEach((b) => {
-        const off = reduce ? 22 : 22 + 10 * Math.sin(t * b.wa + b.ph[0]);
-        const ang = b.ang0 + (reduce ? 0 : 0.45 * Math.sin(t * b.wb + b.ph[1]));
-        b.x = C.x + off * Math.cos(ang); b.y = C.y + off * Math.sin(ang);
-      });
+      /* 검은 슬라임 현재 크기 비율(s)만큼 같이 줄고, 마우스가 판 위에 있으면 그쪽으로 8·s 끌립니다(hero attract와 같은 완화) */
+      const ptr = { x: 0, y: 0, has: false };
+      const pull = { x: 0, y: 0 };
+      const placeBack = (t, dt) => {
+        const s = reduce ? 1 : size.base / R;
+        let tx = 0, ty = 0;
+        if (ptr.has && !reduce) { const dx = ptr.x - C.x, dy = ptr.y - C.y, d = Math.hypot(dx, dy) || 1; tx = 8 * s * dx / d; ty = 8 * s * dy / d; }
+        const ease = 1 - Math.exp(-(dt || 0.016) * 6);
+        pull.x += (tx - pull.x) * ease; pull.y += (ty - pull.y) * ease;
+        back.forEach((b) => {
+          const off = (reduce ? 22 : 22 + 10 * Math.sin(t * b.wa + b.ph[0])) * s;
+          const ang = b.ang0 + (reduce ? 0 : 0.45 * Math.sin(t * b.wb + b.ph[1]));
+          b.r = BACK_R * s;
+          b.x = C.x + off * Math.cos(ang) + pull.x; b.y = C.y + off * Math.sin(ang) + pull.y;
+        });
+      };
 
       /* 매 프레임: main은 5% 호흡(hero breathe), 로고는 main 크기에 비례(절반 크기에서도 0.6배로 남음) */
       let clock = 0;
@@ -358,7 +369,7 @@
         const dt = Math.min(dtMs / 1000, 0.05);
         clock += dt; main.tt += dt; drop.tt += dt * 1.3;
         main.r = size.base * (1 + 0.05 * Math.sin(clock * 1.8));
-        placeBack(clock);
+        placeBack(clock, dt);
         back.forEach((b) => { b.tt += dt * 0.7; write(b); });
         write(main); write(drop);
         const v = gsap.utils.clamp(0, 1, (main.r - R * 0.5) / (R * 0.5));
@@ -412,7 +423,12 @@
         f.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; hovering = true; stopTimer(); activate(i); });
         f.addEventListener('click', () => activate(i));
       });
-      root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch') return; hovering = false; if (!busy) schedule(); });
+      root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch') return; hovering = false; ptr.has = false; if (!busy) schedule(); });
+      root.addEventListener('pointermove', (e) => {
+        if (e.pointerType === 'touch') return;
+        const r = root.getBoundingClientRect();                    // 판 좌표 → viewBox 1400×688
+        ptr.x = (e.clientX - r.left) / r.width * W; ptr.y = (e.clientY - r.top) / r.height * H; ptr.has = true;
+      }, { passive: true });
 
       const io = new IntersectionObserver((e) => {
         onScreen = e[0].isIntersecting;

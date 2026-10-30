@@ -123,15 +123,9 @@ body: home
         <!-- 가운데 슬라임 — 인트로 #goo와 같은 구성(stage.html 4~8). 녹는 층(goo) 위에 또렷한 쌍둥이를 겹쳐
              관절만 녹게 하고, 그 위에 흰 소마더프라임 로고. 경로는 home.js가 매 프레임 씁니다.
              검은 슬라임은 면으로 넓이 1/4(검은 방울)을 떼어 보내고 3/4가 남았다가 천천히 다시 차오릅니다. -->
-        <svg class="quad__goo" viewBox="0 0 1400 688" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id="goo-quad" filterUnits="userSpaceOnUse" x="-60" y="-60" width="1520" height="808" color-interpolation-filters="sRGB">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
-              <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-              <feGaussianBlur in="goo" stdDeviation="0.6" />
-            </filter>
-          </defs>
-          <!-- 뒤 슬라임 넷 — 네 브랜드 색. 자기들끼리만 goo로 녹고(별도 필터 그룹) 검은 슬라임 가장자리 밖으로 살짝 비칩니다 -->
+        <!-- 뒤 슬라임 넷 — 네 브랜드 색. 면 색과 multiply로 섞여야 해서 svg를 따로 두고(필터 그룹 안은 고립돼 블렌드가
+             안 섞임) svg 자체에 mix-blend-mode를 겁니다. 필터는 아래 svg의 #goo-quad를 같이 씁니다. -->
+        <svg class="quad__back" viewBox="0 0 1400 688" aria-hidden="true" focusable="false">
           <g filter="url(#goo-quad)">
             <path class="quad__blob quad__blob--back" id="quad-back-0" d="" />
             <path class="quad__blob quad__blob--back" id="quad-back-1" d="" />
@@ -144,6 +138,15 @@ body: home
             <path class="quad__blob quad__blob--back" id="quad-back-2-crisp" d="" />
             <path class="quad__blob quad__blob--back" id="quad-back-3-crisp" d="" />
           </g>
+        </svg>
+        <svg class="quad__goo" viewBox="0 0 1400 688" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id="goo-quad" filterUnits="userSpaceOnUse" x="-60" y="-60" width="1520" height="808" color-interpolation-filters="sRGB">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
+              <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+              <feGaussianBlur in="goo" stdDeviation="0.6" />
+            </filter>
+          </defs>
           <g filter="url(#goo-quad)">
             <path class="quad__blob" id="quad-drop" d="" />
             <path class="quad__blob" id="quad-main" d="" />

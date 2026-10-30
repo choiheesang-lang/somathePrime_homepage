@@ -189,15 +189,15 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 .quad__faces { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--r-24); overflow: hidden; isolation: isolate; }
 .quad__face {
   position: relative; overflow: hidden; aspect-ratio: 700 / 344;
-  /* 비활성 — 브랜드 색이 바깥 모서리로 갈수록 짙어지는 판 */
-  background: linear-gradient(var(--ang, 135deg), color-mix(in srgb, var(--c) 42%, #fff) 0%, var(--c) 100%);
+  /* 비활성 — 가운데(슬라임 자리) 쪽이 짙고 바깥 모서리로 갈수록 밝아지는 판. 가운데가 「파인 자리」로 읽힙니다 */
+  background: linear-gradient(var(--ang, 315deg), color-mix(in srgb, var(--c) 42%, #fff) 0%, var(--c) 70%, color-mix(in srgb, var(--c) 92%, #000) 100%);
   color: var(--text-normal);
   cursor: pointer;
   transition: color 0.5s;
 }
-.quad__face:nth-child(2) { --ang: 225deg; }
-.quad__face:nth-child(3) { --ang: 45deg; }
-.quad__face:nth-child(4) { --ang: 315deg; }
+.quad__face:nth-child(2) { --ang: 45deg; }
+.quad__face:nth-child(3) { --ang: 225deg; }
+.quad__face:nth-child(4) { --ang: 135deg; }
 /* 사진 — 슬라임이 사라진 자리(--rx --ry)에서 원이 커지며 드러납니다(--rv, home.js). 비활성은 0.6s 페이드아웃 */
 .quad__photo {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none;
@@ -223,7 +223,8 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 .quad__field { margin-top: 18px; font-family: var(--font-title); font-size: clamp(20px, 1.6vw, 26px); }
 .quad__desc { margin-top: 8px; font-size: var(--fs-system-label-1); line-height: 1.6; opacity: 0.85; word-break: keep-all; }
 /* 슬라임 오버레이 — 판과 같은 비율이라 viewBox가 그대로 맞습니다 */
-.quad__goo { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.quad__goo, .quad__back { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.quad__back { mix-blend-mode: multiply; }   /* 뒤 슬라임 넷은 면 색 위에 색유리처럼 */
 .quad__blob { fill: var(--primary-normal); }
 .quad__mark { --lp-ink: #fff; --lp-o: #fff; --lp-g: #fff; --lp-c: #fff; transform-box: fill-box; transform-origin: center; }
 .prog__more { margin-top: 56px; text-align: center; }
@@ -239,7 +240,7 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
   .quad { margin-top: 36px; }
   .quad__faces { border-radius: var(--r-16); }
   .quad__face { aspect-ratio: 1 / 1; }
-  .quad__goo { transform: scale(1.6); }   /* 정사각 판에 viewBox가 letterbox되어 작아지는 만큼 키움(r 26 → 42px) */
+  .quad__goo, .quad__back { transform: scale(1.6); }   /* 정사각 판에 viewBox가 letterbox되어 작아지는 만큼 키움(r 26 → 42px) */
   .quad__body { padding: 18px 16px; width: 100%; justify-content: flex-start; }
   .quad__face:nth-child(n+3) .quad__body { justify-content: flex-end; }
   .quad__logo { height: 32px; }
