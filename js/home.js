@@ -271,6 +271,136 @@
     reveal('#s-copy-2 .section__inner', reduce);
     reveal('#s-visit', reduce);
 
+    /* ── 네 개의 브랜드 — 4면 판 + 슬라임 흡수 (6p, 피그마 18144-9958 구성) ─────────
+       가운데 어두운 슬라임(소마더프라임)이 한 면으로 흘러가 그 면의 브랜드 색으로 물들며 흡수되고,
+       사진이 그 자리에서 원형으로 번지며 면이 활성이 됩니다. 그 뒤 가운데서 작은 슬라임이 다시
+       부풉니다. 마우스가 없으면 4.5초마다 시계 방향으로 돌고, 면에 올리면 그 면으로 갑니다.
+       블롭 경로 생성(makeBlob · blobPath · write)은 js/hero.js의 것을 옮겨 적었습니다 — hero 쪽은
+       모듈 상태(N · HARM · k · wiggle)에 묶여 있어 내보내는 대신 복사했습니다. */
+    const quadCleanup = (function quad() {
+      const root = document.getElementById('quad');
+      if (!root) return () => {};
+      const faces = [...root.querySelectorAll('.quad__face')];
+      const ORDER = [0, 1, 3, 2];                       // DOM(2×2) → 시계 방향: 소마 · 플레이팩토 · 리딩오션 · 마이온
+      const W = 1400, H = 688, C = { x: W / 2, y: H / 2 }, R = 110;
+      const CYCLE = reduce ? 6 : 4.5;
+      const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+      const INK = css('--primary-normal') || '#2C2A29';
+      const q = (id) => document.getElementById(id);
+      const mark = q('quad-mark');
+      let cur = faces.findIndex((f) => f.classList.contains('is-on'));
+      if (cur < 0) cur = 0;
+      let timer = null, hovering = false, onScreen = false, busy = null, pending = -1;
+
+      /* ── 블롭 (hero.js:229-305 사본, 상수만 이 판 기준) ── */
+      const N = 28, HARM = 3, wiggle = { amp: reduce ? 0 : 1 };
+      function makeBlob(vis, twin, seed) {
+        const rnd = (n) => { const x = Math.sin(seed * 12.9898 + n * 78.233) * 43758.5453; return x - Math.floor(x); };
+        return {
+          x: C.x, y: C.y, r: 0, tt: 0,
+          om: [0.9 + rnd(1) * 0.5, -(1.1 + rnd(2) * 0.5), 0.6 + rnd(3) * 0.4],
+          ph: [rnd(4) * 6.283, rnd(5) * 6.283, rnd(6) * 6.283],
+          vis, twin, lastD: '',
+        };
+      }
+      function blobPath(b) {
+        const rel = 0.07, amp = wiggle.amp * rel * Math.min(b.r, 260);
+        const px = new Array(N), py = new Array(N);
+        for (let i = 0; i < N; i++) {
+          const th = i / N * 6.283185307;
+          let mod = 0.55 * Math.sin(2 * th + b.om[0] * b.tt + b.ph[0]) + 0.30 * Math.sin(3 * th + b.om[1] * b.tt + b.ph[1]);
+          if (HARM > 2) mod += 0.15 * Math.sin(5 * th + b.om[2] * b.tt + b.ph[2]);
+          const rr = b.r + amp * mod;
+          px[i] = b.x + rr * Math.cos(th); py[i] = b.y + rr * Math.sin(th);
+        }
+        let d = 'M' + px[0].toFixed(1) + ' ' + py[0].toFixed(1);
+        for (let i = 0; i < N; i++) {
+          const i0 = (i + N - 1) % N, i1 = (i + 1) % N, i2 = (i + 2) % N;
+          d += 'C' + (px[i] + (px[i1] - px[i0]) / 6).toFixed(1) + ' ' + (py[i] + (py[i1] - py[i0]) / 6).toFixed(1)
+             + ' ' + (px[i1] - (px[i2] - px[i]) / 6).toFixed(1) + ' ' + (py[i1] - (py[i2] - py[i]) / 6).toFixed(1)
+             + ' ' + px[i1].toFixed(1) + ' ' + py[i1].toFixed(1);
+        }
+        return d + 'Z';
+      }
+      function write(b) {
+        const d = b.r < 0.5 ? '' : blobPath(b);
+        if (d === b.lastD) return;
+        b.vis.setAttribute('d', d); b.twin.setAttribute('d', d); b.lastD = d;
+      }
+      const main = makeBlob(q('quad-main'), q('quad-main-crisp'), 3);
+      const drop = makeBlob(q('quad-drop'), q('quad-drop-crisp'), 7);
+      const size = { base: R };                         // main의 기준 반지름 — 흡수 때 줄었다 다시 부풉니다
+      const setFill = (b, c) => { b.vis.style.fill = c; b.twin.style.fill = c; };
+      setFill(main, INK); setFill(drop, INK);
+
+      /* 매 프레임: main은 5% 호흡(hero breathe), 로고는 main 크기에 비례 */
+      let clock = 0;
+      const tick = (time, dtMs) => {
+        if (!onScreen) return;
+        const dt = Math.min(dtMs / 1000, 0.05);
+        clock += dt; main.tt += dt; drop.tt += dt * 1.3;
+        main.r = size.base * (1 + 0.05 * Math.sin(clock * 1.8));
+        write(main); write(drop);
+        const v = gsap.utils.clamp(0, 1, (main.r - R * 0.35) / (R * 0.65));
+        mark.style.opacity = v.toFixed(3);
+        mark.style.transform = `scale(${(0.6 + 0.4 * v).toFixed(3)})`;
+      };
+      if (reduce) {                                     // 정지한 원 + 로고
+        main.r = R; write(main); mark.style.opacity = '1';
+      }
+
+      /* 면 전환 — 사진은 슬라임이 사라진 자리(--rx --ry)에서 원이 커지며 드러납니다 */
+      const setOn = (i, revealFrom) => {
+        faces.forEach((f, k) => f.classList.toggle('is-on', k === i));
+        cur = i;
+        const photo = faces[i].querySelector('.quad__photo');
+        if (reduce || !revealFrom) { photo.style.setProperty('--rv', '150%'); return; }
+        const rv = { v: 0 };
+        gsap.fromTo(rv, { v: 0 }, { v: 150, duration: 0.7, ease: 'power2.out',
+          onUpdate: () => photo.style.setProperty('--rv', rv.v.toFixed(1) + '%') });
+      };
+      const faceCenter = (i) => ({ x: (i % 2 ? 3 : 1) * W / 4, y: (i < 2 ? 1 : 3) * H / 4 });
+      function activate(i) {
+        if (i === cur && !busy) return;
+        if (busy) { pending = i; busy.timeScale(3); return; }   // 진행 중이면 빨리 끝내고 이어서
+        stopTimer();
+        if (reduce) { setOn(i); schedule(); return; }
+        const fc = faceCenter(i), tx = C.x + (fc.x - C.x) * 0.6, ty = C.y + (fc.y - C.y) * 0.6;
+        const brand = getComputedStyle(faces[i]).getPropertyValue('--c').trim();
+        const brandHex = css(brand.replace(/^var\((.*)\)$/, '$1')) || brand;
+        drop.x = C.x; drop.y = C.y; drop.r = size.base; setFill(drop, INK);
+        const col = { c: INK };
+        busy = gsap.timeline({ onComplete: () => {
+          busy = null;
+          if (pending >= 0) { const n = pending; pending = -1; activate(n); }
+          else schedule();
+        } });
+        busy.to(size, { base: R * 0.35, duration: 0.35, ease: 'power2.in' }, 0)
+          .to(drop, { x: tx, y: ty, duration: 0.9, ease: 'power2.in' }, 0)
+          .to(col, { c: brandHex, duration: 0.6, ease: 'none', onUpdate: () => setFill(drop, col.c) }, 0.2)
+          .to(drop, { r: 0, duration: 0.35, ease: 'power3.in' }, 0.55)
+          .add(() => setOn(i, true), 0.9)
+          .to(size, { base: R, duration: 0.7, ease: 'back.out(1.4)' }, 1.15);
+      }
+      const next = () => activate(ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length]);
+      function stopTimer() { if (timer) { timer.kill(); timer = null; } }
+      function schedule() { stopTimer(); if (onScreen && !hovering) timer = gsap.delayedCall(CYCLE, next); }
+
+      faces.forEach((f, i) => {
+        f.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; hovering = true; stopTimer(); activate(i); });
+        f.addEventListener('click', () => activate(i));
+      });
+      root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch') return; hovering = false; if (!busy) schedule(); });
+
+      const io = new IntersectionObserver((e) => {
+        onScreen = e[0].isIntersecting;
+        if (onScreen) { if (!reduce) gsap.ticker.add(tick); if (!busy) schedule(); }
+        else { gsap.ticker.remove(tick); stopTimer(); }
+      }, { threshold: 0.2 });
+      io.observe(root);
+      return () => { gsap.ticker.remove(tick); io.disconnect(); stopTimer(); if (busy) busy.kill(); };
+    })();
+
       gsap.utils.toArray('.kw-slot').forEach((slot, i) => {
         const q = (sel) => slot.querySelector(sel);
         gsap.timeline({
@@ -483,7 +613,7 @@
         });
       }
 
-      return () => cleanup();
+      return () => { cleanup(); quadCleanup(); };
   });
 
   const settle = () => ScrollTrigger.refresh();

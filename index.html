@@ -599,28 +599,67 @@
           <h2>네 개의 브랜드, 하나의 성장 여정</h2>
           <p>사고력 형성기에 필요한 네 가지 축을 한 캠퍼스에서 완성합니다.</p>
         </div>
-        <ul class="prog__list">
-          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-coral)">
-            <span class="prog__logo"><svg viewBox="0 0 174 40" role="img" aria-label="소마"><use href="#lg-soma" /></svg></span>
-            <b class="prog__field">사고력 수학</b>
-            <span class="prog__desc">정답보다 과정을 중시하는 사고력 수학</span>
+      </div>
+      <!-- 미탐존(피그마 18144-9958)식 4면 판. 가운데 소마더프라임 슬라임이 4.5초마다, 또는 마우스를 올린 면으로
+           흘러가 흡수되면 그 면이 활성(교실 사진)이 됩니다 — 항상 한 면은 활성. 시계 방향: 소마 → 플레이팩토 →
+           리딩오션 → 마이온(DOM은 2×2 그리드 순서라 아래 줄은 마이온 · 리딩오션). js/home.js quad · DESIGN.md 6 -->
+      <div class="quad" id="quad" data-step="1">
+        <ul class="quad__faces">
+          <li class="quad__face is-on" data-brand="soma" style="--c: var(--pal-brand-coral); --rx: 70%; --ry: 70%">
+            <img class="quad__photo" src="/img/campus/class-02.webp" alt="소마 교실 — 분홍 벽과 둥근 테이블" loading="lazy" />
+            <div class="quad__body">
+              <span class="quad__logo"><svg viewBox="0 0 174 40" role="img" aria-label="소마"><use href="#lg-soma" /></svg></span>
+              <b class="quad__field">사고력 수학</b>
+              <span class="quad__desc">정답보다 과정을 중시하는 사고력 수학</span>
+            </div>
           </li>
-          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-yellow)">
-            <span class="prog__logo"><svg viewBox="0 0 96 64" role="img" aria-label="플레이팩토" class="is-play"><use href="#lg-playfacto" /></svg></span>
-            <b class="prog__field">창의 교구 수학</b>
-            <span class="prog__desc">손으로 만지며 원리를 깨치는 유아 수학</span>
+          <li class="quad__face" data-brand="playfacto" style="--c: var(--pal-brand-yellow); --rx: 30%; --ry: 70%">
+            <img class="quad__photo" src="/img/campus/class-06.webp" alt="플레이팩토 교실 — 노랑 · 보라 교구장" loading="lazy" />
+            <div class="quad__body">
+              <span class="quad__logo"><svg viewBox="0 0 96 64" role="img" aria-label="플레이팩토" class="is-play"><use href="#lg-playfacto" /></svg></span>
+              <b class="quad__field">창의 교구 수학</b>
+              <span class="quad__desc">손으로 만지며 원리를 깨치는 유아 수학</span>
+            </div>
           </li>
-          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-sage-green)">
-            <span class="prog__logo"><svg viewBox="0 0 201 62" role="img" aria-label="Renaissance myON"><use href="#lg-myon-wide" /></svg></span>
-            <b class="prog__field">글로벌 영어 독서</b>
-            <span class="prog__desc">7,000권 이상의 인터랙티브 영어 원서</span>
+          <li class="quad__face" data-brand="myon" style="--c: var(--pal-brand-sage-green); --rx: 70%; --ry: 30%">
+            <img class="quad__photo" src="/img/campus/class-09.webp" alt="마이온 교실 — 초록 벽의 영어 독서 공간" loading="lazy" />
+            <div class="quad__body">
+              <span class="quad__logo"><svg viewBox="0 0 201 62" role="img" aria-label="Renaissance myON"><use href="#lg-myon-wide" /></svg></span>
+              <b class="quad__field">글로벌 영어 독서</b>
+              <span class="quad__desc">7,000권 이상의 인터랙티브 영어 원서</span>
+            </div>
           </li>
-          <li class="prog__card" data-step="1" style="--c: var(--pal-brand-dusty-blue)">
-            <span class="prog__logo"><svg viewBox="0 0 151 50" role="img" aria-label="리딩오션"><use href="#lg-reading" /></svg></span>
-            <b class="prog__field">사고력 독서</b>
-            <span class="prog__desc">읽은 것을 생각으로, 생각을 표현으로</span>
+          <li class="quad__face" data-brand="reading" style="--c: var(--pal-brand-dusty-blue); --rx: 30%; --ry: 30%">
+            <img class="quad__photo" src="/img/campus/class-10.webp" alt="리딩오션 교실 — 파란 벽의 독서 토론 공간" loading="lazy" />
+            <div class="quad__body">
+              <span class="quad__logo"><svg viewBox="0 0 151 50" role="img" aria-label="리딩오션"><use href="#lg-reading" /></svg></span>
+              <b class="quad__field">사고력 독서</b>
+              <span class="quad__desc">읽은 것을 생각으로, 생각을 표현으로</span>
+            </div>
           </li>
         </ul>
+        <!-- 가운데 슬라임 — 인트로 #goo와 같은 구성(stage.html 4~8). 녹는 층(goo) 위에 또렷한 쌍둥이를 겹쳐
+             관절만 녹게 하고, 그 위에 흰 소마더프라임 로고. 경로는 home.js가 매 프레임 씁니다. -->
+        <svg class="quad__goo" viewBox="0 0 1400 688" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id="goo-quad" filterUnits="userSpaceOnUse" x="-60" y="-60" width="1520" height="808" color-interpolation-filters="sRGB">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
+              <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+              <feGaussianBlur in="goo" stdDeviation="0.6" />
+            </filter>
+          </defs>
+          <g filter="url(#goo-quad)">
+            <path class="quad__blob" id="quad-drop" d="" />
+            <path class="quad__blob" id="quad-main" d="" />
+          </g>
+          <g>
+            <path class="quad__blob" id="quad-drop-crisp" d="" />
+            <path class="quad__blob" id="quad-main-crisp" d="" />
+          </g>
+          <g class="quad__mark" id="quad-mark"><use href="#logo-prime" x="632" y="319" width="136" height="50" /></g>
+        </svg>
+      </div>
+      <div class="wrap">
         <div class="prog__more" data-step="2">
           <a class="btn2 btn2--line btn2--wide" href="/program.html">교육 프로그램 안내 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>

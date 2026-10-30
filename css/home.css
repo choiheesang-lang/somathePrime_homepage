@@ -179,35 +179,74 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 .intro__more:hover .btn2__arrow { transform: translateX(4px); }
 .is-link { cursor: pointer; }
 
-/* ── 교육 프로그램 안내 (6p) ─────────────────────────────────────── */
+/* ── 교육 프로그램 안내 (6p) — 4면 판 + 슬라임 ─────────────────────
+   미탐존(피그마 18144-9958)처럼 한 장의 판(1400×688, r24)을 2×2로 나눕니다. 면마다 브랜드 색(--c)이고,
+   활성 면(.is-on, 항상 하나)은 교실 사진 위에 브랜드 색 덮개 + 흰 글자입니다. 가운데 슬라임은
+   svg.quad__goo(home.js quad)가 그립니다. */
 .prog { padding: 140px 0 150px; background: var(--bg-brand-normal); }
-.prog__list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 56px; }
-.prog__card {
-  position: relative; overflow: hidden;
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  padding: 44px 20px 36px; border-radius: var(--r-20); background: #fff;
-  box-shadow: 0 0 0 1px var(--line-alternative);
-  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+/* 폭 1400. 데스크톱은 양쪽에 퀵메뉴 자리(24 + 88 + 24 = 136)를 비워 겹치지 않게 — 1440에서는 콘텐츠 폭(1168)이 됩니다 */
+.quad { position: relative; width: min(1400px, 100% - 272px); margin: 56px auto 0; }
+.quad__faces { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--r-24); overflow: hidden; isolation: isolate; }
+.quad__face {
+  position: relative; overflow: hidden; aspect-ratio: 700 / 344;
+  /* 비활성 — 브랜드 색이 바깥 모서리로 갈수록 짙어지는 판 */
+  background: linear-gradient(var(--ang, 135deg), color-mix(in srgb, var(--c) 42%, #fff) 0%, var(--c) 100%);
+  color: var(--text-normal);
+  cursor: pointer;
+  transition: color 0.5s;
 }
-/* 브랜드 색 띠 — 장면 12의 네 색이 여기서도 브랜드를 가릅니다 */
-.prog__card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--c); }
-.prog__card:hover { transform: translateY(-6px); box-shadow: 0 0 0 1px var(--line-alternative), var(--shadow-md); }
-.prog__logo { display: grid; place-items: center; height: 64px; color: var(--primary-heavy); }
-.prog__logo svg { height: 34px; width: auto; }
-.prog__logo svg.is-play { height: 46px; }
-.prog__field { margin-top: 22px; font-family: var(--font-title); font-size: 22px; color: var(--text-normal); }
-.prog__desc { margin-top: 8px; font-size: var(--fs-system-label-1); line-height: 1.6; color: var(--text-neutral); word-break: keep-all; }
+.quad__face:nth-child(2) { --ang: 225deg; }
+.quad__face:nth-child(3) { --ang: 45deg; }
+.quad__face:nth-child(4) { --ang: 315deg; }
+/* 사진 — 슬라임이 사라진 자리(--rx --ry)에서 원이 커지며 드러납니다(--rv, home.js). 비활성은 0.6s 페이드아웃 */
+.quad__photo {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none;
+  opacity: 0; transition: opacity 0.6s var(--ease-in-out);
+  clip-path: circle(var(--rv, 150%) at var(--rx, 50%) var(--ry, 50%));
+}
+.quad__face.is-on .quad__photo { opacity: 1; transition: none; animation: quad-focus 6s var(--ease-out) both; }
+@keyframes quad-focus { from { transform: scale(1.05); } to { transform: scale(1); } }
+/* 활성 덮개 — 브랜드 색 45% + 아래쪽 어둡게(글이 읽히게) */
+.quad__face::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 45%, transparent) 0%, color-mix(in srgb, var(--c) 25%, rgba(0, 0, 0, 0.45)) 100%);
+  opacity: 0; transition: opacity 0.6s var(--ease-in-out);
+}
+.quad__face.is-on::after { opacity: 1; }
+.quad__face.is-on { color: #fff; }
+/* 글 — 바깥 모서리 쪽에 모아 가운데 슬라임 자리를 비웁니다 */
+.quad__body { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 48px; width: 62%; }
+.quad__face:nth-child(2n) .quad__body { left: auto; right: 0; align-items: flex-end; text-align: right; }
+.quad__logo { display: grid; height: 56px; align-content: center; color: currentColor; }
+.quad__logo svg { height: 34px; width: auto; }
+.quad__logo svg.is-play { height: 46px; }
+.quad__field { margin-top: 18px; font-family: var(--font-title); font-size: clamp(20px, 1.6vw, 26px); }
+.quad__desc { margin-top: 8px; font-size: var(--fs-system-label-1); line-height: 1.6; opacity: 0.85; word-break: keep-all; }
+/* 슬라임 오버레이 — 판과 같은 비율이라 viewBox가 그대로 맞습니다 */
+.quad__goo { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.quad__blob { fill: var(--primary-normal); }
+.quad__mark { --lp-ink: #fff; --lp-o: #fff; --lp-g: #fff; --lp-c: #fff; transform-box: fill-box; transform-origin: center; }
 .prog__more { margin-top: 56px; text-align: center; }
-@media (max-width: 1024px) { .prog__list { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 1024px) {
+  .quad { width: calc(100% - var(--gutter) * 2); }   /* 퀵메뉴가 아래로 내려가므로 가득 */
+  .quad__body { padding: 28px 28px; width: 68%; }
+  .quad__logo { height: 44px; }
+  .quad__logo svg { height: 26px; }
+  .quad__logo svg.is-play { height: 36px; }
+}
 @media (max-width: 640px) {
   .prog { padding: 88px 0 96px; }
-  .prog__list { gap: 12px; margin-top: 36px; }
-  .prog__card { padding: 30px 12px 24px; border-radius: var(--r-16); }
-  .prog__logo { height: 48px; }
-  .prog__logo svg { height: 26px; }
-  .prog__logo svg.is-play { height: 36px; }
-  .prog__field { margin-top: 14px; font-size: var(--fs-brand-body-1); }
-  .prog__desc { font-size: var(--fs-system-label-2); }
+  .quad { margin-top: 36px; }
+  .quad__faces { border-radius: var(--r-16); }
+  .quad__face { aspect-ratio: 1 / 1; }
+  .quad__goo { transform: scale(1.6); }   /* 정사각 판에 viewBox가 letterbox되어 작아지는 만큼 키움(r 26 → 42px) */
+  .quad__body { padding: 18px 16px; width: 100%; justify-content: flex-start; }
+  .quad__face:nth-child(n+3) .quad__body { justify-content: flex-end; }
+  .quad__logo { height: 32px; }
+  .quad__logo svg { height: 20px; }
+  .quad__logo svg.is-play { height: 28px; }
+  .quad__field { margin-top: 8px; font-size: var(--fs-brand-body-1); }
+  .quad__desc { display: none; }
   .prog__more { margin-top: 36px; }
 }
 
