@@ -104,8 +104,9 @@ body.is-intro #stage { will-change: transform, opacity; }
   position: absolute;
   left: 0; right: 0;
   top: calc(159px * var(--s));
+  font-family: var(--font-title);                 /* 세방고딕 Bold (피그마 title 컴포넌트와 같게) */
   font-size: calc(22px * var(--s));
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.01em;
   white-space: nowrap;
