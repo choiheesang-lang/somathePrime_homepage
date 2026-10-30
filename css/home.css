@@ -97,6 +97,11 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 /* 사진 위 검정 덮개 — 흰 글자가 읽히게. 피그마 Slide 1 7%, 2 · 3 4% */
 .kv__slide::after { content: ""; position: absolute; inset: 0; background: #000; opacity: var(--veil, 0.07); pointer-events: none; }
 .kv__slide:nth-child(n+2) { --veil: 0.04; }
+/* 왼쪽 그라데이션 — 글이 놓이는 쪽만 어둡게(피그마 Rectangle 324: 왼쪽 절반 폭, 25%까지 검정 10% → 50%에서 0) */
+.kv__slides::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 25.25%, rgba(0, 0, 0, 0) 50%);
+}
 .kv__slide.is-on img { animation: kv-focus 7s var(--ease-out) both; }
 @keyframes kv-focus { from { transform: scale(1.06); } to { transform: scale(1); } }
 
@@ -113,7 +118,7 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 }
 /* 문구 세 벌은 같은 칸에 겹쳐 두고 사진과 함께 크로스페이드 */
 /* 관심고객 등록 — 채움 버튼 48(.btn2--fill, site.css). 여기서는 자리만 */
-.kv__lead { order: 2; align-self: center; margin-top: 50px; }   /* 컨트롤 아래 50 */
+.kv__lead { order: 2; align-self: center; margin-top: 42px; }   /* 피그마 y 600 — 컨트롤(상자 + 진행 바) 아래 42 */
 .kv__copies { display: grid; margin: 0 0 48px; }
 .kv__copy { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out), visibility 0s 0.5s; }
 .kv__copy.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0.15s, 0.15s, 0s; }
@@ -121,23 +126,28 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 .kv__title { display: flex; flex-direction: column; white-space: nowrap; font-family: var(--font-title); font-size: clamp(34px, 3.2vw, 46px); font-weight: 700; line-height: 1.12; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
 .kv__sub { margin-top: -8px; padding: 0 2px; font-size: 14px; font-weight: 500; line-height: 2; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
 
-/* 컨트롤 — 흰 글자판(피그마: 숫자 58 · 30%, 아이콘 58%, 구분선 20%, 멈춤 테두리 10%, 바 8 · 58%).
-   --kv-c는 글자색 채널, 모바일(흰 바탕)에서는 검정으로 바뀝니다 */
-.kv__ctrl { position: relative; align-self: flex-start; display: flex; align-items: center; gap: 8px; padding-bottom: 12px; }
-.kv__count { display: flex; gap: 4px; font-size: 14px; line-height: 1.6; color: rgb(var(--kv-c) / 0.3); font-variant-numeric: tabular-nums; }
-.kv__count b, .kv__count span { color: rgb(var(--kv-c) / 0.58); }
+/* 컨트롤 — 피그마 Carousel control(18212-8344): 흰 상자(r8, 높이 40, 안쪽 4 · 왼쪽 20) 안에
+   숫자 · ‹ | › · 멈춤, 상자 10 아래에 5초 진행 바. 상자 안은 Primary/Heavy 글자 · 아이콘,
+   구분선과 멈춤 테두리는 Line/Neutral(16%). 진행 바만 사진 위라 흰색(--kv-c, 모바일은 검정) */
+.kv__ctrl {
+  position: relative; align-self: flex-start; display: flex; align-items: center; gap: 8px;
+  height: 40px; margin-bottom: 12px; padding: 4px 4px 4px 20px;
+  background: #fff; border-radius: var(--r-8);
+}
+.kv__count { display: flex; gap: 4px; font-size: 14px; line-height: 1.6; color: var(--text-disable); font-variant-numeric: tabular-nums; }
+.kv__count b, .kv__count span { font-weight: 400; color: var(--primary-heavy); }
 .kv__nav { display: flex; align-items: center; }
-.kv__btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-8); color: rgb(var(--kv-c) / 0.58); transition: background-color 0.2s, color 0.2s; }
+.kv__btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-8); color: var(--primary-heavy); transition: background-color 0.2s, color 0.2s; }
 .kv__btn svg { width: 18px; height: 18px; }
-.kv__btn:hover { background: rgb(var(--kv-c) / 0.12); color: rgb(var(--kv-c)); }
-.kv__sep { width: 1px; height: 10px; background: rgb(var(--kv-c) / 0.2); }
-.kv__btn--toggle { border: 1px solid rgb(var(--kv-c) / 0.1); }
+.kv__btn:hover { background: rgba(0, 0, 0, 0.06); color: var(--text-normal); }
+.kv__sep { width: 1px; height: 10px; background: var(--line-neutral); }
+.kv__btn--toggle { border: 1px solid var(--line-neutral); }
 .kv__btn--toggle svg { width: 14px; height: 14px; }
 .kv__btn--toggle .i-play { display: none; }
 .kv__btn--toggle[aria-pressed="true"] .i-play { display: block; }
 .kv__btn--toggle[aria-pressed="true"] .i-pause { display: none; }
-/* 자동 넘김 5초 진행 바 — 컨트롤 줄 아래 얇게 */
-.kv__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: rgb(var(--kv-c) / 0.08); overflow: hidden; }
+/* 자동 넘김 5초 진행 바 — 상자 10 아래 */
+.kv__bar { position: absolute; left: 0; right: 0; bottom: -12px; height: 2px; border-radius: 2px; background: rgb(var(--kv-c) / 0.08); overflow: hidden; }
 .kv__bar i { display: block; height: 100%; width: 100%; background: rgb(var(--kv-c) / 0.58); transform-origin: left; transform: scaleX(0); }
 
 @media (max-width: 1024px) {
@@ -149,6 +159,7 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
     padding: 24px var(--gutter) 40px; gap: 24px;
     --kv-ink: var(--text-normal); --kv-c: 0 0 0;
   }
+  .kv__ctrl { box-shadow: inset 0 0 0 1px var(--line-neutral); }   /* 흰 바탕 위라 상자 윤곽만 */
   .kv__copies { margin: 0; }
   .kv__lead { align-self: flex-start; margin-top: 0; }
 }
