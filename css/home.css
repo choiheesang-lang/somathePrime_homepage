@@ -23,16 +23,14 @@ body.intro-revealing .intro-skip, body.intro-revealing #play-btn, body.intro-rev
 body:is(.intro-on, .intro-revealing) .gnb2 { transform: translateY(-100%); }
 
 /* ── 인트로 → 메인 등장 ─────────────────────────────────────────
-   인트로 동안 GNB는 위 밖, 메인 비주얼 글 패널은 왼쪽 밖,
+   인트로 동안 GNB는 위 밖, 메인 비주얼 글은 왼쪽으로 살짝 비켜 숨어 있고,
    퀵메뉴는 오른쪽 밖에 있습니다. intro-on이 떨어지면 아래 지연대로 들어옵니다. */
-body.intro-on .kv__panel { transform: translateX(calc(-100% - 48px)); }   /* 그림자까지 화면 밖으로 */
 body.intro-on .kv__panel > * { opacity: 0; transform: translateX(-32px); }
 body.intro-entering .gnb2 { transition: transform 0.7s var(--ease-out); }
-body.intro-entering .kv__panel { transition: transform 0.9s var(--ease-out) 0.15s; }
 body.intro-entering .kv__panel > * { transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out); }
-body.intro-entering .kv__lead { transition-delay: 0.45s; }
-body.intro-entering .kv__copies { transition-delay: 0.55s; }
-body.intro-entering .kv__ctrl { transition-delay: 0.65s; }
+body.intro-entering .kv__copies { transition-delay: 0.45s; }
+body.intro-entering .kv__ctrl { transition-delay: 0.55s; }
+body.intro-entering .kv__lead { transition-delay: 0.65s; }
 body.intro-entering .quick { transition: opacity 0.5s 0.35s, transform 0.8s var(--ease-out) 0.35s; }
 /* 랜딩의 START 대기 화면을 그대로 씁니다 — 커서 디스크(START/SKIP)와 터치용 고정 디스크.
    손가락 드래그가 스크롤로 끊기지 않도록 인트로 동안 스테이지의 터치 동작을 막습니다. */
@@ -85,6 +83,7 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
    뻗어 나온 카드), 사진 아래는 사이트 아이덴티티인 V 꺾임(.is-folded, DESIGN.md)입니다. */
 /* 사진은 페이지 맨 위(흰 GNB 뒤)부터 깔립니다 — 피그마 Main_visual도 GNB 124 위로 올라가 있습니다 */
 .kv {
+  --kv-c: 255 255 255;   /* 컨트롤 색 채널(흰 글자판) */
   position: relative;
   height: 100svh; min-height: 760px; max-height: 1128px;
 }
@@ -95,74 +94,63 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 /* 사진이 바뀔 때마다 아주 천천히 다가옵니다(랜딩 「점점 포커스되는」 등장과 같은 언어) */
 .kv__slide:nth-child(2) img { object-position: 0% 22%; }    /* 피그마 18174-13456: 원본 왼쪽 1920 · 위 124부터 */
 .kv__slide:nth-child(3) img { object-position: 50% 30%; }   /* 피그마 18174-13457 */
+/* 사진 위 검정 덮개 — 흰 글자가 읽히게. 피그마 Slide 1 7%, 2 · 3 4% */
+.kv__slide::after { content: ""; position: absolute; inset: 0; background: #000; opacity: var(--veil, 0.07); pointer-events: none; }
+.kv__slide:nth-child(n+2) { --veil: 0.04; }
 .kv__slide.is-on img { animation: kv-focus 7s var(--ease-out) both; }
 @keyframes kv-focus { from { transform: scale(1.06); } to { transform: scale(1); } }
 
+/* 글은 판 없이 사진 위에 바로 — 피그마 Main visual(18181-8344). 헤더 아래부터 꺾임 위까지의
+   사진 칸 가운데에 문구 · 컨트롤을 두고, 관심고객 등록은 그 아래 화면 가운데(피그마 873/1920).
+   좌우 여백을 콘텐츠 1160 왼쪽 선으로 같게 둬야 align-self:center가 화면 가운데가 됩니다. */
 .kv__panel {
-  position: absolute; left: 0; z-index: 1;
-  top: calc(var(--header-h) + 32px); bottom: calc(var(--fold-depth) + 48px);
-  /* 글 시작선은 콘텐츠 1160의 왼쪽 끝, 글 영역은 시안의 400 패널 − 왼쪽 112 ≈ 290 + 오른쪽 여백 */
-  width: calc(max(var(--gutter), (100vw - var(--layout-content)) / 2) + 360px);
-  display: flex; flex-direction: column; justify-content: flex-start;
-  padding: 40px 40px 40px max(var(--gutter), calc((100vw - var(--layout-content)) / 2));
-  /* 바탕 모양 — 피그마 Main visual bg(18177-13589): 오른쪽 아래 모서리를 대각선으로 접은 판.
-     740×672에서 오른쪽 변 416까지 내려와 바닥 450으로 꺾입니다(비율 62% · 61%).
-     clip-path가 그림자를 잘라 버리므로 판(::before)과 그림자(::after)를 따로 그립니다.
-     그림자는 clip-path 대신 같은 모양의 SVG 바탕을 흐립니다(clip-path는 흐림 뒤에 잘라 가장자리가 딱딱해짐). */
-  --panel-cut: polygon(0 0, 100% 0, 100% 62%, 61% 100%, 0 100%);
-  --panel-shadow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpolygon points='0,0 100,0 100,62 61,100 0,100' fill='%232C2A29'/%3E%3C/svg%3E");
-  isolation: isolate;
+  --edge: max(var(--gutter), calc((100vw - var(--layout-content)) / 2));
+  position: absolute; left: 0; right: 0; z-index: 1;
+  top: var(--header-h); bottom: var(--fold-depth);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--edge);
+  color: #fff;
 }
-.kv__panel::before, .kv__panel::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
-.kv__panel::before {
-  z-index: -1; clip-path: var(--panel-cut);
-  background: rgba(238, 239, 236, 0.8);    /* #EEEFEC 80% */
-  -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px);
-}
-/* 그림자 0 30 80 rgba(44,42,41,.18) — 같은 모양을 흐리게 깔아 흉내 냅니다 */
-.kv__panel::after { z-index: -2; background: var(--panel-shadow) 0 0 / 100% 100% no-repeat; opacity: 0.18; transform: translateY(30px); filter: blur(40px); }
-
 /* 문구 세 벌은 같은 칸에 겹쳐 두고 사진과 함께 크로스페이드 */
 /* 관심고객 등록 — 채움 버튼 48(.btn2--fill, site.css). 여기서는 자리만 */
-.kv__lead { align-self: flex-start; }
-.kv__copies { display: grid; margin: 98px 0 48px; }   /* 피그마처럼 버튼 아래 98, 위에서부터 쌓습니다 */
+.kv__lead { order: 2; align-self: center; margin-top: 50px; }   /* 컨트롤 아래 50 */
+.kv__copies { display: grid; margin: 0 0 48px; }
 .kv__copy { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out), visibility 0s 0.5s; }
 .kv__copy.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0.15s, 0.15s, 0s; }
-.kv__eyebrow { padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1; letter-spacing: -0.3px; color: var(--text-normal); }
-.kv__title { display: flex; flex-direction: column; white-space: nowrap; font-family: var(--font-title); font-size: clamp(34px, 3.2vw, 46px); font-weight: 700; line-height: 1.12; letter-spacing: -0.3px; color: rgba(0, 0, 0, 0.78); }
-.kv__sub { margin-top: -8px; padding: 0 2px; font-size: 14px; font-weight: 500; line-height: 2; letter-spacing: -0.3px; color: var(--text-normal); }
+.kv__eyebrow { padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
+.kv__title { display: flex; flex-direction: column; white-space: nowrap; font-family: var(--font-title); font-size: clamp(34px, 3.2vw, 46px); font-weight: 700; line-height: 1.12; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
+.kv__sub { margin-top: -8px; padding: 0 2px; font-size: 14px; font-weight: 500; line-height: 2; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
 
+/* 컨트롤 — 흰 글자판(피그마: 숫자 58 · 30%, 아이콘 58%, 구분선 20%, 멈춤 테두리 10%, 바 8 · 58%).
+   --kv-c는 글자색 채널, 모바일(흰 바탕)에서는 검정으로 바뀝니다 */
 .kv__ctrl { position: relative; align-self: flex-start; display: flex; align-items: center; gap: 8px; padding-bottom: 12px; }
-.kv__count { display: flex; gap: 4px; font-size: 14px; line-height: 1.6; color: rgba(0, 0, 0, 0.3); font-variant-numeric: tabular-nums; }
-.kv__count b, .kv__count span { color: rgba(0, 0, 0, 0.58); }
+.kv__count { display: flex; gap: 4px; font-size: 14px; line-height: 1.6; color: rgb(var(--kv-c) / 0.3); font-variant-numeric: tabular-nums; }
+.kv__count b, .kv__count span { color: rgb(var(--kv-c) / 0.58); }
 .kv__nav { display: flex; align-items: center; }
-.kv__btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-8); color: rgba(0, 0, 0, 0.58); transition: background-color 0.2s, color 0.2s; }
+.kv__btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-8); color: rgb(var(--kv-c) / 0.58); transition: background-color 0.2s, color 0.2s; }
 .kv__btn svg { width: 18px; height: 18px; }
-.kv__btn:hover { background: rgba(0, 0, 0, 0.06); color: var(--text-normal); }
-.kv__sep { width: 1px; height: 10px; background: rgba(0, 0, 0, 0.2); }
-.kv__btn--toggle { border: 1px solid rgba(0, 0, 0, 0.1); }
+.kv__btn:hover { background: rgb(var(--kv-c) / 0.12); color: rgb(var(--kv-c)); }
+.kv__sep { width: 1px; height: 10px; background: rgb(var(--kv-c) / 0.2); }
+.kv__btn--toggle { border: 1px solid rgb(var(--kv-c) / 0.1); }
 .kv__btn--toggle svg { width: 14px; height: 14px; }
 .kv__btn--toggle .i-play { display: none; }
 .kv__btn--toggle[aria-pressed="true"] .i-play { display: block; }
 .kv__btn--toggle[aria-pressed="true"] .i-pause { display: none; }
 /* 자동 넘김 5초 진행 바 — 컨트롤 줄 아래 얇게 */
-.kv__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: rgba(0, 0, 0, 0.08); overflow: hidden; }
-.kv__bar i { display: block; height: 100%; width: 100%; background: rgba(0, 0, 0, 0.58); transform-origin: left; transform: scaleX(0); }
+.kv__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: rgb(var(--kv-c) / 0.08); overflow: hidden; }
+.kv__bar i { display: block; height: 100%; width: 100%; background: rgb(var(--kv-c) / 0.58); transform-origin: left; transform: scaleX(0); }
 
 @media (max-width: 1024px) {
-  /* 모바일: 사진(위, V 꺾임) → 글(아래). 패널은 꺾임에 살짝 걸쳐 떠 있습니다 */
+  /* 모바일: 사진(위, V 꺾임) → 글(아래). 글은 흰 바탕 위라 진한 색으로 돌아옵니다 */
   .kv { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column; }
   .kv__slides { position: relative; inset: auto; height: calc(var(--header-h) + 75vw); }
   .kv__panel {
-    position: relative; top: auto; bottom: auto; width: auto;
-    margin: calc(-1 * var(--fold-depth) / 2) var(--gutter) 0 0;
-    padding: 32px 24px 28px var(--gutter); gap: 24px;
-    --panel-cut: polygon(0 0, 100% 0, 100% calc(100% - 64px), calc(100% - 72px) 100%, 0 100%);   /* 짧은 판이라 접힘만 작게 */
-    --panel-shadow: linear-gradient(#2C2A29, #2C2A29);   /* 그림자는 거의 안 보이는 크기라 네모로 */
+    position: relative; top: auto; bottom: auto;
+    padding: 24px var(--gutter) 40px; gap: 24px;
+    --kv-ink: var(--text-normal); --kv-c: 0 0 0;
   }
   .kv__copies { margin: 0; }
-  .kv__copies { order: -1; }
-  .kv__lead { order: 1; }
+  .kv__lead { align-self: flex-start; margin-top: 0; }
 }
 
 /* ── 장면 10 (5p) — 랜딩 그대로, 고정만 풉니다 ──────────────────────
