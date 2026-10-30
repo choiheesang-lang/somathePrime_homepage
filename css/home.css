@@ -19,8 +19,9 @@ body.intro-on.intro-leaving #stage { opacity: 0; transition: opacity 0.9s var(--
 body.intro-revealing #stage { pointer-events: none; }
 body.intro-revealing, body.intro-revealing #stage { cursor: auto !important; }
 body.intro-revealing .intro-skip, body.intro-revealing #play-btn, body.intro-revealing .hero-ctl { opacity: 0 !important; pointer-events: none; transition: opacity 0.2s; }
-/* START를 눌러 재생이 시작되면(is-intro) SKIP은 숨깁니다 — 영상은 끝까지 보는 것이 목적 */
-body.is-intro .intro-skip { opacity: 0; pointer-events: none; }
+/* SKIP은 START 대기 화면(is-armed)에서만 보입니다. 재생이 시작되면 숨고, 끝난 뒤 막이 걷히기 전
+   0.9초(is-armed도 is-intro도 아닌 틈)에도 다시 나오지 않습니다 */
+body:not(.is-armed) .intro-skip { opacity: 0; pointer-events: none; }
 /* 인트로 동안 GNB는 화면 위로 비켜 두고, 걷힌 뒤 위에서 내려옵니다 */
 body:is(.intro-on, .intro-revealing) .gnb2 { transform: translateY(-100%); }
 
