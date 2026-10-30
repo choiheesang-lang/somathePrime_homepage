@@ -34,9 +34,11 @@ body.is-intro #stage { will-change: transform, opacity; }
   top:  calc(var(--oy) + 309px * var(--s));
   width:  calc(464px * var(--s));
   height: calc(var(--ph, 342) * var(--s) * 1px);
-  border-radius: calc(8px * var(--s));
+  /* 팔각형 카드(DESIGN.md 2) — 모서리 --oct-l을 카드 배율(--s)에 맞춰 자릅니다.
+     테두리는 .shape-oct--ring의 ::after가 그리고, 색 --ring은 hero.js가 블롭이 닿을 때마다 밝힙니다 */
+  --oct: calc(var(--oct-l) * var(--s));
+  --ring: var(--hero-glass-border);
   background: var(--hero-glass-bg);
-  border: 1px solid var(--hero-glass-border);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   color: #fff;
@@ -45,27 +47,28 @@ body.is-intro #stage { will-change: transform, opacity; }
   transform-origin: 50% 50%;
   box-shadow: 0 0 0 0 rgba(255,255,255,0);
 }
-/* -1px so the contents are laid out from the card's OUTER edge: Figma positions them in the
-   464×342 frame, while a border-box child would start inside the 1px border. */
-.panel__content { position: absolute; inset: -1px; transform-origin: 50% 50%; }
+/* 테두리가 ::after 링이 되면서 카드 상자 = 피그마 464×342 프레임이라 안쪽은 0부터 */
+.panel__content { position: absolute; inset: 0; transform-origin: 50% 50%; }
 
 /* ── cursor spotlight on the rim (ref. joshwrn/react-spotlight-cursor).
    The reference puts a white disc behind the card and lets an opaque inner panel hide all but
    the border; our glass is rgba(255,255,255,0.01) so there is nothing to hide with. Same picture,
    built with a mask instead: a 1px ring holding a radial gradient centred on the cursor.
    hero.js writes --spot-x/y (card-local px) and --spot-a (0 far away → 1 on the card). */
+/* 링 모양은 .shape-oct--ring::after와 같은 팔각 테두리(바깥 − 안쪽, evenodd) */
 .panel::before {
+  --b: 1px;
   content: "";
   position: absolute;
-  inset: -1px;                                   /* sit exactly on the card's own 1px border */
-  border-radius: calc(8px * var(--s) + 1px);
-  padding: 1px;
+  inset: 0;
   background: radial-gradient(circle calc(300px * var(--s)) at var(--spot-x, 50%) var(--spot-y, -100%),
               rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0) 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          mask-composite: exclude;
+  clip-path: polygon(evenodd,
+    var(--oct) 0, calc(100% - var(--oct)) 0, 100% var(--oct), 100% calc(100% - var(--oct)),
+    calc(100% - var(--oct)) 100%, var(--oct) 100%, 0 calc(100% - var(--oct)), 0 var(--oct),
+    var(--oct) var(--b), calc(100% - var(--oct)) var(--b), calc(100% - var(--b)) var(--oct), calc(100% - var(--b)) calc(100% - var(--oct)),
+    calc(100% - var(--oct)) calc(100% - var(--b)), var(--oct) calc(100% - var(--b)), var(--b) calc(100% - var(--oct)), var(--b) var(--oct));
+  z-index: 1;
   opacity: var(--spot-a, 0);
   pointer-events: none;
   will-change: opacity;
@@ -299,8 +302,6 @@ body[data-ctl="start"]:not(.hero-on) .hero-ctl__disc {
    panel units with x 464/234 = 1.98291, so it stays in the same coordinate system as the desktop
    rules above. */
 body.hero-narrow .panel {
-  border-radius: calc(11.9px * var(--s));             /* Figma 6 on a 234-wide card */
-  border-width: 0.75px;                               /* Chrome rounds this up to 1px; Safari honours it */
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }

@@ -209,7 +209,7 @@ body.mnav-open { overflow: hidden; }
    같은 육각형(::before)을 바탕색으로 덮어 만듭니다. */
 .btn2 {
   --h: 56px; --pad: 32px; --fs: 18px; --ico: 20px;
-  --tip: calc(var(--h) * 0.29);   /* 끝 접힘 = 높이 × 0.29 — 폭이 늘어도 크기가 바뀌어도 각도는 같습니다 */
+  --tip: calc(var(--h) * var(--hex-ratio));   /* 끝 접힘 = 높이 × 0.29 — 폭이 늘어도 크기가 바뀌어도 각도는 같습니다 */
   --stroke: var(--primary-heavy); --bw: 1px; --bg: #fff; --ink: var(--text-normal);   /* 종류 없이 쓰면 라인 */
   --hex: polygon(var(--tip) 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, var(--tip) 100%, 0 50%);
   position: relative; isolation: isolate;
@@ -273,20 +273,43 @@ body.mnav-open { overflow: hidden; }
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fold-depth)), 50% 100%, 0 calc(100% - var(--fold-depth)));
 }
 
+/* ── 팔각형 (DESIGN.md 2) ─────────────────────────────────────────
+   .shape-oct      clip-path로 네 모서리를 --oct만큼 45° 자릅니다(기본 --oct-m).
+   .shape-oct--ring 1px 테두리. clip-path는 border를 잘라 버리므로 ::after를 --ring 색으로 칠하고
+                   바깥 팔각형 − 안쪽 팔각형(evenodd)만 남깁니다. 그림자는 부모의 drop-shadow로. */
+.shape-oct {
+  --oct: var(--oct-m);
+  --oct-path: polygon(var(--oct) 0, calc(100% - var(--oct)) 0, 100% var(--oct), 100% calc(100% - var(--oct)),
+              calc(100% - var(--oct)) 100%, var(--oct) 100%, 0 calc(100% - var(--oct)), 0 var(--oct));
+  clip-path: var(--oct-path);
+}
+.shape-oct--ring { position: relative; }
+.shape-oct--ring::after {
+  --b: var(--ring-w, 1px);
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: var(--ring, currentColor);
+  clip-path: polygon(evenodd,
+    var(--oct) 0, calc(100% - var(--oct)) 0, 100% var(--oct), 100% calc(100% - var(--oct)),
+    calc(100% - var(--oct)) 100%, var(--oct) 100%, 0 calc(100% - var(--oct)), 0 var(--oct),
+    var(--oct) var(--b), calc(100% - var(--oct)) var(--b), calc(100% - var(--b)) var(--oct), calc(100% - var(--b)) calc(100% - var(--oct)),
+    calc(100% - var(--oct)) calc(100% - var(--b)), var(--oct) calc(100% - var(--b)), var(--b) calc(100% - var(--oct)), var(--b) var(--oct));
+}
+
 /* ── 퀵메뉴 (기획서 4p ⑤) ───────────────────────────────────────────
    미래탐구 side_banner(피그마 18144-10173)를 따릅니다: 오른쪽 위, 폭 88의 흰 카드 하나에
    항목들, 그 아래 따로 떨어진 작은 TOP 카드. 짧은 가로선(32 · 16)으로 묶음을 나눕니다. */
 .quick {
+  filter: drop-shadow(0 8px 24px rgba(44, 42, 41, 0.08)) drop-shadow(0 0 1px rgba(44, 42, 41, 0.16));   /* 팔각형을 따라가는 그림자 */
   position: fixed; right: 24px; top: calc(var(--header-h) + 24px); z-index: 45;
   display: flex; flex-direction: column; align-items: stretch; gap: 12px;
   width: 88px;
   transition: opacity 0.4s, transform 0.5s var(--ease-out);
 }
 body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(calc(100% + 32px)); }   /* 인트로 뒤 오른쪽에서 들어옵니다 */
-.quick__list, .quick__top {
-  background: #fff; border-radius: var(--r-16) var(--r-16) var(--r-24) var(--r-16);
-  box-shadow: 0 8px 24px rgba(44, 42, 41, 0.08), 0 0 0 1px rgba(44, 42, 41, 0.04);
-}
+/* 두 카드는 팔각형(--oct-m, 마크업의 .shape-oct). TOP 카드는 낮아서 --oct-s.
+   두 카드 사이 짧은 선(.quick__top::before)은 카드 밖 위쪽이라 clip에 잘리지 않게 TOP만 위로 열어 둡니다 */
+.quick__list, .quick__top { background: #fff; }
+.quick__top.shape-oct { --oct: var(--oct-s); clip-path: polygon(var(--oct) -12px, calc(100% - var(--oct)) -12px, calc(100% - var(--oct)) 0, 100% var(--oct), 100% calc(100% - var(--oct)), calc(100% - var(--oct)) 100%, var(--oct) 100%, 0 calc(100% - var(--oct)), 0 var(--oct), var(--oct) 0); }
 .quick__list { padding: 12px 8px; }
 .quick__btn, .quick__top {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -311,8 +334,9 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(c
   /* 모바일: 오른쪽 아래 둥근 버튼 둘(관심고객 등록 · 맨 위로)만 */
   .quick {
     top: auto; bottom: calc(16px + env(safe-area-inset-bottom)); right: 16px; transform: none;
-    width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none;
+    width: auto; padding: 0; gap: 10px; background: none; border: 0; box-shadow: none; filter: none;
   }
+  .quick__list.shape-oct, .quick__top.shape-oct { clip-path: none; }   /* 모바일은 알약 · 원 버튼 */
   body.intro-on .quick { transform: translateX(calc(100% + 24px)); }
   .quick__list { padding: 0; background: none; box-shadow: none; border-radius: 0; }
   .quick__list li:not(:first-child) { display: none; }
