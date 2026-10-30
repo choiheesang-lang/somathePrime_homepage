@@ -74,8 +74,7 @@ STP.hero = (function () {
   function measure() {
     rect = visibleRect();
     sPx = rect.vw / rect.w;                             // px per viewBox unit
-    // hdrPx: 헤더 높이를 직접 정할 때(홈은 인트로 동안 GNB를 숨기므로 랜딩 GNB 76 기준 자리를 씁니다)
-    hdrVB = (hooks.hdrPx != null ? hooks.hdrPx : (els && els.header ? els.header.getBoundingClientRect().height : 76)) / sPx;
+    hdrVB = (els && els.header ? els.header.getBoundingClientRect().height : 76) / sPx;
     mobile = rect.w < 800;
     // the mobile card CSS keys off this class, not a media query — a viewport-px breakpoint
     // would disagree with `mobile`, which is measured in viewBox units
@@ -162,7 +161,9 @@ STP.hero = (function () {
     switch (side) {
       // desktop: the top blob rides 40 css px up so it just laps over the frosted GNB.
       // mobile keeps Figma 17811:4081, which deliberately clears the bar.
-      case 'top':    return { x: C.x, y: mobile ? rect.y + rect.h * 0.224 : rect.y + hdrVB + R * 1.2 - 40 / sPx };
+      // topFlush(홈): GNB가 없는 인트로라 아래 블롭과 거울처럼 — 화면 위 끝에 살짝 걸쳐 붙습니다.
+      case 'top':    if (hooks.topFlush) return { x: C.x, y: mobile ? rect.y + rect.h * (1 - 0.817) : rect.y + R * 0.69 };
+                     return { x: C.x, y: mobile ? rect.y + rect.h * 0.224 : rect.y + hdrVB + R * 1.2 - 40 / sPx };
       case 'bottom': return { x: C.x, y: mobile ? rect.y + rect.h * 0.817 : rect.y + rect.h - R * 0.69 };
       case 'left':   return { x: rect.x + R * inset(), y: C.y };
       default:       return { x: rect.x + rect.w - R * inset(), y: C.y };
