@@ -1,2 +1,4 @@
 .DS_Store
 font/*.ttf
+# 보정 원본 PNG — webp 변환본만 올립니다
+img/수정이미지/

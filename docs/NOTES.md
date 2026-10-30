@@ -118,3 +118,6 @@
 - 코드만 반영했고 피그마 main 프레임의 Program 섹션은 예전 카드 그대로입니다.
 - 메모: `hero.js`의 `SATS`는 마이온 = 더스티 블루, 리딩오션 = 세이지로 되어 있어 `tokens.css` 주석(마이온 = 세이지, 리딩오션 = 더스티 블루)과 반대입니다. 이번엔 손대지 않았습니다.
 
+## 버튼 pill 복귀 · 판 1160 · GitHub (2026-10-30)
+- 육각형 버튼(Fill · Line · Ghost)과 GNB 2depth 육각 호버를 모두 pill(r999)로 되돌렸습니다. 피그마 세 세트 · 18166-8652도 같이. 브랜드 판 폭은 1400 → 1160.
+- 저장소: https://github.com/choiheesang-lang/somathePrime_homepage · 보정 원본 PNG(`img/수정이미지/`)는 .gitignore.

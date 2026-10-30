@@ -180,12 +180,12 @@ body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 .is-link { cursor: pointer; }
 
 /* ── 교육 프로그램 안내 (6p) — 4면 판 + 슬라임 ─────────────────────
-   미탐존(피그마 18144-9958)처럼 한 장의 판(1400×688, r24)을 2×2로 나눕니다. 면마다 브랜드 색(--c)이고,
+   미탐존(피그마 18144-9958)처럼 한 장의 판(1160, 비율 1400:688, r24)을 2×2로 나눕니다. 면마다 브랜드 색(--c)이고,
    활성 면(.is-on, 항상 하나)은 교실 사진 위에 브랜드 색 덮개 + 흰 글자입니다. 가운데 슬라임은
    svg.quad__goo(home.js quad)가 그립니다. */
 .prog { padding: 140px 0 150px; background: var(--bg-brand-normal); }
-/* 폭 1400. 데스크톱은 양쪽에 퀵메뉴 자리(24 + 88 + 24 = 136)를 비워 겹치지 않게 — 1440에서는 콘텐츠 폭(1168)이 됩니다 */
-.quad { position: relative; width: min(1400px, 100% - 272px); margin: 56px auto 0; }
+/* 폭 1160(콘텐츠 폭). 양쪽 퀵메뉴 자리(136)보다 안쪽이라 1440에서도 그대로 1160 */
+.quad { position: relative; width: min(1160px, 100% - 272px); margin: 56px auto 0; }
 .quad__faces { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--r-24); overflow: hidden; isolation: isolate; }
 .quad__face {
   position: relative; overflow: hidden; aspect-ratio: 700 / 344;
