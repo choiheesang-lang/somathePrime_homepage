@@ -42,9 +42,8 @@ body.intro-on #stage { touch-action: none; }
   display: inline-flex; align-items: center; gap: 8px;
   height: 56px; padding: 0 28px 0 32px;
   font-family: var(--font-title); font-size: var(--fs-brand-body-1); font-weight: 700; letter-spacing: 0.04em; color: #fff;
-  /* 팔각형 --oct-s(DESIGN.md 2) — 마크업의 .shape-oct .shape-oct--ring. 테두리는 링(--ring) */
-  --oct: var(--oct-s); --ring: rgba(255, 255, 255, 0.32);
-  background: rgba(44, 42, 41, 0.62);
+  background: rgba(44, 42, 41, 0.62); border: 1px solid rgba(255, 255, 255, 0.32); border-radius: var(--r-pill);
+  box-shadow: var(--shadow-md);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   cursor: pointer;
   transition: background-color 0.2s, opacity 0.4s, transform 0.25s var(--ease-out);
@@ -54,7 +53,7 @@ body.intro-on #stage { touch-action: none; }
 .intro-skip:active { transform: translateX(-50%) scale(0.97); }
 .intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 /* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
-body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); --ring: var(--line-neutral); }
+body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); border-color: var(--line-neutral); }
 
 /* START 동그라미 → SKIP (home.js nearSkip)
    버튼 가장자리 120px 안에서 동그라미가 ease-in-out으로 32px까지 작아지고, 영역에 들어오는
@@ -64,7 +63,7 @@ body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 
 body.disc-near #play-btn .pb-label, body.disc-near #play-btn .pb-icon { opacity: 0; }
 body.ptr-on .intro-skip { cursor: none; }
 .intro-skip__inv {
-  position: absolute; inset: 0;
+  position: absolute; inset: -1px;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 0 28px 0 32px; border-radius: inherit;
   background: #F1EEEC; color: var(--text-normal);

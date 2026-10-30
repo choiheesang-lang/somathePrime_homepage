@@ -634,7 +634,7 @@ STP.hero = (function () {
     gsap.set(els.markShine, { attr: { x: -200 } });
     gsap.set(els.cardFill, { attr: { 'fill-opacity': 0 } });
     gsap.set(els.panel, { opacity: 1, scale: 1, transformOrigin: '50% 50%',
-      '--ring': 'rgba(221,221,221,0.2)', backgroundColor: 'rgba(255,255,255,0.01)' });   // 테두리는 팔각 링(--ring)
+      borderColor: 'rgba(221,221,221,0.2)', backgroundColor: 'rgba(255,255,255,0.01)' });
     gsap.set(els.panelContent, { opacity: 1, scale: 1 });
     gsap.set(els.panelItems, { opacity: 1, y: 0 });
     gsap.set(Object.values(els.glows), { opacity: 0 });
@@ -694,7 +694,7 @@ STP.hero = (function () {
         .to(els.logos[idx], { color: WHITE, duration: 0.3, ease: 'power1.out' }, t + 0.62)
         .to(els.glows[s.side], { opacity: 1, duration: 0.4, ease: 'power2.out' }, t + 0.62)
         .to(els.panel, {
-          '--ring': `rgba(255,255,255,${(0.2 + 0.14 * (n + 1)).toFixed(2)})`,
+          borderColor: `rgba(255,255,255,${(0.2 + 0.14 * (n + 1)).toFixed(2)})`,
           backgroundColor: `rgba(255,255,255,${(0.01 + 0.035 * (n + 1)).toFixed(3)})`,
           duration: 0.5, ease: 'power1.out',
         }, t + 0.62)
