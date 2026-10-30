@@ -329,24 +329,45 @@
       }
       const main = makeBlob(q('quad-main'), q('quad-main-crisp'), 3);
       const drop = makeBlob(q('quad-drop'), q('quad-drop-crisp'), 7);
-      const size = { base: R };                         // main의 기준 반지름 — 흡수 때 줄었다 다시 부풉니다
+      const size = { base: R };                         // main의 현재 반지름 — 방울을 떼어 보내면 줄고, 대기 동안 R로 차오릅니다
       const setFill = (b, c) => { b.vis.style.fill = c; b.twin.style.fill = c; };
       setFill(main, INK); setFill(drop, INK);
 
-      /* 매 프레임: main은 5% 호흡(hero breathe), 로고는 main 크기에 비례 */
+      const faceCenter = (i) => ({ x: (i % 2 ? 3 : 1) * W / 4, y: (i < 2 ? 1 : 3) * H / 4 });
+      /* 뒤 슬라임 넷 — DOM 면 순서대로 브랜드 색. 반지름 0.92R라 가운데 있으면 검은 슬라임에 다 가려지고,
+         자기 면 방향으로 12~32 치우치며 떠돌아 가장자리 밖으로 3~23px만 비칩니다 */
+      const BACK_R = R * 0.92;
+      const back = ['--pal-brand-coral', '--pal-brand-yellow', '--pal-brand-sage-green', '--pal-brand-dusty-blue'].map((tok, k) => {
+        const b = makeBlob(q('quad-back-' + k), q('quad-back-' + k + '-crisp'), 11 + k * 2);
+        const fc = faceCenter(k);
+        b.ang0 = Math.atan2(fc.y - C.y, fc.x - C.x);
+        b.wa = 0.25 + b.om[0] * 0.12; b.wb = 0.3 + b.om[2] * 0.15;   // 0.25~0.45 rad/s, 블롭마다 다르게
+        b.r = BACK_R; setFill(b, css(tok));
+        return b;
+      });
+      const placeBack = (t) => back.forEach((b) => {
+        const off = reduce ? 22 : 22 + 10 * Math.sin(t * b.wa + b.ph[0]);
+        const ang = b.ang0 + (reduce ? 0 : 0.45 * Math.sin(t * b.wb + b.ph[1]));
+        b.x = C.x + off * Math.cos(ang); b.y = C.y + off * Math.sin(ang);
+      });
+
+      /* 매 프레임: main은 5% 호흡(hero breathe), 로고는 main 크기에 비례(절반 크기에서도 0.6배로 남음) */
       let clock = 0;
       const tick = (time, dtMs) => {
         if (!onScreen) return;
         const dt = Math.min(dtMs / 1000, 0.05);
         clock += dt; main.tt += dt; drop.tt += dt * 1.3;
         main.r = size.base * (1 + 0.05 * Math.sin(clock * 1.8));
+        placeBack(clock);
+        back.forEach((b) => { b.tt += dt * 0.7; write(b); });
         write(main); write(drop);
-        const v = gsap.utils.clamp(0, 1, (main.r - R * 0.35) / (R * 0.65));
-        mark.style.opacity = v.toFixed(3);
+        const v = gsap.utils.clamp(0, 1, (main.r - R * 0.5) / (R * 0.5));
+        mark.style.opacity = (0.6 + 0.4 * v).toFixed(3);
         mark.style.transform = `scale(${(0.6 + 0.4 * v).toFixed(3)})`;
       };
-      if (reduce) {                                     // 정지한 원 + 로고
+      if (reduce) {                                     // 정지한 원 + 로고, 뒤 넷은 고정 자리
         main.r = R; write(main); mark.style.opacity = '1';
+        placeBack(0); back.forEach(write);
       }
 
       /* 면 전환 — 사진은 슬라임이 사라진 자리(--rx --ry)에서 원이 커지며 드러납니다 */
@@ -359,29 +380,30 @@
         gsap.fromTo(rv, { v: 0 }, { v: 150, duration: 0.7, ease: 'power2.out',
           onUpdate: () => photo.style.setProperty('--rv', rv.v.toFixed(1) + '%') });
       };
-      const faceCenter = (i) => ({ x: (i % 2 ? 3 : 1) * W / 4, y: (i < 2 ? 1 : 3) * H / 4 });
       function activate(i) {
         if (i === cur && !busy) return;
         if (busy) { pending = i; busy.timeScale(3); return; }   // 진행 중이면 빨리 끝내고 이어서
         stopTimer();
         if (reduce) { setOn(i); schedule(); return; }
         const fc = faceCenter(i), tx = C.x + (fc.x - C.x) * 0.6, ty = C.y + (fc.y - C.y) * 0.6;
-        const brand = getComputedStyle(faces[i]).getPropertyValue('--c').trim();
-        const brandHex = css(brand.replace(/^var\((.*)\)$/, '$1')) || brand;
-        drop.x = C.x; drop.y = C.y; drop.r = size.base; setFill(drop, INK);
-        const col = { c: INK };
+        /* 넓이 1/4을 검은 방울로 떼어 냅니다 — 방울 r/2, 남는 것 r·√0.75. 연달아 떼어도 절반 아래로는 안 내려갑니다 */
+        if (refillTw) { refillTw.kill(); refillTw = null; }
+        const dropR = size.base / 2, keepR = Math.max(size.base * Math.sqrt(0.75), R * 0.5);
+        drop.x = C.x; drop.y = C.y; drop.r = dropR; setFill(drop, INK);
         busy = gsap.timeline({ onComplete: () => {
           busy = null;
+          refill();
           if (pending >= 0) { const n = pending; pending = -1; activate(n); }
           else schedule();
         } });
-        busy.to(size, { base: R * 0.35, duration: 0.35, ease: 'power2.in' }, 0)
+        busy.to(size, { base: keepR, duration: 0.45, ease: 'power2.out' }, 0)
           .to(drop, { x: tx, y: ty, duration: 0.9, ease: 'power2.in' }, 0)
-          .to(col, { c: brandHex, duration: 0.6, ease: 'none', onUpdate: () => setFill(drop, col.c) }, 0.2)
           .to(drop, { r: 0, duration: 0.35, ease: 'power3.in' }, 0.55)
-          .add(() => setOn(i, true), 0.9)
-          .to(size, { base: R, duration: 0.7, ease: 'back.out(1.4)' }, 1.15);
+          .add(() => setOn(i, true), 0.9);
       }
+      /* 보낸 뒤 대기 동안 숨 들이듯 제 크기로 */
+      let refillTw = null;
+      function refill() { refillTw = gsap.to(size, { base: R, duration: 3, ease: 'sine.inOut', onComplete: () => { refillTw = null; } }); }
       const next = () => activate(ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length]);
       function stopTimer() { if (timer) { timer.kill(); timer = null; } }
       function schedule() { stopTimer(); if (onScreen && !hovering) timer = gsap.delayedCall(CYCLE, next); }
@@ -398,7 +420,7 @@
         else { gsap.ticker.remove(tick); stopTimer(); }
       }, { threshold: 0.2 });
       io.observe(root);
-      return () => { gsap.ticker.remove(tick); io.disconnect(); stopTimer(); if (busy) busy.kill(); };
+      return () => { gsap.ticker.remove(tick); io.disconnect(); stopTimer(); if (busy) busy.kill(); if (refillTw) refillTw.kill(); };
     })();
 
       gsap.utils.toArray('.kw-slot').forEach((slot, i) => {
