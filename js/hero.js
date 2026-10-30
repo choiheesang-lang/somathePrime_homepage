@@ -74,7 +74,8 @@ STP.hero = (function () {
   function measure() {
     rect = visibleRect();
     sPx = rect.vw / rect.w;                             // px per viewBox unit
-    hdrVB = (els && els.header ? els.header.getBoundingClientRect().height : 76) / sPx;
+    // hdrPx: 헤더 높이를 직접 정할 때(홈은 인트로 동안 GNB를 숨기므로 랜딩 GNB 76 기준 자리를 씁니다)
+    hdrVB = (hooks.hdrPx != null ? hooks.hdrPx : (els && els.header ? els.header.getBoundingClientRect().height : 76)) / sPx;
     mobile = rect.w < 800;
     // the mobile card CSS keys off this class, not a media query — a viewport-px breakpoint
     // would disagree with `mobile`, which is measured in viewBox units

@@ -93,7 +93,8 @@
       reduce: reduceMQ.matches,
       speed: SPEED,
       touchMask: true,
-      noRestart: true,                  // 오프닝은 처음 한 번만 — 끝나도 RESTART를 띄우지 않습니다
+      noRestart: true,
+      hdrPx: 76,                        // 인트로 동안 GNB(128)는 숨어 있으므로 위 블롭은 랜딩(GNB 76) 때 자리 그대로                  // 오프닝은 처음 한 번만 — 끝나도 RESTART를 띄우지 않습니다
       onToLight: () => body.classList.add('intro-light'),
       onComplete: () => setTimeout(leave, leaving ? 0 : HOLD),
     });
