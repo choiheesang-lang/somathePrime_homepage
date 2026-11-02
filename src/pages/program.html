@@ -1,21 +1,161 @@
 ---
 title: 교육 프로그램 | 소마 더 프라임
-desc: 네 개의 브랜드, 하나의 성장 여정.
+desc: 사고력 수학 · 창의 교구 수학 · 글로벌 영어 독서 · 사고력 독서. 네 개의 브랜드가 하나의 성장 여정으로 이어지고, 유치부는 다면적 관찰평가로 아이에게 맞는 반에서 시작합니다.
 path: /program.html
 menu: program
-body: sub
+crumb: 교육 프로그램
+head-tabs: 네 개의 프로그램=#programs|관찰평가 시스템=#assessment
+body: sub brand-page
+css: brand program
+js: brand program
 ---
   {{sprite}}
 
   {{gnb}}
 
-  <main id="content" class="page">
-    <section class="stub">
-      <div class="stub__box">
-        <h1>교육 프로그램</h1>
-        <p>네 개의 브랜드, 하나의 성장 여정.</p>
-        <span class="stub__note">3단계에서 제작</span>
-        <div><a class="btn2 btn2--line btn2--wide" href="/">홈으로</a></div>
+  <main id="content" class="page bp pg">
+    {{crumb}}
+    {{bphead}}
+
+    <!-- 14p ① 소개 — 흰 바탕 · 가운데(브랜드 소개 · 캠퍼스 안내와 같은 첫 섹션 언어) -->
+    <section class="pg-hero">
+      <div class="wrap">
+        <p class="bp-label" data-step="0">PROGRAM</p>
+        <h2 class="pg-hero__title" data-step="0">네 개의 브랜드, <br />하나의 성장 여정</h2>
+        <p class="pg-hero__body" data-step="1">수학적 사고 · 창의 활동 · 글로벌 영어 · 독서와 표현. <br />사고력 형성기에 필요한 네 가지 축을 한 캠퍼스에서 완성합니다.</p>
+      </div>
+    </section>
+
+    <!-- 14p ② ③ 네 프로그램 — 위 성장 트랙(연령 구간) + 아래 가로 아코디언. 활성 패널과 트랙이 함께 움직입니다(program.js) -->
+    <section class="pg-journey" id="programs">
+      <div class="wrap">
+        <!-- 성장 트랙 — 눈금 6칸(6세~초4), 프로그램마다 브랜드 색 구간 막대 + 슬라임 점. 구간 값은 기획서 문구에서 추정(실제 구간 확인 필요) -->
+        <div class="pg-track" data-step="0" aria-hidden="true">
+          <ol class="pg-track__rows">
+            <li class="pg-track__row is-on" data-i="0" style="--c: var(--goo-coral); --from: 0; --to: 5"><svg class="pg-track__dot"><use href="#blob-1" /></svg><span class="pg-track__bar"></span><em>소마</em></li>
+            <li class="pg-track__row" data-i="1" style="--c: var(--goo-yellow); --from: 0; --to: 1"><svg class="pg-track__dot"><use href="#blob-2" /></svg><span class="pg-track__bar"></span><em>플레이팩토</em></li>
+            <li class="pg-track__row" data-i="2" style="--c: var(--goo-green); --from: 1; --to: 5"><svg class="pg-track__dot"><use href="#blob-3" /></svg><span class="pg-track__bar"></span><em>마이온</em></li>
+            <li class="pg-track__row" data-i="3" style="--c: var(--goo-blue); --from: 1; --to: 5"><svg class="pg-track__dot"><use href="#blob-4" /></svg><span class="pg-track__bar"></span><em>리딩오션</em></li>
+          </ol>
+          <ol class="pg-track__axis"><li>6세</li><li>7세</li><li>초1</li><li>초2</li><li>초3</li><li>초4</li></ol>
+        </div>
+
+        <ul class="pg-acc" role="tablist" aria-label="네 개의 프로그램" data-step="1">
+          <li class="pg-panel is-on" role="tab" tabindex="0" aria-selected="true" data-i="0" style="--c: var(--pal-brand-coral)">
+            <img class="pg-panel__photo" src="/img/campus/class-02.webp" alt="" loading="lazy" />
+            <div class="pg-panel__min"><svg viewBox="0 0 174 40" aria-hidden="true"><use href="#lg-soma" /></svg><b>사고력 수학</b></div>
+            <div class="pg-panel__full">
+              <svg class="pg-panel__logo" viewBox="0 0 174 40" role="img" aria-label="소마"><use href="#lg-soma" /></svg>
+              <h3 class="pg-panel__name">사고력 수학</h3>
+              <p class="pg-panel__lead">정답보다 과정을 중시하는 사고력 수학</p>
+              <ul class="pg-panel__points"><li>유치 6세부터 초등 4학년까지 이어지는 정규 과정</li><li>‘재미있는 수학 배움터’를 잇는 소마의 핵심 커리큘럼</li></ul>
+              <div class="pg-panel__foot"><span class="pg-panel__age">6세 ~ 초4</span><a class="btn2 btn2--ghost btn2--32 pg-panel__more" href="#">자세히 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+            </div>
+          </li>
+          <li class="pg-panel" role="tab" tabindex="-1" aria-selected="false" data-i="1" style="--c: var(--pal-brand-yellow)">
+            <img class="pg-panel__photo" src="/img/campus/class-06.webp" alt="" loading="lazy" />
+            <div class="pg-panel__min"><svg viewBox="0 0 96 64" class="is-play" aria-hidden="true"><use href="#lg-playfacto" /></svg><b>창의 교구 수학</b></div>
+            <div class="pg-panel__full">
+              <svg class="pg-panel__logo is-play" viewBox="0 0 96 64" role="img" aria-label="플레이팩토"><use href="#lg-playfacto" /></svg>
+              <h3 class="pg-panel__name">창의 교구 수학</h3>
+              <p class="pg-panel__lead">손으로 만지며 원리를 깨치는 유아 수학</p>
+              <ul class="pg-panel__points"><li>스토리텔링으로 시작하는 유아 수학</li><li>최고급 원목 교구로 즐기는 놀이 · 게임형 학습</li></ul>
+              <div class="pg-panel__foot"><span class="pg-panel__age">6 ~ 7세</span><a class="btn2 btn2--ghost btn2--32 pg-panel__more" href="#">자세히 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+            </div>
+          </li>
+          <li class="pg-panel" role="tab" tabindex="-1" aria-selected="false" data-i="2" style="--c: var(--pal-brand-sage-green)">
+            <img class="pg-panel__photo" src="/img/campus/class-09.webp" alt="" loading="lazy" />
+            <div class="pg-panel__min"><svg viewBox="0 0 201 62" aria-hidden="true"><use href="#lg-myon-wide" /></svg><b>글로벌 영어 독서</b></div>
+            <div class="pg-panel__full">
+              <svg class="pg-panel__logo" viewBox="0 0 201 62" role="img" aria-label="Renaissance myON"><use href="#lg-myon-wide" /></svg>
+              <h3 class="pg-panel__name">글로벌 영어 독서</h3>
+              <p class="pg-panel__lead">7,000권 이상의 인터랙티브 영어 원서</p>
+              <ul class="pg-panel__points"><li>AR · Lexile 공인 레벨 기반의 영어 독서</li><li>리딩 이력에 따른 맞춤 도서 추천</li></ul>
+              <div class="pg-panel__foot"><span class="pg-panel__age">7세 ~ 초4</span><a class="btn2 btn2--ghost btn2--32 pg-panel__more" href="#">자세히 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+            </div>
+          </li>
+          <li class="pg-panel" role="tab" tabindex="-1" aria-selected="false" data-i="3" style="--c: var(--pal-brand-dusty-blue)">
+            <img class="pg-panel__photo" src="/img/campus/class-10.webp" alt="" loading="lazy" />
+            <div class="pg-panel__min"><svg viewBox="0 0 151 50" aria-hidden="true"><use href="#lg-reading" /></svg><b>사고력 독서</b></div>
+            <div class="pg-panel__full">
+              <svg class="pg-panel__logo" viewBox="0 0 151 50" role="img" aria-label="리딩오션"><use href="#lg-reading" /></svg>
+              <h3 class="pg-panel__name">사고력 독서</h3>
+              <p class="pg-panel__lead">읽은 것을 생각으로, 생각을 표현으로</p>
+              <ul class="pg-panel__points"><li>문해력을 기르는 사고력 독서 프로그램</li><li>말하고 쓰는 표현의 힘까지</li></ul>
+              <div class="pg-panel__foot"><span class="pg-panel__age">7세 ~ 초4</span><a class="btn2 btn2--ghost btn2--32 pg-panel__more" href="#">자세히 <svg class="btn2__arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5.5l4.5 4.5L11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 15p 유치부 전용 다면적 관찰평가 — 진한 면(브랜드 소개 차별점과 같은 Primary/Strong). BEFORE 점수 막대 → AFTER 5각 레이더 → 맞춤 반 편성 -->
+    <section class="pg-assess" id="assessment">
+      <div class="wrap">
+        <div class="pg-assess__head">
+          <p class="bp-label" data-step="0">ASSESSMENT</p>
+          <h2 class="pg-assess__title" data-step="0">유치부 전용 <br />다면적 관찰평가 시스템</h2>
+          <p class="pg-assess__body" data-step="1">단순한 점수가 아닌, 아이의 다양한 모습을 관찰해 <br />가장 알맞은 학습 환경을 준비합니다.</p>
+        </div>
+
+        <div class="pg-mode" role="group" aria-label="평가 방식 비교" data-step="1">
+          <button type="button" class="btn2 btn2--ghost btn2--32 pg-mode__btn" data-mode="before" aria-pressed="false">BEFORE</button>
+          <button type="button" class="btn2 btn2--fill btn2--32 pg-mode__btn" data-mode="after" aria-pressed="true">AFTER</button>
+        </div>
+
+        <div class="pg-stage is-after" data-step="2">
+          <!-- BEFORE — 점수 하나 -->
+          <article class="pg-card pg-card--before">
+            <p class="pg-card__tag">BEFORE</p>
+            <h3 class="pg-card__name">단순 레벨테스트</h3>
+            <p class="pg-card__desc">시험 결과 중심의 수준 확인</p>
+            <div class="pg-score" aria-label="점수 72점">
+              <div class="pg-score__bar"><span class="pg-score__fill"></span></div>
+              <p class="pg-score__num"><b class="pg-score__n">0</b>점</p>
+              <p class="pg-score__cap">숫자 하나로 아이를 판단합니다</p>
+            </div>
+          </article>
+
+          <span class="pg-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 7l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+
+          <!-- AFTER — 다섯 면 -->
+          <article class="pg-card pg-card--after">
+            <p class="pg-card__tag">AFTER</p>
+            <h3 class="pg-card__name">다면적 관찰평가</h3>
+            <p class="pg-card__desc">행동 · 수감각 · 의사소통 · 협동심 · 적응도</p>
+            <svg class="pg-radar" viewBox="0 0 340 320" role="img" aria-label="다섯 가지 관찰 항목 레이더: 행동, 수감각, 의사소통, 협동심, 적응도"
+                 data-values="0.86,0.72,0.9,0.68,0.8" data-labels="행동,수감각,의사소통,협동심,적응도">
+              <g class="pg-radar__grid"></g>
+              <g class="pg-radar__axes"></g>
+              <polygon class="pg-radar__shape" points="" />
+              <g class="pg-radar__dots"></g>
+              <g class="pg-radar__labels"></g>
+            </svg>
+          </article>
+
+          <span class="pg-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 7l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+
+          <!-- 결과 — 맞춤 반 편성 -->
+          <article class="pg-card pg-card--result">
+            <p class="pg-card__tag">RESULT</p>
+            <svg class="pg-card__ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-diff-lesson" /></svg>
+            <h3 class="pg-card__name">아이에게 맞는 반 편성</h3>
+            <p class="pg-card__desc">아이의 특성을 고려한 <br />맞춤 교육 시작</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15p ③ ④ 슬로건 + 상담 신청 -->
+    <section class="pg-cta">
+      <div class="wrap pg-cta__in">
+        <svg class="pg-cta__blob pg-cta__blob--a" aria-hidden="true"><use href="#blob-2" /></svg>
+        <svg class="pg-cta__blob pg-cta__blob--b" aria-hidden="true"><use href="#blob-4" /></svg>
+        <svg class="pg-cta__blob pg-cta__blob--c" aria-hidden="true"><use href="#blob-1" /></svg>
+        <svg class="pg-cta__blob pg-cta__blob--d" aria-hidden="true"><use href="#blob-3" /></svg>
+        <p class="pg-cta__eyebrow" data-step="0">소마 더 프라임</p>
+        <h2 class="pg-cta__title" data-step="0">가르치는 것이 아니라, <br />성장시키는 것</h2>
+        <a class="btn2 btn2--fill btn2--48 btn2--wide" href="/news.html#qna" data-step="1"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 3.5h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H7l-3 2.5V11.5H3a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-linejoin="round"/><path d="M5 7h6M5 9h4" stroke="currentColor" stroke-linecap="round"/></svg>상담 신청하기</a>
       </div>
     </section>
   </main>

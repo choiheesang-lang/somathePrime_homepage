@@ -1,0 +1,169 @@
+/* ─────────────────────────────────────────────────────────────
+   program.css — 교육 프로그램 (기획서 14 · 15p)
+   머리는 brand.css .bp-head 공유(탭은 페이지 안 앵커, 스크롤 스파이). 바탕 순서: 흰(소개) → Brand Normal
+   (네 프로그램: 성장 트랙 + 가로 아코디언) → Primary/Strong 진한 면(관찰평가) → 흰(CTA).
+   아코디언 · 트랙 · 레이더의 움직임은 js/program.js. DESIGN.md 「교육 프로그램」
+   ───────────────────────────────────────────────────────────── */
+
+/* 슬라임 점 색 — goo.js의 선명 팔레트(브랜드 색 채도 ×1.3 · 명도 −4%)와 같은 값 */
+.pg { --goo-coral: #F58C66; --goo-yellow: #F7D257; --goo-blue: #76A9EE; --goo-green: #A3D189; }
+
+/* ── 14p ① 소개 ── */
+.pg-hero { padding: 96px 0 120px; background: #fff; text-align: center; }
+.pg-hero__title { margin-top: 16px; font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); letter-spacing: -0.02em; }
+.pg-hero__body { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.5vw, 22px); line-height: 1.8; letter-spacing: -0.02em; color: var(--text-neutral); word-break: keep-all; }
+
+/* ── 14p ② ③ 성장 트랙 + 아코디언 ── */
+.pg-journey { padding: 96px 0 140px; background: var(--bg-brand-normal); }
+
+/* 성장 트랙 — 6칸(6세~초4). 행마다 구간 막대(--from · --to, 0~5)와 왼쪽 슬라임 점. 활성 행만 진하게 */
+.pg-track { --cols: 5; padding: 0 20px; }
+.pg-track__rows { position: relative; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.pg-track__row { position: relative; height: 22px; opacity: 0.38; transition: opacity 0.5s; }
+.pg-track__row.is-on { opacity: 1; }
+.pg-track__bar {
+  position: absolute; top: 6px; height: 10px; border-radius: 999px; background: var(--c);
+  left: calc(var(--from) / var(--cols) * 100%); width: calc((var(--to) - var(--from)) / var(--cols) * 100%);
+  transition: transform 0.5s var(--ease-out);
+}
+.pg-track__row.is-on .pg-track__bar { transform: scaleY(1.4); }
+.pg-track__dot {
+  position: absolute; top: 50%; left: calc(var(--from) / var(--cols) * 100%); width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  color: var(--c); fill: currentColor; filter: drop-shadow(0 2px 4px rgba(44, 42, 41, 0.18));
+  transition: transform 0.5s var(--ease-out);
+}
+.pg-track__row.is-on .pg-track__dot { transform: scale(1.5); }
+.pg-track__row em { position: absolute; top: 50%; left: calc(var(--to) / var(--cols) * 100%); margin: -9px 0 0 14px; font-family: var(--font-title); font-size: 13px; font-style: normal; font-weight: 700; color: var(--text-neutral); white-space: nowrap; }
+.pg-track__row[style*="--to: 5"] em { left: auto; right: 0; margin: -9px 0 0; transform: translateY(-14px); }   /* 끝까지 가는 구간은 라벨을 막대 위로 */
+.pg-track__axis { position: relative; margin: 14px 0 0; padding: 14px 0 0; list-style: none; display: flex; justify-content: space-between; border-top: 1px solid var(--line-normal); font-size: 13px; color: var(--text-alternative); font-variant-numeric: tabular-nums; }
+.pg-track__axis li { width: 0; display: flex; justify-content: center; white-space: nowrap; }
+.pg-track__axis li::before { content: ""; position: absolute; top: -1px; width: 1px; height: 6px; background: var(--line-normal); }
+
+/* 가로 아코디언 — 활성 패널이 2.6배로 벌어짐. 판은 쿼드 판의 그라데이션 언어, 활성이면 사진이 원으로 번짐 */
+.pg-acc { display: flex; gap: 12px; height: 560px; margin: 48px 0 0; padding: 0; list-style: none; }
+.pg-panel {
+  position: relative; flex: 1; min-width: 0; overflow: hidden; border-radius: var(--r-24); cursor: pointer; isolation: isolate;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 42%, #fff) 0%, var(--c) 100%);
+  transition: flex 0.7s var(--ease-out), box-shadow 0.5s;
+  color: var(--text-normal);
+}
+.pg-panel.is-on { flex: 2.6; color: #fff; box-shadow: var(--shadow-md); }
+.pg-panel:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 3px; }
+.pg-panel__photo {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none;
+  clip-path: circle(0% at 50% 50%); opacity: 0;
+  transition: clip-path 0.7s var(--ease-out), opacity 0.4s;
+}
+.pg-panel.is-on .pg-panel__photo { clip-path: circle(150% at 50% 50%); opacity: 1; }
+/* 활성 덮개 — 브랜드 색 45% + 아래 어둡게(글이 읽히게), 쿼드 판과 같음 */
+.pg-panel::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.6s;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 45%, transparent) 0%, color-mix(in srgb, var(--c) 25%, rgba(0, 0, 0, 0.5)) 100%); }
+.pg-panel.is-on::after { opacity: 1; }
+/* 비활성 글 — 아래쪽에 로고 + 이름 */
+.pg-panel__min { position: absolute; left: 24px; right: 24px; bottom: 28px; z-index: 1; display: flex; flex-direction: column; gap: 14px; transition: opacity 0.3s; }
+.pg-panel__min svg { height: 26px; width: auto; max-width: 100%; }
+.pg-panel__min svg.is-play { height: 34px; }
+.pg-panel__min b { font-family: var(--font-title); font-size: 18px; line-height: 1.3; }
+.pg-panel.is-on .pg-panel__min { opacity: 0; pointer-events: none; }
+/* 활성 글 — 벌어진 뒤 떠오름 */
+.pg-panel__full { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px 44px; opacity: 0; transform: translateY(12px); transition: opacity 0.4s, transform 0.5s var(--ease-out); }
+.pg-panel.is-on .pg-panel__full { opacity: 1; transform: none; transition-delay: 0.3s; }
+.pg-panel__logo { height: 36px; width: auto; }
+.pg-panel__logo.is-play { height: 46px; }
+.pg-panel__name { margin-top: 22px; font-family: var(--font-title); font-size: clamp(24px, 2vw, 30px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; }
+.pg-panel__lead { margin-top: 10px; font-family: var(--font-title); font-size: 17px; line-height: 1.5; opacity: 0.95; }
+.pg-panel__points { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.6; opacity: 0.9; }
+.pg-panel__points li { padding-left: 14px; position: relative; word-break: keep-all; }
+.pg-panel__points li::before { content: ""; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.pg-panel__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 28px; }
+.pg-panel__age { display: inline-flex; align-items: center; height: 30px; padding: 0 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font-family: var(--font-title); font-size: 14px; font-weight: 700; }
+.pg-panel__more { --ink: #fff; }
+.pg-panel__more:hover { --bg: rgba(255, 255, 255, 0.16); }
+
+/* ── 15p 다면적 관찰평가 — 진한 면 ── */
+.pg-assess { padding: 120px 0 140px; background: var(--primary-strong); color: #fff; }
+.pg-assess__head { text-align: center; }
+.pg-assess .bp-label { color: rgba(255, 255, 255, 0.7); }
+.pg .pg-assess__title { margin-top: 14px; font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; color: #fff; }
+.pg-assess__body { margin-top: 20px; font-size: 16px; line-height: 1.8; color: rgba(255, 255, 255, 0.72); word-break: keep-all; }
+/* BEFORE / AFTER 토글 — pill 두 개 */
+.pg-mode { display: flex; justify-content: center; gap: 6px; margin-top: 44px; }
+.pg-mode__btn { --ink: rgba(255, 255, 255, 0.7); font-family: var(--font-title); letter-spacing: 0.06em; }
+.pg-mode__btn.btn2--ghost:hover { --bg: rgba(255, 255, 255, 0.1); --ink: #fff; }
+.pg-mode__btn.btn2--fill { --bg: #fff; --ink: var(--text-normal); }
+.pg-mode__btn.btn2--fill:hover { --bg: #fff; }
+/* 무대 — BEFORE | → | AFTER(레이더) | → | RESULT */
+.pg-stage { display: grid; grid-template-columns: 1fr 56px 1.35fr 56px 1fr; align-items: stretch; gap: 0; margin-top: 36px; }
+.pg-card { position: relative; padding: 28px 28px 32px; border-radius: var(--r-20); background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); transition: opacity 0.5s, transform 0.5s var(--ease-out); }
+.pg-card__tag { font-family: var(--font-title); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.55); }
+.pg-card__name { margin-top: 12px; font-family: var(--font-title); font-size: 22px; font-weight: 700; line-height: 1.3; }
+.pg-card__desc { margin-top: 8px; font-size: 14px; line-height: 1.6; color: rgba(255, 255, 255, 0.72); word-break: keep-all; }
+.pg-card__ic { width: 56px; height: 56px; margin-top: 20px; color: #fff; }
+.pg-card--result { display: flex; flex-direction: column; justify-content: center; }
+.pg-card--result .pg-card__tag { position: absolute; top: 28px; left: 28px; }
+/* 모드에 따라 한쪽을 세움 */
+.pg-stage.is-before .pg-card--after, .pg-stage.is-before .pg-card--result { opacity: 0.45; }
+.pg-stage.is-after .pg-card--before { opacity: 0.55; }
+.pg-stage.is-after .pg-card--after { transform: translateY(-6px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), var(--shadow-md); }
+.pg-stage.is-before .pg-card--before { transform: translateY(-6px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), var(--shadow-md); }
+.pg-arrow { display: grid; place-items: center; align-self: center; }
+.pg-arrow svg { width: 36px; height: 36px; padding: 6px; border-radius: 50%; color: var(--text-normal); background: #fff; }
+/* BEFORE — 점수 막대 하나 */
+.pg-score { margin-top: 44px; }
+.pg-score__bar { height: 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); overflow: hidden; }
+.pg-score__fill { display: block; width: 0; height: 100%; border-radius: 999px; background: rgba(255, 255, 255, 0.85); }
+.pg-score__num { margin-top: 14px; font-family: var(--font-title); font-size: 15px; color: rgba(255, 255, 255, 0.7); }
+.pg-score__num b { font-size: 40px; line-height: 1; letter-spacing: -0.02em; color: #fff; font-variant-numeric: tabular-nums; }
+.pg-score__cap { margin-top: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.55); }
+/* AFTER — 레이더 */
+.pg-radar { display: block; width: 100%; max-width: 340px; margin: 12px auto 0; overflow: visible; }
+.pg-radar__grid polygon { fill: none; stroke: rgba(255, 255, 255, 0.28); stroke-width: 1; stroke-dasharray: 3 4; }
+.pg-radar__axes line { stroke: rgba(255, 255, 255, 0.22); stroke-width: 1; }
+.pg-radar__shape { fill: color-mix(in srgb, var(--pal-brand-coral) 55%, transparent); stroke: #fff; stroke-width: 1.5; stroke-linejoin: round; }
+.pg-radar__dots circle { fill: #fff; }
+.pg-radar__labels text { font-family: var(--font-title); font-size: 13px; font-weight: 700; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+
+/* ── CTA ── */
+.pg-cta { padding: 120px 0 140px; background: #fff; }
+.pg-cta__in { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.pg-cta__eyebrow { font-family: var(--font-title); font-size: 15px; font-weight: 700; letter-spacing: 0.04em; color: var(--text-alternative); }
+.pg-cta__title { margin-top: 12px; font-size: clamp(28px, 3.2vw, var(--fs-brand-title-1)); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
+.pg-cta .btn2 { margin-top: 36px; }
+/* 슬라임 점 장식 — 브랜드 색 넷이 제목 양옆에 작게 */
+.pg-cta__blob { position: absolute; width: 28px; height: 28px; fill: currentColor; pointer-events: none; opacity: 0.9; }
+.pg-cta__blob--a { color: var(--goo-yellow); left: 18%; top: -10px; width: 22px; height: 22px; }
+.pg-cta__blob--b { color: var(--goo-blue); left: 26%; top: 70px; }
+.pg-cta__blob--c { color: var(--goo-coral); right: 24%; top: 6px; width: 34px; height: 34px; }
+.pg-cta__blob--d { color: var(--goo-green); right: 17%; top: 84px; width: 20px; height: 20px; }
+
+/* ── 반응형 ── */
+@media (max-width: 1024px) {
+  .pg-acc { height: 480px; }
+  .pg-panel__full { padding: 28px; }
+  .pg-stage { grid-template-columns: 1fr 44px 1.3fr 44px 1fr; }
+  .pg-card { padding: 22px; }
+}
+@media (max-width: 768px) {
+  .pg-hero, .pg-journey, .pg-assess, .pg-cta { padding: 72px 0 88px; }
+  .pg-hero__title br, .pg-hero__body br, .pg-assess__body br, .pg-cta__title br { display: none; }
+  .pg-track { padding: 0 8px; }
+  .pg-track__row em { font-size: 11px; }
+  .pg-track__axis { font-size: 11px; }
+  /* 세로 아코디언 — 활성 420, 비활성 72(로고 + 이름 한 줄) */
+  .pg-acc { flex-direction: column; height: auto; gap: 10px; margin-top: 36px; }
+  .pg-panel { flex: none; height: 72px; transition: height 0.6s var(--ease-out), box-shadow 0.5s; }
+  .pg-panel.is-on { flex: none; height: 420px; }
+  .pg-panel__min { left: 20px; right: 20px; top: 0; bottom: 0; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+  .pg-panel__min svg { height: 22px; }
+  .pg-panel__min svg.is-play { height: 30px; }
+  .pg-panel__min b { font-size: 16px; }
+  .pg-panel__full { padding: 24px 22px; }
+  .pg-panel__name { font-size: 24px; }
+  .pg-panel__points { font-size: 14px; }
+  /* 무대 세로 쌓기 */
+  .pg-stage { grid-template-columns: 1fr; gap: 8px; }
+  .pg-arrow svg { transform: rotate(90deg); }
+  .pg-stage .pg-card--after, .pg-stage .pg-card--before { transform: none; }
+  .pg-card--result { padding-top: 56px; }
+  .pg-cta__blob--a { left: 6%; } .pg-cta__blob--b { left: 10%; } .pg-cta__blob--c { right: 8%; } .pg-cta__blob--d { right: 5%; }
+}

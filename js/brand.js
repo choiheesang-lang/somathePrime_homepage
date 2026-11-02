@@ -28,7 +28,7 @@
   document.body.classList.add('has-reveal');
   gsap.matchMedia().add({ reduce: '(prefers-reduced-motion: reduce)', motion: '(prefers-reduced-motion: no-preference)' }, (ctx) => {
     const { reduce } = ctx.conditions;
-    document.querySelectorAll('.bp-kv, .bp-intro, .bp-prime, .bp-diff, .bp-space, .bp-end, .cp-hero, .cp-spaces, .cp-gallery, .lc-visit').forEach((box) => reveal(box, reduce));
+    document.querySelectorAll('.bp-kv, .bp-intro, .bp-prime, .bp-diff, .bp-space, .bp-end, .cp-hero, .cp-spaces, .cp-gallery, .lc-visit, .pg-hero, .pg-journey, .pg-assess, .pg-cta').forEach((box) => reveal(box, reduce));
     return keywords(reduce);
   });
 

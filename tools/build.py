@@ -63,10 +63,18 @@ def crumb(spec):
 
 
 def bphead(meta):
-    """브랜드 서브페이지 머리(src/partials/bphead.html) — 하위 메뉴 탭은 MENU의 brand 항목에서, 현재 탭은 `menu-sub:`."""
-    sub = next(m for m in MENU if m[0] == "brand")[3]
-    tabs = "".join(f'<li><a href="{h}"{" aria-current=\"page\"" if t == meta.get("menu-sub") else ""}>{t}</a></li>' for t, h in sub)
-    return part("bphead").replace("{{tabs}}", tabs)
+    """서브페이지 머리(src/partials/bphead.html) — 제목은 `menu:`의 1depth 라벨, 탭은 그 메뉴의 2depth.
+    2depth가 없는 메뉴(교육 프로그램 등)는 `head-tabs: 라벨=#앵커|라벨=#앵커`로 페이지 안 앵커 탭을 둡니다(현재 표시는 스크롤 스파이)."""
+    item = next(m for m in MENU if m[0] == meta.get("menu"))
+    label, sub = item[1], item[3]
+    if sub:
+        tabs = "".join(f'<li><a href="{h}"{" aria-current=\"page\"" if t == meta.get("menu-sub") else ""}>{t}</a></li>' for t, h in sub)
+    elif meta.get("head-tabs"):
+        tabs = "".join(f'<li><a href="{h.strip()}">{t.strip()}</a></li>' for t, h in (x.split("=", 1) for x in meta["head-tabs"].split("|")))
+    else:
+        tabs = ""
+    nav = f'<nav class="bp-tabs" aria-label="{label} 하위 메뉴"><ul>{tabs}</ul></nav>' if tabs else ""
+    return part("bphead").replace("{{title}}", label).replace("{{nav}}", nav)
 
 
 def build(page):
