@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
-   brand-goo.js — 브랜드 소개 상단 비주얼의 4색 슬라임
+   goo.js — 4색 슬라임(브랜드 소개 상단 비주얼 · 홈 장면 10). `[data-goo]` 요소 안의 <canvas>마다 하나씩 돕니다.
    레퍼런스 cellinteractive.jp 첫 화면(bundle.js의 QT · lA 클래스)과 같은 구조를 라이브러리 없이 옮겼습니다.
 
    1) 물리(레퍼런스는 cannon-es, 중력 0) — 공 4개. 질량 .4, 선형 감쇠 .9(밀리면 금방 멈춤),
@@ -19,8 +19,9 @@
    화면 밖이면 멈추고, 동작 감소면 뭉친 상태 한 프레임만 그립니다. WebGL이 없으면 .is-flat(CSS 정적 덩어리).
    ───────────────────────────────────────────────────────────── */
 (function () {
-  const box = document.querySelector('.bp-kv__photo');
-  const cv = box && box.querySelector('.bp-kv__goo');
+  document.querySelectorAll('[data-goo]').forEach(goo);
+  function goo(box) {
+  const cv = box.querySelector('canvas');
   if (!cv) return;
   const gl = cv.getContext('webgl', { premultipliedAlpha: true, antialias: false, alpha: true });
   if (!gl) { box.classList.add('is-flat'); return; }
@@ -243,4 +244,5 @@
   const stop = () => { cancelAnimationFrame(raf); raf = 0; };
   // 처음 화면에 보일 때 바깥에서 날아들며 시작(그 전엔 멈춰 있어 등장을 놓치지 않음)
   new IntersectionObserver((e) => { if (e[0].isIntersecting) { begun = true; start(); } else if (begun) stop(); }).observe(box);
+  }
 })();

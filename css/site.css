@@ -342,3 +342,10 @@ body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(c
 .stub__tabs span:target { background: var(--text-normal); color: #fff; }
 .stub__note { display: inline-block; margin-top: 28px; padding: 6px 12px; border: 1px dashed var(--line-strong); border-radius: var(--r-8); font-size: var(--fs-system-label-2); color: var(--text-alternative); }
 .stub .btn2 { margin-top: 36px; }
+
+/* ── 4색 슬라임(js/goo.js) — [data-goo] 호스트 안의 캔버스. 브랜드 소개 상단 비주얼 · 홈 장면 10 ──
+   WebGL이 없으면 .is-flat — 브랜드 색 원 넷을 겹친 정적 덩어리 */
+[data-goo] > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+[data-goo].is-flat > canvas { display: none; }
+[data-goo].is-flat::before { content: ""; position: absolute; left: 50%; top: 50%; width: 64%; max-width: 440px; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
+  background: radial-gradient(circle at 30% 30%, var(--pal-brand-coral), transparent 60%), radial-gradient(circle at 72% 32%, var(--pal-brand-dusty-blue), transparent 60%), radial-gradient(circle at 30% 72%, var(--pal-brand-sage-green), transparent 60%), radial-gradient(circle at 70% 70%, var(--pal-brand-yellow), transparent 60%), var(--pal-brand-yellow); }
