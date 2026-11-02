@@ -187,18 +187,9 @@ body: home
               <a class="btn2 btn2--line btn2--32" href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">네이버 지도</a>
             </div>
           </div>
-          <!-- 지도 자리: 기존 홈페이지의 지도 연동 기능이 들어올 곳(기획서 13p). 지금은 그림 지도 -->
+          <!-- 지도 자리: 기존 홈페이지의 지도 연동 기능이 들어올 곳(기획서 13p). 지금은 그림 지도(src/partials/map.html) -->
           <div class="visit__map" role="img" aria-label="지도 — 서울 양천구 목동서로 349">
-            <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-              <rect width="640" height="360" fill="#EEEAE4"/>
-              <g fill="#E3DED6"><rect x="24" y="24" width="150" height="96" rx="6"/><rect x="200" y="24" width="120" height="96" rx="6"/><rect x="430" y="24" width="186" height="96" rx="6"/><rect x="24" y="214" width="150" height="122" rx="6"/><rect x="200" y="214" width="120" height="122" rx="6"/><rect x="430" y="214" width="186" height="122" rx="6"/></g>
-              <rect x="346" y="24" width="58" height="312" rx="6" fill="#DCE7D3"/>
-              <g stroke="#fff" stroke-linecap="round"><path d="M0 167h640" stroke-width="30"/><path d="M187 0v360M417 0v360" stroke-width="16"/></g>
-              <path d="M0 167h640" stroke="#F6D98A" stroke-width="4"/>
-              <text x="24" y="160" font-size="13" fill="#8A8580" font-family="sans-serif">목동서로</text>
-              <g transform="translate(300 128)"><path d="M0 34s-17-14.6-17-28.5a17 17 0 0 1 34 0C17 19.4 0 34 0 34z" fill="#323333"/><circle cy="5.5" r="6.5" fill="#fff"/></g>
-              <g transform="translate(300 92)"><rect x="-62" y="-22" width="124" height="30" rx="15" fill="#fff" stroke="#E1DEDA"/><text y="-2" text-anchor="middle" font-size="13" font-weight="700" fill="#323333" font-family="sans-serif">소마 더 프라임</text></g>
-            </svg>
+            {{map}}
           </div>
         </div>
       </div>

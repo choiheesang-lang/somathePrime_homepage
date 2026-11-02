@@ -1,26 +1,64 @@
 ---
 title: 오시는 길 | 소마 더 프라임
-desc: 서울 양천구 목동서로 349, 7층
+desc: 소마 더 프라임 목동 캠퍼스 — 서울 양천구 목동서로 349, 7층. 지도와 길찾기 안내.
 path: /brand/location.html
 menu: brand
 menu-sub: 오시는 길
 crumb: 브랜드 > 오시는 길
 body: sub brand-page
-css: brand
+css: brand location
+js: brand location
 ---
   {{sprite}}
 
   {{gnb}}
 
-  <main id="content" class="page bp">
+  <main id="content" class="page bp lc">
     {{crumb}}
     {{bphead}}
-    <section class="stub">
-      <div class="stub__box">
-        <h1>오시는 길</h1>
-        <p>서울 양천구 목동서로 349, 7층</p>
-        <span class="stub__note">2단계에서 제작</span>
-        <div><a class="btn2 btn2--line btn2--wide" href="/">홈으로</a></div>
+
+    <!-- 13p 오시는 길 — 기존 홈페이지(찾아오시는 길) 구성: 위 정보 띠(로고 · 주소 · 전화) + 아래 큰 지도 + 길찾기 · 로드뷰.
+         지도는 기존 홈페이지의 지도 연동이 들어올 자리(지금은 그림 지도 src/partials/map.html). 전화번호는 추후 추가(기획서). -->
+    <section class="lc-visit">
+      <div class="wrap">
+        <div class="lc-head" data-step="0">
+          <p class="bp-label">LOCATION</p>
+          <h2 class="lc-head__title">찾아오시는 길</h2>
+        </div>
+
+        <div class="lc-card" data-step="1">
+          <div class="lc-info">
+            <svg class="lc-info__logo logo-prime" viewBox="0 0 432 160" role="img" aria-label="SOMA THE PRIME"><use href="#logo-prime" /></svg>
+            <div class="lc-info__body">
+              <p class="lc-info__name">소마 더 프라임 <span>목동 캠퍼스</span></p>
+              <dl class="lc-info__rows">
+                <div>
+                  <dt><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 18s-5.5-4.6-5.5-9.3a5.5 5.5 0 0 1 11 0C15.5 13.4 10 18 10 18Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="8.5" r="2" stroke="currentColor" stroke-width="1.5"/></svg><span>주소</span></dt>
+                  <dd>서울 양천구 목동서로 349, 7층 <button type="button" class="lc-copy" data-copy="서울 양천구 목동서로 349, 7층" aria-label="주소 복사">복사</button></dd>
+                </div>
+                <div>
+                  <dt><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6.6 3.2 8.4 6.6a1 1 0 0 1-.2 1.2L7 9a9.5 9.5 0 0 0 4 4l1.2-1.2a1 1 0 0 1 1.2-.2l3.4 1.8a1 1 0 0 1 .5 1.1l-.6 2.2a1.5 1.5 0 0 1-1.6 1.1C8.6 17.3 2.7 11.4 2.2 4.9a1.5 1.5 0 0 1 1.1-1.6l2.2-.6a1 1 0 0 1 1.1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>전화</span></dt>
+                  <dd class="is-pending">추후 안내 예정</dd>
+                </div>
+              </dl>
+            </div>
+            <div class="lc-info__links">
+              <a class="btn2 btn2--line btn2--40" href="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">카카오맵</a>
+              <a class="btn2 btn2--line btn2--40" href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">네이버 지도</a>
+            </div>
+          </div>
+
+          <div class="lc-map" role="img" aria-label="지도 — 서울 양천구 목동서로 349, 소마 더 프라임">
+            {{map}}
+            <!-- 길찾기 · 로드뷰 — 기존 홈페이지 지도의 두 버튼. 연동 전까지 카카오맵으로 엽니다 -->
+            <div class="lc-map__tools">
+              <a class="lc-tool" href="https://map.kakao.com/link/to/%EC%86%8C%EB%A7%88%20%EB%8D%94%20%ED%94%84%EB%9D%BC%EC%9E%84,37.5265,126.8664" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-11a6.5 6.5 0 0 1 13 0c0 5.6-6.5 11-6.5 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9.5 10 2.5 2.5L15 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>길찾기</a>
+              <a class="lc-tool" href="https://map.kakao.com/link/roadview/37.5265,126.8664" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="10" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M4 10c1.8-3.6 4.5-5.4 8-5.4s6.2 1.8 8 5.4c-1.8 3.6-4.5 5.4-8 5.4S5.8 13.6 4 10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15.4V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>로드뷰</a>
+            </div>
+          </div>
+        </div>
+
+        <p class="lc-note" data-step="2">지하철 5호선 오목교역 2번 출구에서 도보 7분 · 건물 지하 주차장 이용 가능(2시간 무료)</p>
       </div>
     </section>
   </main>
