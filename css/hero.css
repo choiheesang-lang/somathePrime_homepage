@@ -216,6 +216,15 @@ body.is-intro #stage { will-change: transform, opacity; }
    The shadow likewise goes on the group, not on .pb-base: a filter is applied before
    clip/mask, so on the base it would be knocked out along with the disc. */
 #play-btn { opacity: 0; filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.35)); }
+/* 디스크 뒤 브랜드 색 슬라임 넷 — #hero-top과 같은 자리, 바로 아래 층. 보이기 · 숨기기는 디스크와 같이 갑니다 */
+#hero-trail {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;
+  z-index: 4; mix-blend-mode: multiply; opacity: 0;
+}
+body:not([data-ctl]) #hero-trail, body:not(.hero-on) #hero-trail { visibility: hidden; }
+body.intro-revealing #hero-trail { opacity: 0 !important; transition: opacity 0.2s; }
+@media (hover: none), (pointer: coarse) { #hero-trail { display: none; } }
+@media (prefers-reduced-motion: reduce) { #hero-trail { display: none; } }
 .pb-body circle { fill: var(--primary-normal); }
 .pb-body text {
   fill: #fff;
