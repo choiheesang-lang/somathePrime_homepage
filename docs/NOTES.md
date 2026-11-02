@@ -121,3 +121,7 @@
 ## 버튼 pill 복귀 · 판 1160 · GitHub (2026-10-30)
 - 육각형 버튼(Fill · Line · Ghost)과 GNB 2depth 육각 호버를 모두 pill(r999)로 되돌렸습니다. 피그마 세 세트 · 18166-8652도 같이. 브랜드 판 폭은 1400 → 1160.
 - 저장소: https://github.com/choiheesang-lang/somathePrime_homepage · 보정 원본 PNG(`img/수정이미지/`)는 .gitignore.
+
+## 브랜드 소개 페이지 (2026-11-02)
+- 기획서 8~10p를 `/brand/`에 구현. 9p 교구 사진은 기획서 pptx(`ppt/media/image20.png`, 296×366)에서 꺼내 `img/brand/prime-kids.webp`. 차별점 아이콘 3개를 sprite에 추가(`ic-diff-*`). 피그마 「브랜드소개」(18227-8859)는 코드 확정 뒤 옮길 예정.
+

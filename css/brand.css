@@ -1,0 +1,153 @@
+/* ─────────────────────────────────────────────────────────────
+   brand.css — 브랜드 > 브랜드 소개 (기획서 8 · 9 · 10p)
+   홈과 같은 언어: V 꺾임 비주얼(.is-folded), 세방고딕 제목 + Noto Sans KR 본문, pill 버튼,
+   인트로 카드 슬로건. 섹션 바탕은 흰색 → Brand Normal → Strong → 진한 면 → Heavy → 흰색 순서로
+   바뀌어 구분됩니다(미래탐구 브랜드 소개 구성 참고). DESIGN.md 6
+   ───────────────────────────────────────────────────────────── */
+
+.bp { background: #fff; }
+.bp h1, .bp h2 { font-family: var(--font-title); color: var(--text-normal); }
+.bp-label {
+  font-family: var(--font-title); font-size: 14px; font-weight: 700; letter-spacing: 0.12em;
+  color: var(--primary-heavy);
+}
+
+/* ── 페이지 머리 (8p ②) — 미래탐구처럼 큰 제목 + 아래 밑줄 탭 ── */
+.bp-head { padding: 72px 0 40px; }
+.bp-head__eyebrow { font-family: var(--font-title); font-size: 16px; font-weight: 700; color: var(--text-neutral); }
+.bp-head__title { margin-top: 12px; font-size: clamp(32px, 3.4vw, 52px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; }
+
+/* 하위 메뉴 — 스크롤하면 GNB 바로 아래에 붙습니다(GNB가 숨으면 맨 위로) */
+.bp-tabs {
+  position: sticky; top: var(--header-h); z-index: 30;
+  background: rgba(255, 255, 255, 0.96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-neutral);
+  transition: top 0.35s var(--ease-out);
+}
+body:has(.gnb2.is-hidden) .bp-tabs { top: 0; }
+.bp-tabs ul { display: flex; gap: 48px; }
+.bp-tabs a {
+  position: relative; display: block; padding: 18px 0 16px;
+  font-family: var(--font-title); font-size: 18px; font-weight: 400; color: var(--text-alternative);
+  transition: color 0.2s;
+}
+.bp-tabs a:hover { color: var(--text-normal); }
+.bp-tabs a[aria-current="page"] { font-weight: 700; color: var(--text-normal); }
+.bp-tabs a[aria-current="page"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; border-radius: 3px; background: var(--text-normal); }
+
+/* ── 메인 비주얼 (8p ③) — 캠퍼스 사진 + V 꺾임 + 인트로 슬로건 카드 ── */
+.bp-kv { padding: 48px 0 0; background: linear-gradient(#fff 0 60%, var(--bg-brand-normal) 60%); }
+.bp-kv__photo {
+  position: relative; width: min(1160px, 100% - var(--gutter) * 2); margin: 0 auto;
+  aspect-ratio: 1160 / 600; overflow: hidden; border-radius: var(--r-24) var(--r-24) 0 0;
+}
+.bp-kv__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+.bp-kv__photo::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.12); pointer-events: none; }
+
+/* 인트로 카드(css/hero.css .panel)를 고정 크기로 옮긴 것 — 464×300, 같은 선 로고 · 슬로건 · 목록 */
+.bp-card {
+  --s: 1;
+  position: absolute; left: 50%; top: 46%; z-index: 1; transform: translate(-50%, -50%);
+  width: 464px; height: 300px; color: #fff; text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 8px;
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+}
+.bp-card__soma-wrap { position: absolute; left: 0; right: 0; top: 25px; height: 94px; overflow: hidden; }
+.bp-card__soma { position: absolute; left: 50%; top: 39.45px; transform: translateX(-46.08%); width: 293px; height: 58.48px; overflow: visible; }
+.bp-card__soma-line { stroke-opacity: 0.85; }
+.bp-card__rule { position: absolute; left: 1px; right: 1px; top: 118px; height: 1px; background: rgba(255, 255, 255, 0.3); }
+.bp-card__slogan {
+  position: absolute; left: 0; right: 0; top: 152px;
+  font-family: var(--font-title); font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; white-space: nowrap;
+}
+.bp-card__slogan .dot { opacity: 0.6; font-weight: 500; }
+.bp-card__list {
+  position: absolute; left: 0; right: 0; top: 206px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  font-family: var(--font-title); font-size: 14px; line-height: 1.2;
+}
+
+/* ── 소개 문구 (8p ④) — Brand Normal ── */
+.bp-intro { padding: 120px 0 140px; background: var(--bg-brand-normal); text-align: center; }
+.bp-intro__title { font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; }
+.bp-intro__body { margin-top: 32px; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.9; color: var(--text-neutral); word-break: keep-all; }
+/* [소마 더 프라임] 강조 — Bold + Primary/normal2 형광 밑줄 */
+.bp-mark { font-weight: 700; color: var(--text-normal); background: linear-gradient(transparent 58%, color-mix(in srgb, var(--primary-normal2) 35%, transparent) 58% 92%, transparent 92%); padding: 0 2px; }
+
+/* ── 프라임 시기 (9p ①~④) — Brand Strong ── */
+.bp-prime { padding: 140px 0; background: var(--bg-brand-strong); }
+.bp-prime__in { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.bp-prime__title { margin-top: 16px; font-size: clamp(30px, 3.2vw, 48px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
+.bp-prime__sub { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.4vw, 20px); font-weight: 700; color: var(--text-normal); }
+/* 본문은 제목과 다른 서체 — 깔끔한 고딕(Noto Sans KR), 기획서 9p ② */
+.bp-prime__body { margin-top: 16px; font-family: var(--font); font-size: 16px; line-height: 1.9; color: var(--text-neutral); word-break: keep-all; }
+.bp-prime__visual { position: relative; display: flex; align-items: flex-end; gap: 32px; justify-self: end; margin: 0; }
+.bp-prime__visual img { width: 296px; aspect-ratio: 296 / 366; object-fit: cover; border-radius: var(--r-24); box-shadow: var(--shadow-md); }
+/* 연령 — 사진 오른쪽 (9p ④) */
+.bp-age { display: flex; flex-direction: column; padding-bottom: 8px; font-family: var(--font-title); color: var(--text-normal); }
+.bp-age__k { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; color: var(--text-neutral); }
+.bp-age__n { white-space: nowrap; margin-top: 4px; font-size: clamp(64px, 6vw, 96px); font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.bp-age__n i { font-style: normal; margin: 0 0.04em; color: var(--text-alternative); }
+.bp-age__en { margin-top: 8px; font-size: 16px; font-weight: 700; letter-spacing: 0.1em; color: var(--primary-heavy); }
+
+/* ── 차별점 (9p ⑤) — 이 페이지의 유일한 진한 면 ── */
+.bp-diff { padding: 120px 0 130px; background: var(--primary-heavy); color: #fff; }
+.bp-diff .wrap { display: grid; grid-template-columns: 1fr 1.5fr; gap: 64px; align-items: center; }
+.bp .bp-diff__title { font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; color: #fff; }
+.bp-diff__list { display: flex; flex-direction: column; }
+.bp-diff__row {
+  display: grid; grid-template-columns: 48px 1fr 40px 1.3fr; align-items: center; gap: 24px;
+  padding: 28px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+.bp-diff__row:first-child { border-top: 1px solid rgba(255, 255, 255, 0.16); }
+.bp-diff__ic { width: 48px; height: 48px; color: #fff; }
+.bp-diff__old { font-size: 18px; color: rgba(255, 255, 255, 0.55); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.35); }
+.bp-diff__to svg { width: 24px; height: 24px; color: rgba(255, 255, 255, 0.6); }
+.bp-diff__new { font-family: var(--font-title); font-size: clamp(20px, 1.8vw, 26px); font-weight: 700; color: #fff; }
+
+/* ── 배움의 공간 (10p ①~③) — Brand Heavy ── */
+.bp-space { padding: 140px 0; background: var(--bg-brand-heavy); }
+.bp-space__in { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 64px; align-items: center; }
+.bp-space__title { margin-top: 16px; font-size: clamp(30px, 3.2vw, 48px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
+.bp-space__sub { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.4vw, 20px); font-weight: 700; }
+.bp-space__body { margin-top: 12px; font-size: 16px; line-height: 1.9; color: var(--text-neutral); }
+.bp-space__visual { position: relative; margin: 0; }
+.bp-space__visual img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--r-24); }
+.bp-space__cta { position: absolute; right: 24px; bottom: 24px; box-shadow: var(--shadow-md); }
+
+/* ── 로고 띠 · 하단 CTA (10p ④⑤) — 흰색 ── */
+.bp-end { padding: 120px 0 140px; background: #fff; }
+.bp-logos { display: flex; justify-content: center; align-items: center; gap: clamp(32px, 6vw, 96px); color: var(--primary-heavy); }
+.bp-logos svg { height: 36px; width: auto; display: block; }
+.bp-logos svg.is-play { height: 48px; }
+.bp-cta { display: flex; justify-content: center; gap: 16px; margin-top: 72px; }
+
+/* ── 반응형 ── */
+@media (max-width: 1024px) {
+  .bp-prime__in, .bp-space__in, .bp-diff .wrap { grid-template-columns: 1fr; gap: 48px; }
+  .bp-prime__visual { justify-self: start; }
+  .bp-card { transform: translate(-50%, -50%) scale(0.8); }
+}
+@media (max-width: 640px) {
+  .bp-head { padding: 40px 0 24px; }
+  .bp-tabs ul { gap: 28px; }
+  .bp-tabs a { font-size: 15px; padding: 14px 0 12px; }
+  .bp-kv { padding-top: 24px; }
+  .bp-kv__photo { aspect-ratio: 4 / 5; border-radius: var(--r-16) var(--r-16) 0 0; }
+  .bp-card { transform: translate(-50%, -50%) scale(0.64); }
+  .bp-intro, .bp-prime, .bp-space, .bp-end { padding: 80px 0; }
+  .bp-intro__body br { display: none; }
+  .bp-prime__visual img { width: 200px; }
+  .bp-diff { padding: 80px 0; }
+  .bp-diff__row { grid-template-columns: 36px 1fr 24px 1.2fr; gap: 12px; padding: 20px 0; }
+  .bp-diff__ic { width: 36px; height: 36px; }
+  .bp-diff__old { font-size: 14px; }
+  .bp-diff__to svg { width: 18px; height: 18px; }
+  .bp-diff__new { font-size: 16px; }
+  .bp-space__cta { right: 12px; bottom: 12px; }
+  .bp-logos { flex-wrap: wrap; gap: 24px 36px; }
+  .bp-logos svg { height: 26px; }
+  .bp-logos svg.is-play { height: 36px; }
+  .bp-cta { flex-direction: column; align-items: stretch; margin-top: 48px; }
+}
