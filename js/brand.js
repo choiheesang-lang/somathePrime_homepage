@@ -110,18 +110,45 @@
     window.addEventListener('resize', draw);
   }
 
-  /* ── 연령 원(9p ④) — 눈금 6개(6~11세). 주황 점이 0.9초마다 한 칸씩 가고, 지나온 호는 진하게 차오르며
+  /* ── 연령 원(9p ④) — 눈금 6개(6~11세). 슬라임 점이 0.9초마다 원을 따라 한 칸씩 가며 나이마다 브랜드 색
+     (6 검정 · 7 소마 코랄 · 8 플레이팩토 노랑 · 9 리딩오션 파랑 · 10 마이온 녹색 · 11 흰색)으로 물들고,
      가운데 숫자가 6 → 11로 오른 뒤 처음으로. 화면에 보일 때만 돕니다. 동작 감소면 「6–11」 정지 ── */
   const age = document.querySelector('.bp-age');
   if (age) {
     const NS = 'http://www.w3.org/2000/svg', C = 100, RR = 92, LEN = 2 * Math.PI * RR;
     const ticks = document.getElementById('age-ticks'), arc = document.getElementById('age-arc');
-    const orbit = document.getElementById('age-orbit'), num = document.getElementById('age-n');
+    const orbit = document.getElementById('age-orbit'), num = document.getElementById('age-n'), dot = document.getElementById('age-dot');
     const at = (k) => { const a = (-90 + k * 60) * Math.PI / 180; return [C + RR * Math.cos(a), C + RR * Math.sin(a)]; };
     for (let k = 0; k < 6; k++) { const [x, y] = at(k); const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('r', '2.5'); ticks.appendChild(c); }
     // 범위 표시 — 6세(맨 위) · 11세(마지막 눈금) 바깥에 작은 숫자
     const labs = document.getElementById('age-labs');
-    [[0, '6'], [5, '11']].forEach(([k, t]) => { const a = (-90 + k * 60) * Math.PI / 180; const x = C + (RR + 16) * Math.cos(a), y = C + (RR + 16) * Math.sin(a); const e = document.createElementNS(NS, 'text'); e.setAttribute('x', x.toFixed(1)); e.setAttribute('y', y.toFixed(1)); e.textContent = t; labs.appendChild(e); });
+    [[0, '6'], [5, '11']].forEach(([k, t]) => { const a = (-90 + k * 60) * Math.PI / 180; const x = C + (RR + 24) * Math.cos(a), y = C + (RR + 24) * Math.sin(a); const e = document.createElementNS(NS, 'text'); e.setAttribute('x', x.toFixed(1)); e.setAttribute('y', y.toFixed(1)); e.textContent = t; labs.appendChild(e); });
+
+    // 나이별 색 — 홈 슬라임과 같은 잉크 + 네 브랜드 코어 컬러 + 흰색
+    const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    const COLORS = ['--primary-normal', '--pal-brand-coral', '--pal-brand-yellow', '--pal-brand-dusty-blue', '--pal-brand-sage-green', '--pal-common-100'].map(css);
+    const paint = (k) => { dot.style.fill = COLORS[k]; };
+
+    // 슬라임 모양 — js/home.js quad의 blobPath 사본(사인 2·3·5배 흔들림 → 부드러운 베지어), 이 점 크기 기준
+    const B = { x: C, y: C - RR, r: 11, amp: 0.14, tt: 0, om: [1.3, -1.6, 0.9], ph: [0.4, 2.1, 4.0] }, N = 20;
+    const blob = () => {
+      const px = new Array(N), py = new Array(N), amp = B.amp * B.r;
+      for (let i = 0; i < N; i++) {
+        const th = i / N * 6.283185307;
+        const mod = 0.55 * Math.sin(2 * th + B.om[0] * B.tt + B.ph[0]) + 0.30 * Math.sin(3 * th + B.om[1] * B.tt + B.ph[1]) + 0.15 * Math.sin(5 * th + B.om[2] * B.tt + B.ph[2]);
+        px[i] = B.x + (B.r + amp * mod) * Math.cos(th); py[i] = B.y + (B.r + amp * mod) * Math.sin(th);
+      }
+      let d = 'M' + px[0].toFixed(2) + ' ' + py[0].toFixed(2);
+      for (let i = 0; i < N; i++) {
+        const i0 = (i + N - 1) % N, i1 = (i + 1) % N, i2 = (i + 2) % N;
+        d += 'C' + (px[i] + (px[i1] - px[i0]) / 6).toFixed(2) + ' ' + (py[i] + (py[i1] - py[i0]) / 6).toFixed(2)
+           + ' ' + (px[i1] - (px[i2] - px[i]) / 6).toFixed(2) + ' ' + (py[i1] - (py[i2] - py[i]) / 6).toFixed(2)
+           + ' ' + px[i1].toFixed(2) + ' ' + py[i1].toFixed(2);
+      }
+      dot.setAttribute('d', d + 'Z');
+    };
+    const wobble = (t, dt) => { B.tt += dt / 1000 * 2.2; blob(); };
+
     // 점은 원 중심을 축으로 회전 — 각도를 계속 누적해 11 → 6도 앞으로(시계 방향) 원을 따라 넘어감
     let deg = 0;
     const turn = (d, snap) => { if (snap) orbit.style.transition = 'none'; deg = d; orbit.style.transform = `rotate(${d}deg)`; if (snap) { orbit.getBoundingClientRect(); orbit.style.transition = ''; } };
@@ -129,16 +156,18 @@
       turn(k === 0 && deg % 360 !== 0 ? deg + 60 : deg - (deg % 360) + k * 60);
       arc.style.strokeDasharray = (LEN * k / 6).toFixed(1) + ' ' + LEN.toFixed(1);
       num.innerHTML = String(6 + k);
+      paint(k);
+      gsap.fromTo(B, { amp: 0.26 }, { amp: 0.14, duration: 0.7, ease: 'power2.out', overwrite: true });   // 움직일 때 더 출렁
     };
-    const still = () => { turn(300, true); arc.style.strokeDasharray = (LEN * 5 / 6).toFixed(1) + ' ' + LEN.toFixed(1); num.innerHTML = '6<em>–</em>11'; };
+    const still = () => { turn(300, true); arc.style.strokeDasharray = (LEN * 5 / 6).toFixed(1) + ' ' + LEN.toFixed(1); num.innerHTML = '6<em>-</em>11'; paint(0); B.amp = 0.14; blob(); };
     let k = 0, timer = null;
     const run = () => { show(k); k = (k + 1) % 6; };
     const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
     still();
     new IntersectionObserver((e) => {
       if (reduceMQ.matches) { still(); return; }
-      if (e[0].isIntersecting && !timer) { turn(0, true); k = 0; run(); timer = setInterval(run, 900); }
-      else if (!e[0].isIntersecting && timer) { clearInterval(timer); timer = null; still(); }
+      if (e[0].isIntersecting && !timer) { turn(0, true); k = 0; run(); timer = setInterval(run, 900); gsap.ticker.add(wobble); }
+      else if (!e[0].isIntersecting && timer) { clearInterval(timer); timer = null; gsap.ticker.remove(wobble); still(); }
     }, { threshold: 0.3 }).observe(age);
   }
 
