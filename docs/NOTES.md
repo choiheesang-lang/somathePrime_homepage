@@ -121,7 +121,3 @@
 ## 버튼 pill 복귀 · 판 1160 · GitHub (2026-10-30)
 - 육각형 버튼(Fill · Line · Ghost)과 GNB 2depth 육각 호버를 모두 pill(r999)로 되돌렸습니다. 피그마 세 세트 · 18166-8652도 같이. 브랜드 판 폭은 1400 → 1160.
 - 저장소: https://github.com/choiheesang-lang/somathePrime_homepage · 보정 원본 PNG(`img/수정이미지/`)는 .gitignore.
-
-## 인트로 디스크 뒤 슬라임 넷 (2026-11-02)
-- `#hero-trail`(multiply svg)에 브랜드 색 원 넷. `hero.js` `TRAIL`의 r · off · drift · stiff · damp · lagMax로 조절합니다. 디스크 opacity와 같이 켜고 끕니다(`discOpacity`).
-

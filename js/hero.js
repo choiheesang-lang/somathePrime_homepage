@@ -38,23 +38,6 @@ STP.hero = (function () {
     { i: 3, side: 'left',   token: '--primary-lamp-sage-green', color: '#B7CFA3' },
   ];
   const DOCK_ORDER = [0, 1, 2, 3];
-
-  /* ── 디스크 뒤 브랜드 색 슬라임 넷(#hero-trail) — 「네 개의 브랜드」 판의 뒤 넷과 같은 구성 ──
-     디스크가 움직이면 스프링으로 한 템포 늦게 따라옵니다. 조절할 값은 여기 한 곳:
-       r      뒤 블롭 반지름 = 디스크 반지름 × r
-       off    치우침 거리    = 디스크 반지름 × off (각자 위 · 오른쪽 · 아래 · 왼쪽으로)
-       drift  치우침이 느리게 떠도는 양 — 거리 ±dist(반지름 비율), 각도 ±ang(rad), 속도 spd(rad/s)
-       stiff  스프링 강성(1/s²) — 클수록 빨리 따라붙음. 블롭마다 달라 부채꼴로 늘어집니다
-       damp   감쇠(1/s) — 2·√stiff 이면 임계감쇠(넘치지 않음), 그보다 작으면 살짝 넘쳤다 돌아옴
-       lagMax 디스크에서 최대 얼마나 뒤처질 수 있는지(디스크 반지름 비율) — 빨리 휘두를 때 떨어져 나가지 않게 */
-  const TRAIL = {
-    r: 0.92, off: 0.22,
-    drift: { dist: 0.09, ang: 0.45, spd: [0.33, 0.41, 0.29, 0.37] },
-    stiff: [170, 130, 100, 78],
-    damp:  [21, 18, 15.5, 13.5],
-    lagMax: 1.6,
-  };
-  const trail = SATS.map((s, i) => ({ x: C.x, y: C.y, vx: 0, vy: 0, ph: i * 1.7, side: s.side }));
   const DOCK_T = [1.1, 1.9, 2.6, 3.3];
 
   let els, tl, armTl = null, rect, k = 1, R = R_BASE, P = null, hooks = {}, hdrVB = 76, panelH = PANEL.h, sPx = 1;
@@ -215,8 +198,6 @@ STP.hero = (function () {
       pbCuts: SATS.map(sa => q(`.pb-cut[data-i="${sa.i}"]`)),
       pbHoles: SATS.map(sa => q(`#pb-knock .m-sat[data-i="${sa.i}"]`)),
       pbCutFills: SATS.map(sa => q(`.pb-cut[data-i="${sa.i}"] circle`)),
-      trail: q('#hero-trail'),
-      trailBlobs: SATS.map(sa => q(`#hero-trail .tr-blob[data-i="${sa.i}"]`)),
       blur: q('#goo-blur'),
       glowBlur: q('#glow-blur'),
       burstEl: q('#burst'),
@@ -332,7 +313,6 @@ STP.hero = (function () {
   function render(time, dtMs) {
     const t = time === undefined ? gsap.ticker.time : time;
     const dt = Math.min(0.05, (dtMs || 0) / 1000);
-    trailStep(t, dt);
     for (const b of blobs) {
       b.tt += dt * (b.spdK || 1);
       if (b.frozen) continue;
@@ -479,26 +459,6 @@ STP.hero = (function () {
     if (ptr.v && els) placeDisc(ptr.v);
   }
   const discPx = () => discVB() * sPx;                 // 배율 1일 때 화면 지름(px)
-  const SIDE_ANG = { top: -Math.PI / 2, right: 0, bottom: Math.PI / 2, left: Math.PI };
-  function trailStep(t, dt) {
-    if (!els.trailBlobs || !els.trailBlobs[0] || !ptr.v || !dt) return;
-    const R = discVB() / 2 * discK;                     // 디스크 현재 반지름(viewBox 단위)
-    trail.forEach((b, i) => {
-      const dist = R * TRAIL.off * (1 + TRAIL.drift.dist * Math.sin(t * TRAIL.drift.spd[i] + b.ph));
-      const ang = SIDE_ANG[b.side] + TRAIL.drift.ang * Math.sin(t * TRAIL.drift.spd[(i + 1) % 4] * 0.8 + b.ph * 1.3);
-      const tx = ptr.v.x + dist * Math.cos(ang), ty = ptr.v.y + dist * Math.sin(ang);
-      // 스프링: a = k·(목표 − 위치) − c·속도
-      b.vx += (TRAIL.stiff[i] * (tx - b.x) - TRAIL.damp[i] * b.vx) * dt;
-      b.vy += (TRAIL.stiff[i] * (ty - b.y) - TRAIL.damp[i] * b.vy) * dt;
-      b.x += b.vx * dt; b.y += b.vy * dt;
-      const lx = b.x - ptr.v.x, ly = b.y - ptr.v.y, L = Math.hypot(lx, ly), lim = R * TRAIL.lagMax;
-      if (L > lim) { b.x = ptr.v.x + lx / L * lim; b.y = ptr.v.y + ly / L * lim; }
-      const el = els.trailBlobs[i];
-      el.setAttribute('cx', b.x.toFixed(1)); el.setAttribute('cy', b.y.toFixed(1)); el.setAttribute('r', (R * TRAIL.r).toFixed(1));
-    });
-  }
-  function trailSnap(v) { trail.forEach(b => { b.x = v.x; b.y = v.y; b.vx = 0; b.vy = 0; }); }
-  function discOpacity(o) { gsap.set(els.playCursor, { opacity: o }); if (els.trail) els.trail.style.opacity = o; }
   function placeDisc(v) {
     const tr = `translate(${v.x.toFixed(1)} ${v.y.toFixed(1)}) scale(${(discVB() / 96 * discK).toFixed(4)})`;
     for (const g of els.pbBodies) g.setAttribute('transform', tr);
@@ -527,8 +487,7 @@ STP.hero = (function () {
       ptr.has = true;
       els.body.classList.add('ptr-on');                     // 커서 위치를 아는 동안만 OS 커서를 숨깁니다
       if (armed && !slimePopped) { slime.x = v.x; slime.y = v.y; }   // still hidden: appear right under the cursor
-      trailSnap(v);                                           // 뒤 넷도 커서 자리에서 시작 — 멀리서 날아오지 않게
-      discOpacity(1);                                         // otherwise quickTo eases it over, no jump
+      gsap.set(els.playCursor, { opacity: 1 });             // otherwise quickTo eases it over, no jump
       popSlime();
     }
     // the base and the four clipped copies share one transform; the clip itself stays in
@@ -563,7 +522,7 @@ STP.hero = (function () {
     ptr.v = null;
     lastClient = null;                                  // 창을 벗어났으니 「거기 있다」는 보장이 끝납니다
     els.body.classList.remove('ptr-on');                // OS 커서를 돌려줍니다
-    discOpacity(0);
+    gsap.set(els.playCursor, { opacity: 0 });
     pressOff();
     hideCuts();
     if (!armed) return;
@@ -685,7 +644,7 @@ STP.hero = (function () {
     ptr.has = false; ptr.v = null;
     clearPop();
     slimeSize.base = R_SLIME * k;
-    discOpacity(0);
+    gsap.set(els.playCursor, { opacity: 0 });
     hideCuts();
     spotOff();                                          // a replay must not keep the old rim lit
     placeSats();
@@ -820,7 +779,6 @@ STP.hero = (function () {
     STRONG = token('--primary-strong', STRONG);
     SATS.forEach(s => { s.color = token(s.token, s.color); });
     query();
-    SATS.forEach((s, i) => { if (els.trailBlobs[i]) els.trailBlobs[i].style.fill = s.color; });
     build();
     setActive(true);                                   // render + breathe 둘 다 (20차)
     window.addEventListener('pointermove', onPointerMove, { passive: true });
@@ -898,8 +856,8 @@ STP.hero = (function () {
     const v = lastClient ? clientToVB(lastClient.x, lastClient.y)
                          : { x: rect.x + rect.w / 2, y: rect.y + rect.h / 2 };
     ptr.v = v;
-    placeDisc(v); trailSnap(v);
-    discOpacity(1);
+    placeDisc(v);
+    gsap.set(els.playCursor, { opacity: 1 });
     /* 좌표를 실제로 아는 경우(장면 13에서 움직였다)에만 OS 커서를 숨깁니다 — 디스크가
        커서 위에 정확히 놓였으니까요. 가운데 폴백일 때는 커서가 어디 있는지 모르므로
        보통 커서를 남겨 둡니다. */
