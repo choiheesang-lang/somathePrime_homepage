@@ -132,7 +132,10 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 
 | 파일 | 내용 | 출처 |
 |---|---|---|
-| `img/campus/entrance-hero.webp` | 캠퍼스 입구 정면 렌더(보정) | 인테리어 시안 entrance-01-1_보정 |
-| `img/hero.webp` | 인트로 배경 — 위 사진을 85%로 줄여 아래로, 둘레는 흐린 사진 | entrance-01-1_보정 합성 |
-| `img/campus/kv-lounge-01.webp` | 라운지 천장 로고 사인 렌더(보정) | lounge-01_보정 |
-| `img/campus/kv-lounge-03.webp` | 라운지 전경 렌더(보정) | lounge-03_보정 |
+| `img/campus/entrance-01.webp` | 메인 비주얼 1 — 캠퍼스 입구 정면 | 인테리어 시안(campus) |
+| `img/campus/lounge-01.webp` | 메인 비주얼 2 — 라운지 천장 로고 사인 | 인테리어 시안(campus) |
+| `img/campus/lounge-03.webp` | 메인 비주얼 3 — 라운지 전경 | 인테리어 시안(campus) |
+| `img/hero-campus.webp` | 인트로 배경 — entrance-01을 85%로 줄여 아래로, 둘레는 흐린 사진 | entrance-01 합성 |
+| `img/campus/class-02 · 06 · 09 · 10.webp` | 네 개의 브랜드 판 활성 면 | 인테리어 시안(campus) |
+
+보정본(`entrance-hero` · `kv-lounge-01` · `kv-lounge-03` · `hero.webp`)은 비교용으로 남겨 두었고 지금은 쓰지 않습니다(2026-11-02 campus 원본으로 확정). 피그마에는 webp가 표시되지 않아 같은 사진을 JPEG로 올렸습니다.
