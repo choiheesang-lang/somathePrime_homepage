@@ -77,6 +77,39 @@
     io.observe(box);
     return () => { gsap.ticker.remove(tick); io.disconnect(); cards.concat(glass, blobs).forEach((el) => { el.style.transform = ''; }); };
   }
+  /* ── 상단 비주얼의 둥근 V 꺾임 ──
+     .is-folded(직선 다각형)와 같은 모양을 꼭짓점마다 둥글린 path()로 바꿉니다. 위 두 모서리 r24,
+     아래 좌우 모서리(옆면 → 사선) r24, 가운데 꼭지 r48. 각 꼭짓점에서 양쪽 변을 따라 r만큼 물러난
+     두 점을 꼭짓점을 조절점으로 한 곡선(Q)으로 잇습니다. 크기가 바뀌면 다시 그립니다. */
+  const kv = document.querySelector('.bp-kv__photo');
+  if (kv && window.CSS && CSS.supports('clip-path', 'path("M0 0")')) {
+    const round = (pts, rs) => {
+      const n = pts.length;
+      let d = '';
+      for (let i = 0; i < n; i++) {
+        const p = pts[i], a = pts[(i + n - 1) % n], b = pts[(i + 1) % n], r = rs[i];
+        const la = Math.hypot(a[0] - p[0], a[1] - p[1]), lb = Math.hypot(b[0] - p[0], b[1] - p[1]);
+        const ra = Math.min(r, la / 2), rb = Math.min(r, lb / 2);
+        const s = [p[0] + (a[0] - p[0]) / la * ra, p[1] + (a[1] - p[1]) / la * ra];
+        const e = [p[0] + (b[0] - p[0]) / lb * rb, p[1] + (b[1] - p[1]) / lb * rb];
+        d += (i ? 'L' : 'M') + s[0].toFixed(1) + ' ' + s[1].toFixed(1) + 'Q' + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + ' ' + e[0].toFixed(1) + ' ' + e[1].toFixed(1);
+      }
+      return d + 'Z';
+    };
+    const draw = () => {
+      const w = kv.clientWidth, h = kv.clientHeight;
+      if (!w || !h) return;
+      const fold = Math.min(136, Math.max(40, window.innerWidth * 0.07));   // --fold-depth: clamp(40px, 7vw, 136px)과 같은 값
+      const R = parseFloat(getComputedStyle(kv).borderTopLeftRadius) || 24;
+      const pts = [[0, 0], [w, 0], [w, h - fold], [w / 2, h], [0, h - fold]];
+      kv.style.clipPath = `path("${round(pts, [R, R, R, R * 2, R])}")`;
+      kv.style.borderRadius = '0';
+    };
+    draw();
+    new ResizeObserver(draw).observe(kv);
+    window.addEventListener('resize', draw);
+  }
+
   const settle = () => ScrollTrigger.refresh();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
   window.addEventListener('load', settle, { once: true });

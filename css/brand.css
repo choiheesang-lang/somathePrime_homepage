@@ -13,7 +13,6 @@
 }
 
 /* ── 페이지 머리 (8p ① ②) — 소마 프리미어 구성: 브레드크럼 띠 + 한 줄(왼쪽 제목 · 오른쪽 탭) ── */
-.bp-crumb { border-bottom: 1px solid #EEEEEE; }
 .bp-crumb ol { display: flex; align-items: center; height: 44px; font-size: 14px; color: var(--text-alternative); }
 .bp-crumb li { display: flex; align-items: center; }
 .bp-crumb li + li::before { content: ""; width: 4px; height: 4px; margin: 0 10px; border-radius: 50%; background: currentColor; opacity: 0.6; }
@@ -48,7 +47,8 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
 
 /* ── 상단 비주얼 (8p ③, 피그마 18153-11596) — 화면 폭 사진 · 가운데 흰 제목 · V 꺾임 · 키워드 카드 걸침 ── */
 .bp-kv { position: relative; padding-top: 40px; background: linear-gradient(transparent 70%, var(--bg-brand-normal) 70%); }
-/* 폭 1200(이전처럼 콘텐츠보다 조금 넓게, 위 모서리 r24) · 아래 V 꺾임 */
+/* 폭 1200(이전처럼 콘텐츠보다 조금 넓게, 위 모서리 r24) · 아래 V 꺾임 — 꺾인 곳 · 아래 모서리도 둥글게.
+   둥근 꺾임은 clip-path polygon으로 못 그려서 brand.js가 실제 크기로 path()를 써 넣습니다(없으면 .is-folded 직선 꺾임) */
 .bp-kv__photo { position: relative; width: min(1200px, 100% - var(--gutter) * 2); margin: 0 auto; aspect-ratio: 1200 / 620; overflow: hidden; border-radius: var(--r-24) var(--r-24) 0 0; }
 .bp-kv__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; max-width: none; }
 .bp-kv__photo::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.2); pointer-events: none; }
