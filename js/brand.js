@@ -118,7 +118,10 @@
     const ticks = document.getElementById('age-ticks'), arc = document.getElementById('age-arc');
     const orbit = document.getElementById('age-orbit'), num = document.getElementById('age-n');
     const at = (k) => { const a = (-90 + k * 60) * Math.PI / 180; return [C + RR * Math.cos(a), C + RR * Math.sin(a)]; };
-    for (let k = 0; k < 6; k++) { const [x, y] = at(k); const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('r', '3.5'); ticks.appendChild(c); }
+    for (let k = 0; k < 6; k++) { const [x, y] = at(k); const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('r', '2.5'); ticks.appendChild(c); }
+    // 범위 표시 — 6세(맨 위) · 11세(마지막 눈금) 바깥에 작은 숫자
+    const labs = document.getElementById('age-labs');
+    [[0, '6'], [5, '11']].forEach(([k, t]) => { const a = (-90 + k * 60) * Math.PI / 180; const x = C + (RR + 16) * Math.cos(a), y = C + (RR + 16) * Math.sin(a); const e = document.createElementNS(NS, 'text'); e.setAttribute('x', x.toFixed(1)); e.setAttribute('y', y.toFixed(1)); e.textContent = t; labs.appendChild(e); });
     // 점은 원 중심을 축으로 회전 — 각도를 계속 누적해 11 → 6도 앞으로(시계 방향) 원을 따라 넘어감
     let deg = 0;
     const turn = (d, snap) => { if (snap) orbit.style.transition = 'none'; deg = d; orbit.style.transform = `rotate(${d}deg)`; if (snap) { orbit.getBoundingClientRect(); orbit.style.transition = ''; } };
