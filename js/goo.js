@@ -13,7 +13,7 @@
       가우스 블러(가로 · 세로) → 출력에서 alpha = a×80 − 15 로 다시 또렷하게.
       색은 따로 작은 반경으로만 흐려(D · E) 공마다 제 색이 남고 경계만 부드럽게 넘어갑니다.
    3) 색 — 네 브랜드 코어 컬러(css/tokens.css --pal-brand-*)의 선명 버전(색상 유지 · 채도 ×1.3 · 명도 −4%)
-      하나씩 + 흰 공 = 5개. 파스텔 원색은 블러로 섞이면 탁해져서 슬라임에서만 올립니다.
+      하나씩 + 밝은 웜그레이 공(--pal-stone-gray-50) = 5개. 파스텔 원색은 블러로 섞이면 탁해져서 슬라임에서만 올립니다.
       넷이 모두 뭉치면(중심에서 가장 먼 공 ≤ 2.6·RB) 약 1초에 걸쳐 검정 잉크(--primary-normal)로 물들고,
       커서로 흩어지면 각자 제 색으로 돌아옵니다.
    화면 밖이면 멈추고, 동작 감소면 뭉친 상태 한 프레임만 그립니다. WebGL이 없으면 .is-flat(CSS 정적 덩어리).
@@ -46,8 +46,9 @@
   const FALLBACK = ['#F2A48C', '#F6D98A', '#98B8E3', '#B7CFA3'];
   const BRAND = ['--pal-brand-coral', '--pal-brand-yellow', '--pal-brand-dusty-blue', '--pal-brand-sage-green']
     .map((n, i) => vivid(hex(css(n) || FALLBACK[i]), 1.3, -0.04));
-  const COLORS = [0, 1, 2, 3].map((i) => BRAND[i]).concat([[1, 1, 1]]);   // 코랄 · 노랑 · 파랑 · 녹색(브랜드 하나에 공 하나) + 흰 공 하나
+  const COLORS = [0, 1, 2, 3].map((i) => BRAND[i]).concat([hex(css('--pal-stone-gray-50') || '#E1DEDA')]);   // 코랄 · 노랑 · 파랑 · 녹색(브랜드 하나에 공 하나) + 밝은 웜그레이 공 하나
   const SCALE = parseFloat(box.dataset.gooScale) || 1;               // 공 크기 배율 — 홈 장면 10은 .5
+  const UNIT = parseFloat(box.dataset.gooUnit) || 0;                 // 유닛 px 고정(캔버스를 키워도 공 크기 · 움직임 그대로). 없으면 캔버스 높이 / 11.55
   const LIFT = parseFloat(box.dataset.gooLift) || 0;                 // 모이는 점을 위로(유닛) — 흔들림 항(.77·|cos|)이 평균 .49만큼 아래로 끄는 것을 상쇄
   const N = COLORS.length;
   const INK = hex(css('--primary-normal') || '#2C2A29');            // 넷이 모두 뭉치면 이 잉크(홈 검은 슬라임 = 소마더프라임)로
@@ -123,10 +124,11 @@
     W = box.clientWidth; H = box.clientHeight;
     if (!W || !H) return;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    unit = H / 11.55;
+    unit = UNIT || H / 11.55;
     const narrow = W < 768;
     R = (narrow ? 1.25 : 1.7) * SCALE; RB = R * (narrow ? 1.0 : 0.65); PB = 1.25 * R; CY = (narrow ? 0.5 : 0) * SCALE + LIFT;
-    const sw = Math.max(64, Math.round(W * 0.06)), shh = Math.max(32, Math.round(sw * H / W));
+    // 블러 버퍼 — 공 반지름이 버퍼에서 늘 약 5.5px이 되게(폭 고정 비율이면 작은 공은 2~3px로 뭉개져 외곽 · 색 경계가 계단처럼 거칠어짐)
+    const sw = Math.max(64, Math.round(W * Math.min(0.25, 5.5 / (R * unit)))), shh = Math.max(32, Math.round(sw * H / W));
     if (F) Object.values(F).forEach((o) => { gl.deleteTexture(o.t); gl.deleteFramebuffer(o.f); });
     F = { a: fbo(Math.round(cv.width / 2), Math.round(cv.height / 2)), b: fbo(sw, shh), c: fbo(sw, shh), d: fbo(sw, shh), e: fbo(sw, shh) };
   };

@@ -440,16 +440,21 @@
       return () => { gsap.ticker.remove(tick); io.disconnect(); stopTimer(); if (busy) busy.kill(); if (refillTw) refillTw.kill(); };
     })();
 
-      gsap.utils.toArray('.kw-slot').forEach((slot, i) => {
+      /* 아이콘 그리기 — 데스크톱은 세 카드가 한 줄이라 줄 하나를 트리거로 한 타임라인에
+         생각의 깊이 → 표현의 힘 → 성장가능성을 이어 붙여, 스크롤을 따라 차례로 완성됩니다.
+         모바일은 카드가 세로로 쌓여 이미 차례로 지나가므로 카드마다 자기 트리거. */
+      const rowMode = !reduce && window.matchMedia('(min-width: 641px)').matches;
+      const rowTl = rowMode && gsap.timeline({
+        scrollTrigger: { trigger: '#s-intro .keywords', start: 'top 82%', end: 'top 22%', scrub: 0.6 },
+      });
+      gsap.utils.toArray('#s-intro .kw-slot').forEach((slot, i) => {
         const q = (sel) => slot.querySelector(sel);
-        gsap.timeline({
+        (rowTl || gsap.timeline({
           scrollTrigger: reduce
             ? { trigger: slot, start: 'top 85%', toggleActions: 'play none none reverse' }
             : { trigger: slot, start: 'top 74%', end: 'top 52%', scrub: 0.6 },
-        })
-          /* Same range for all three; the per-card stagger is a lead-in hold instead, so they
-             begin in turn but all FINISH together, just above the row's resting position. */
-          .to({}, { duration: reduce ? 0 : i * 0.18 })
+        }))
+          .to({}, { duration: rowTl && i ? 0.15 : 0 })                 // 카드 사이 짧은 숨
           .fromTo(slot.querySelectorAll('.ic-line path'), { strokeDashoffset: 100 },
             { strokeDashoffset: 0, duration: reduce ? 0.2 : 1, ease: 'none', stagger: reduce ? 0 : 0.14 })
           /* transformOrigin은 **from에도** 있어야 합니다(17차). to에만 두면 GSAP이 트윈
