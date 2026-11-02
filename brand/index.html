@@ -231,47 +231,90 @@
        「기존 학원과 무엇이 다를까요?」만 진한 면으로 강조합니다. css/brand.css · DESIGN.md 6 -->
   <main id="content" class="page bp">
 
-    <!-- 8p ② 페이지 머리 + 하위 메뉴 -->
-    <header class="bp-head">
-      <div class="wrap">
-        <p class="bp-head__eyebrow" data-step="0">브랜드</p>
-        <h1 class="bp-head__title" data-step="0">소마가 새롭게 여는<br />프리미엄 캠퍼스</h1>
-      </div>
-    </header>
-    <nav class="bp-tabs" aria-label="브랜드 하위 메뉴">
-      <ul class="wrap">
-        <li><a href="/brand/" aria-current="page">브랜드 소개</a></li>
-        <li><a href="/brand/campus.html">캠퍼스 안내</a></li>
-        <li><a href="/brand/location.html">오시는 길</a></li>
-      </ul>
+    <!-- 8p ① ② 페이지 머리 — 소마 프리미어(new.somai.co.kr/b/premier)처럼 브레드크럼 아래 한 줄에
+         왼쪽 제목 · 오른쪽 하위 메뉴. 줄 전체가 스크롤하면 GNB 아래에 붙습니다 -->
+    <nav class="bp-crumb" aria-label="현재 위치">
+      <ol class="wrap">
+        <li><a href="/" aria-label="홈"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 7.2 8 2.5l5.5 4.7V13a.5.5 0 0 1-.5.5H9.5V10h-3v3.5H3a.5.5 0 0 1-.5-.5V7.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></a></li>
+        <li><a href="/brand/">브랜드</a></li>
+        <li aria-current="page">브랜드 소개</li>
+      </ol>
     </nav>
+    <div class="bp-head">
+      <div class="wrap bp-head__in">
+        <h1 class="bp-head__title">브랜드</h1>
+        <nav class="bp-tabs" aria-label="브랜드 하위 메뉴">
+          <ul>
+            <li><a href="/brand/" aria-current="page">브랜드 소개</a></li>
+            <li><a href="/brand/campus.html">캠퍼스 안내</a></li>
+            <li><a href="/brand/location.html">오시는 길</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
 
-    <!-- 8p ③ 메인 비주얼 — 캠퍼스 사진 위에 인트로 카드의 슬로건 그래픽 -->
+    <!-- 8p ③ 상단 비주얼 — 피그마 18153-11596. 화면 폭 캠퍼스 사진 + 가운데 흰 제목, 아래 V 꺾임 위에
+         홈 장면 10의 키워드 카드 셋이 걸쳐 있습니다(같은 조각 · 같은 등장 · 흔들림) -->
     <section class="bp-kv" aria-label="소마 더 프라임">
-      <div class="bp-kv__photo is-folded" data-step="0">
+      <div class="bp-kv__photo is-folded">
         <img src="/img/campus/entrance-01.webp" alt="SOMA THE PRIME 간판이 걸린 캠퍼스 입구" fetchpriority="high" />
-        <div class="bp-card">
-          <div class="bp-card__soma-wrap"><svg class="bp-card__soma" viewBox="0 0 293.001 58.4757" fill="none" aria-hidden="true"><g class="bp-card__soma-fill" fill="#fff" fill-opacity="0"><path d="M115.389 58.4632L68.8233 58.4346C67.206 58.4346 65.3364 57.1153 65.3364 55.4325L65.3281 12.4298C65.3281 10.9307 67.0199 9.3418 68.5585 9.3418L115.985 9.35405C118.156 9.35405 119.29 11.4331 119.29 13.312L119.306 54.2969C119.306 56.666 118.061 58.4632 115.389 58.4632ZM101.913 47.4226L101.901 20.4478L82.7376 20.456V47.492L101.913 47.4266V47.4226Z" />
-<path d="M179.165 58.4757L179.099 33.7108L161.619 51.2133L144.639 33.7394L144.507 58.443L127.912 58.4676L127.908 9.3747L142.993 9.32568L161.61 28.8256L181.46 9.34202L195.83 9.35019V58.4635L179.165 58.4757Z" />
-<path d="M255.289 42.8391L240.597 9.3208L230.099 9.33714L219.601 9.3208L204.909 42.8391L197.973 58.4627H262.225L255.289 42.8391ZM220.623 47.4751L230.099 26.5006L239.575 47.4751H220.619H220.623Z" />
-<path d="M56.1911 41.9976L40.2086 31.247L28.5113 23.3923H57.1342V9.3208H18.7952V9.33714H7.75136L1.45183 15.4355V22.416C1.45183 24.1193 2.31631 25.7327 3.79295 26.758L15.2876 34.6331L29.4833 44.3953H0V58.4667H41.8631V58.4504H52.4933L58.5943 52.6053V46.3763C58.5943 44.6363 57.6884 43.0229 56.1911 41.9976Z" />
-<path d="M293.001 9.32106V27.9469L277 37.5483V18.5483L260 9.54834L276.654 0L293.001 9.32106Z" /></g><g class="bp-card__soma-line" stroke="#fff" stroke-opacity="0.4" stroke-width="1"><path d="M115.389 58.4632L68.8233 58.4346C67.206 58.4346 65.3364 57.1153 65.3364 55.4325L65.3281 12.4298C65.3281 10.9307 67.0199 9.3418 68.5585 9.3418L115.985 9.35405C118.156 9.35405 119.29 11.4331 119.29 13.312L119.306 54.2969C119.306 56.666 118.061 58.4632 115.389 58.4632ZM101.913 47.4226L101.901 20.4478L82.7376 20.456V47.492L101.913 47.4266V47.4226Z" />
-<path d="M179.165 58.4757L179.099 33.7108L161.619 51.2133L144.639 33.7394L144.507 58.443L127.912 58.4676L127.908 9.3747L142.993 9.32568L161.61 28.8256L181.46 9.34202L195.83 9.35019V58.4635L179.165 58.4757Z" />
-<path d="M255.289 42.8391L240.597 9.3208L230.099 9.33714L219.601 9.3208L204.909 42.8391L197.973 58.4627H262.225L255.289 42.8391ZM220.623 47.4751L230.099 26.5006L239.575 47.4751H220.619H220.623Z" />
-<path d="M56.1911 41.9976L40.2086 31.247L28.5113 23.3923H57.1342V9.3208H18.7952V9.33714H7.75136L1.45183 15.4355V22.416C1.45183 24.1193 2.31631 25.7327 3.79295 26.758L15.2876 34.6331L29.4833 44.3953H0V58.4667H41.8631V58.4504H52.4933L58.5943 52.6053V46.3763C58.5943 44.6363 57.6884 43.0229 56.1911 41.9976Z" />
-<path d="M293.001 9.32106V27.9469L277 37.5483V18.5483L260 9.54834L276.654 0L293.001 9.32106Z" /><path d="M276.5 37.5483L259.5 28.0483V9.54834" stroke-linejoin="round" /></g></svg></div>
-          <div class="bp-card__rule"></div>
-          <p class="bp-card__slogan">생각의 깊이 <span class="dot">·</span> 표현의 힘 <span class="dot">·</span> 성장의 가능성</p>
-          <ul class="bp-card__list"><li>insight</li><li>impact</li><li>growth</li></ul>
+        <div class="bp-kv__copy">
+          <p class="bp-kv__eyebrow" data-step="0">소마가 새롭게 여는 프리미엄 캠퍼스</p>
+          <h2 class="bp-kv__title" data-step="0">배움의 영역을 넓히고<br />성장의 깊이를 더하다.</h2>
         </div>
+      </div>
+      <div class="bp-kv__cards">
+        <!-- 키워드 카드 셋(Insight · Impact · Growth) — 홈 장면 10과 브랜드 소개 상단 비주얼이 같이 씁니다 -->
+        <ul class="keywords">
+          <li class="kw-slot" data-step="3">
+            <div class="kw-glass" aria-hidden="true"></div>
+            <div class="kw-card" style="--tilt: -5deg">
+              <span class="kw-card__icon"><svg class="ic" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+<defs><linearGradient id="ic-ins-g" x1="10.875" y1="17.6007" x2="69.7265" y2="64.3599" gradientUnits="userSpaceOnUse"><stop stop-color="#FEE1A3"/><stop offset="1" stop-color="#F7B761"/></linearGradient></defs>
+<g class="ic-color"><g class="ic-breathe"><path transform="translate(49.25 30.63)" d="M42 99.75C42.8284 99.75 43.5 100.422 43.5 101.25C43.5 102.078 42.8284 102.75 42 102.75H30C29.1716 102.75 28.5 102.078 28.5 101.25C28.5 100.422 29.1716 99.75 30 99.75H42ZM43.5 91.5C45.1569 91.5 46.5 92.8431 46.5 94.5C46.5 96.1569 45.1569 97.5 43.5 97.5H28.5C26.8431 97.5 25.5 96.1569 25.5 94.5C25.5 92.8431 26.8431 91.5 28.5 91.5H43.5ZM43.5 83.25C45.1569 83.25 46.5 84.5931 46.5 86.25C46.5 87.9069 45.1569 89.25 43.5 89.25H28.5C26.8431 89.25 25.5 87.9069 25.5 86.25C25.5 84.5931 26.8431 83.25 28.5 83.25H43.5ZM36 0C55.8823 0 72 16.1177 72 36C72 50.1712 63.8107 62.428 51.9072 68.3008C49.6271 69.4259 48 71.6487 48 74.1914V75C48 78.3137 45.3137 81 42 81H30C26.6863 81 24 78.3137 24 75V74.1914C24 71.6487 22.3729 69.4259 20.0928 68.3008C8.18933 62.428 0 50.1712 0 36C0 16.1177 16.1177 0 36 0Z" fill="url(#ic-ins-g)"/></g></g>
+<g class="ic-line"><path transform="translate(44.75 27.63)" pathLength="100" d="M36 0C55.8823 0 72 16.1177 72 36C72 50.1712 63.811 62.4276 51.9075 68.3004C49.6272 69.4254 48 71.6483 48 74.1912V75C48 78.3137 45.3137 81 42 81H30C26.6863 81 24 78.3137 24 75V74.1912C24 71.6483 22.3728 69.4254 20.0925 68.3004C8.18901 62.4276 0 50.1712 0 36C0 16.1177 16.1177 0 36 0Z" stroke="#4F4D4C" stroke-width="1"/></g>
+<g class="ic-point"><rect x="70.25" y="110.88" width="21" height="6" rx="3" fill="#4F4D4C"/><rect x="70.25" y="119.13" width="21" height="6" rx="3" fill="#4F4D4C"/><rect x="73.25" y="127.38" width="15" height="3" rx="1.5" fill="#4F4D4C"/></g>
+<g class="ic-light"><path transform="translate(55.875 46.625)" d="M1.875 21C1.875 13.5273 4.91076 6.76363 9.81629 1.875" stroke="#fff" stroke-width="3.75" stroke-linecap="round"/></g>
+</svg></span>
+              <span class="kw-card__text"><b class="en">Insight</b><i>생각의 깊이</i></span>
+            </div>
+          </li>
+          <li class="kw-slot" data-step="3">
+            <div class="kw-glass" aria-hidden="true"></div>
+            <div class="kw-card" style="--tilt: 15deg">
+              <span class="kw-card__icon"><svg class="ic" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+<defs><linearGradient id="ic-imp-g" x1="41.25" y1="23.75" x2="41.25" y2="86" gradientUnits="userSpaceOnUse"><stop stop-color="#F99E90"/><stop offset="1" stop-color="#F38274"/></linearGradient></defs>
+<g transform="translate(44 33)">
+<g class="ic-color"><g class="ic-breathe"><path d="M13.4462 37.357L64.3848 10.0053C68.2169 7.94765 72.4487 11.984 70.5743 15.9091L59.8742 38.3164C59.0139 40.118 59.4435 42.2711 60.9293 43.6045L72.2539 53.7681C74.4191 55.7114 74.199 59.1675 71.8048 60.8204L24.1115 93.7464C20.0813 96.5287 15.1353 91.7817 17.7499 87.6407L34.1346 61.6907C35.5347 59.4732 34.7497 56.5331 32.4305 55.3087L13.4741 45.3011C10.288 43.619 10.272 39.0614 13.4462 37.357Z" fill="url(#ic-imp-g)"/></g></g>
+<g class="ic-line"><path pathLength="100" d="M54.583 9.11426C59.2667 6.59945 64.4383 11.5328 62.1475 16.3301L53.9062 33.5879C52.6636 36.1902 53.2845 39.3004 55.4307 41.2266L64.5049 49.3701C67.1509 51.7451 66.8819 55.9691 63.9561 57.9893L23.8643 85.667C18.9385 89.0674 12.8933 83.2652 16.0889 78.2041L27.6924 59.8281C29.7146 56.6251 28.5803 52.3778 25.2305 50.6094L10.1992 42.6738C6.30508 40.618 6.28545 35.048 10.165 32.9648L54.583 9.11426Z" stroke="#4F4D4C"/></g>
+<g class="ic-point"><path d="M19.5 72L15.9863 77.4958C12.461 83.0097 19.0537 89.3811 24.444 85.6697L30.5 81.5" stroke="#4F4D4C" stroke-width="6" stroke-linecap="round"/></g>
+<g class="ic-light"><path d="M37 31.875L51.625 23.25" stroke="#fff" stroke-width="3.75" stroke-linecap="round"/></g>
+</g></svg></span>
+              <span class="kw-card__text"><b class="en">Impact</b><i>표현의 힘</i></span>
+            </div>
+          </li>
+          <li class="kw-slot" data-step="3">
+            <div class="kw-glass" aria-hidden="true"></div>
+            <div class="kw-card" style="--tilt: 5deg">
+              <span class="kw-card__icon"><svg class="ic" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+<defs><linearGradient id="ic-gro-g" x1="10.6875" y1="7.71649" x2="60.4224" y2="82.2263" gradientUnits="userSpaceOnUse"><stop stop-color="#A8C99E"/><stop offset="1" stop-color="#6DA860"/></linearGradient></defs>
+<g transform="translate(36.75 33)">
+<g class="ic-color"><g class="ic-breathe"><path d="M28 3C38.2173 3 46.5 11.2827 46.5 21.5V34.6475C49.8021 29.5915 55.5107 26.25 62 26.25H80.875C83.4293 26.25 85.5 28.3207 85.5 30.875V39.25C85.5 49.4673 77.2173 57.75 67 57.75H48.125C47.553 57.75 47.0057 57.6449 46.5 57.4551V66H69.9502C73.1533 66.0001 75.7499 68.5967 75.75 71.7998C75.75 84.6128 65.3628 95 52.5498 95H38.9502C26.1372 95 15.75 84.6128 15.75 71.7998C15.7501 68.5967 18.3467 66.0001 21.5498 66H43.5V34.2051C42.9943 34.3949 42.447 34.5 41.875 34.5H23C12.7827 34.5 4.5 26.2173 4.5 16V7.625C4.5 5.07068 6.57068 3 9.125 3H28Z" fill="url(#ic-gro-g)"/></g></g>
+<g class="ic-line"><path pathLength="100" d="M23.5 0C33.7173 0 42 8.28273 42 18.5V31.6475C45.3021 26.5915 51.0107 23.25 57.5 23.25H76.375C78.9293 23.25 81 25.3207 81 27.875V36.25C81 46.4673 72.7173 54.75 62.5 54.75H43.625C43.053 54.75 42.5057 54.6449 42 54.4551V71.25C42 72.0784 41.3284 72.75 40.5 72.75C39.6716 72.75 39 72.0784 39 71.25V31.2051C38.4943 31.3949 37.947 31.5 37.375 31.5H18.5C8.28273 31.5 4.18795e-07 23.2173 0 13V4.625C0 2.07068 2.07068 0 4.625 0H23.5Z" stroke="#4F4D4C" stroke-width="1"/><path pathLength="100" d="M16.0498 63.375H64.4502C67.4462 63.3751 69.8749 65.8038 69.875 68.7998C69.875 81.4057 59.6557 91.625 47.0498 91.625H33.4502C20.8443 91.625 10.625 81.4057 10.625 68.7998C10.6251 65.8038 13.0538 63.3751 16.0498 63.375Z" stroke="#4F4D4C" stroke-width="0.75"/></g>
+<g class="ic-point"><rect x="43.25" y="60" width="20" height="6" rx="3" transform="rotate(90 43.25 60)" fill="#4F4D4C"/></g>
+<g class="ic-light"><path d="M15.75 7.5H24C30.2132 7.5 35.25 12.5368 35.25 18.75V19.5" stroke="#fff" stroke-width="3.75" stroke-linecap="round"/></g>
+</g></svg></span>
+              <span class="kw-card__text"><b class="en">Growth</b><i>성장가능성</i></span>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- 8p ④ 소개 문구 -->
+    <!-- 8p ④ 소개 문구 — 브랜드 서체 · 가운데 -->
     <section class="bp-intro">
       <div class="wrap">
-        <h2 class="bp-intro__title" data-step="0">배움의 영역을 넓히고<br />성장의 깊이를 더하다.</h2>
-        <p class="bp-intro__body" data-step="1"><strong class="bp-mark">소마 더 프라임</strong>은 ‘재미있는 수학 배움터’라는 소마의 철학을 바탕으로,<br />수학적 사고를 넘어 창의 활동과 영어, 독서까지 아이의 성장에 필요한 배움을 확장합니다.</p>
+        <p class="bp-intro__body" data-step="0"><strong class="bp-mark">소마 더 프라임</strong>은 ‘재미있는 수학 배움터’라는 소마의 철학을 바탕으로, <br />수학적 사고를 넘어 창의 활동과 영어, 독서까지 <br />아이의 성장에 필요한 배움을 확장합니다.</p>
       </div>
     </section>
 

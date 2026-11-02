@@ -64,7 +64,7 @@ def build(page):
             .replace("{{site}}", SITE)
             .replace("{{preload}}", "".join(f'\n  <link rel="preload" as="image" href="{p}" fetchpriority="high" />' for p in meta.get("preload", "").split()))
             .replace("{{css}}", css))
-    for name in ("sprite", "lead", "footer", "quick", "stage", "scene10", "scene12"):
+    for name in ("sprite", "lead", "footer", "quick", "stage", "scene10", "scene12", "keywords"):
         if "{{" + name + "}}" in body:
             body = body.replace("{{" + name + "}}", part(name))
     body = body.replace("{{gnb}}", gnb(meta.get("menu", "")))

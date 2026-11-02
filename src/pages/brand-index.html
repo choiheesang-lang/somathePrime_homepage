@@ -17,47 +17,47 @@ preload: /img/campus/entrance-01.webp
        「기존 학원과 무엇이 다를까요?」만 진한 면으로 강조합니다. css/brand.css · DESIGN.md 6 -->
   <main id="content" class="page bp">
 
-    <!-- 8p ② 페이지 머리 + 하위 메뉴 -->
-    <header class="bp-head">
-      <div class="wrap">
-        <p class="bp-head__eyebrow" data-step="0">브랜드</p>
-        <h1 class="bp-head__title" data-step="0">소마가 새롭게 여는<br />프리미엄 캠퍼스</h1>
-      </div>
-    </header>
-    <nav class="bp-tabs" aria-label="브랜드 하위 메뉴">
-      <ul class="wrap">
-        <li><a href="/brand/" aria-current="page">브랜드 소개</a></li>
-        <li><a href="/brand/campus.html">캠퍼스 안내</a></li>
-        <li><a href="/brand/location.html">오시는 길</a></li>
-      </ul>
+    <!-- 8p ① ② 페이지 머리 — 소마 프리미어(new.somai.co.kr/b/premier)처럼 브레드크럼 아래 한 줄에
+         왼쪽 제목 · 오른쪽 하위 메뉴. 줄 전체가 스크롤하면 GNB 아래에 붙습니다 -->
+    <nav class="bp-crumb" aria-label="현재 위치">
+      <ol class="wrap">
+        <li><a href="/" aria-label="홈"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 7.2 8 2.5l5.5 4.7V13a.5.5 0 0 1-.5.5H9.5V10h-3v3.5H3a.5.5 0 0 1-.5-.5V7.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></a></li>
+        <li><a href="/brand/">브랜드</a></li>
+        <li aria-current="page">브랜드 소개</li>
+      </ol>
     </nav>
+    <div class="bp-head">
+      <div class="wrap bp-head__in">
+        <h1 class="bp-head__title">브랜드</h1>
+        <nav class="bp-tabs" aria-label="브랜드 하위 메뉴">
+          <ul>
+            <li><a href="/brand/" aria-current="page">브랜드 소개</a></li>
+            <li><a href="/brand/campus.html">캠퍼스 안내</a></li>
+            <li><a href="/brand/location.html">오시는 길</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
 
-    <!-- 8p ③ 메인 비주얼 — 캠퍼스 사진 위에 인트로 카드의 슬로건 그래픽 -->
+    <!-- 8p ③ 상단 비주얼 — 피그마 18153-11596. 화면 폭 캠퍼스 사진 + 가운데 흰 제목, 아래 V 꺾임 위에
+         홈 장면 10의 키워드 카드 셋이 걸쳐 있습니다(같은 조각 · 같은 등장 · 흔들림) -->
     <section class="bp-kv" aria-label="소마 더 프라임">
-      <div class="bp-kv__photo is-folded" data-step="0">
+      <div class="bp-kv__photo is-folded">
         <img src="/img/campus/entrance-01.webp" alt="SOMA THE PRIME 간판이 걸린 캠퍼스 입구" fetchpriority="high" />
-        <div class="bp-card">
-          <div class="bp-card__soma-wrap"><svg class="bp-card__soma" viewBox="0 0 293.001 58.4757" fill="none" aria-hidden="true"><g class="bp-card__soma-fill" fill="#fff" fill-opacity="0"><path d="M115.389 58.4632L68.8233 58.4346C67.206 58.4346 65.3364 57.1153 65.3364 55.4325L65.3281 12.4298C65.3281 10.9307 67.0199 9.3418 68.5585 9.3418L115.985 9.35405C118.156 9.35405 119.29 11.4331 119.29 13.312L119.306 54.2969C119.306 56.666 118.061 58.4632 115.389 58.4632ZM101.913 47.4226L101.901 20.4478L82.7376 20.456V47.492L101.913 47.4266V47.4226Z" />
-<path d="M179.165 58.4757L179.099 33.7108L161.619 51.2133L144.639 33.7394L144.507 58.443L127.912 58.4676L127.908 9.3747L142.993 9.32568L161.61 28.8256L181.46 9.34202L195.83 9.35019V58.4635L179.165 58.4757Z" />
-<path d="M255.289 42.8391L240.597 9.3208L230.099 9.33714L219.601 9.3208L204.909 42.8391L197.973 58.4627H262.225L255.289 42.8391ZM220.623 47.4751L230.099 26.5006L239.575 47.4751H220.619H220.623Z" />
-<path d="M56.1911 41.9976L40.2086 31.247L28.5113 23.3923H57.1342V9.3208H18.7952V9.33714H7.75136L1.45183 15.4355V22.416C1.45183 24.1193 2.31631 25.7327 3.79295 26.758L15.2876 34.6331L29.4833 44.3953H0V58.4667H41.8631V58.4504H52.4933L58.5943 52.6053V46.3763C58.5943 44.6363 57.6884 43.0229 56.1911 41.9976Z" />
-<path d="M293.001 9.32106V27.9469L277 37.5483V18.5483L260 9.54834L276.654 0L293.001 9.32106Z" /></g><g class="bp-card__soma-line" stroke="#fff" stroke-opacity="0.4" stroke-width="1"><path d="M115.389 58.4632L68.8233 58.4346C67.206 58.4346 65.3364 57.1153 65.3364 55.4325L65.3281 12.4298C65.3281 10.9307 67.0199 9.3418 68.5585 9.3418L115.985 9.35405C118.156 9.35405 119.29 11.4331 119.29 13.312L119.306 54.2969C119.306 56.666 118.061 58.4632 115.389 58.4632ZM101.913 47.4226L101.901 20.4478L82.7376 20.456V47.492L101.913 47.4266V47.4226Z" />
-<path d="M179.165 58.4757L179.099 33.7108L161.619 51.2133L144.639 33.7394L144.507 58.443L127.912 58.4676L127.908 9.3747L142.993 9.32568L161.61 28.8256L181.46 9.34202L195.83 9.35019V58.4635L179.165 58.4757Z" />
-<path d="M255.289 42.8391L240.597 9.3208L230.099 9.33714L219.601 9.3208L204.909 42.8391L197.973 58.4627H262.225L255.289 42.8391ZM220.623 47.4751L230.099 26.5006L239.575 47.4751H220.619H220.623Z" />
-<path d="M56.1911 41.9976L40.2086 31.247L28.5113 23.3923H57.1342V9.3208H18.7952V9.33714H7.75136L1.45183 15.4355V22.416C1.45183 24.1193 2.31631 25.7327 3.79295 26.758L15.2876 34.6331L29.4833 44.3953H0V58.4667H41.8631V58.4504H52.4933L58.5943 52.6053V46.3763C58.5943 44.6363 57.6884 43.0229 56.1911 41.9976Z" />
-<path d="M293.001 9.32106V27.9469L277 37.5483V18.5483L260 9.54834L276.654 0L293.001 9.32106Z" /><path d="M276.5 37.5483L259.5 28.0483V9.54834" stroke-linejoin="round" /></g></svg></div>
-          <div class="bp-card__rule"></div>
-          <p class="bp-card__slogan">생각의 깊이 <span class="dot">·</span> 표현의 힘 <span class="dot">·</span> 성장의 가능성</p>
-          <ul class="bp-card__list"><li>insight</li><li>impact</li><li>growth</li></ul>
+        <div class="bp-kv__copy">
+          <p class="bp-kv__eyebrow" data-step="0">소마가 새롭게 여는 프리미엄 캠퍼스</p>
+          <h2 class="bp-kv__title" data-step="0">배움의 영역을 넓히고<br />성장의 깊이를 더하다.</h2>
         </div>
+      </div>
+      <div class="bp-kv__cards">
+        {{keywords}}
       </div>
     </section>
 
-    <!-- 8p ④ 소개 문구 -->
+    <!-- 8p ④ 소개 문구 — 브랜드 서체 · 가운데 -->
     <section class="bp-intro">
       <div class="wrap">
-        <h2 class="bp-intro__title" data-step="0">배움의 영역을 넓히고<br />성장의 깊이를 더하다.</h2>
-        <p class="bp-intro__body" data-step="1"><strong class="bp-mark">소마 더 프라임</strong>은 ‘재미있는 수학 배움터’라는 소마의 철학을 바탕으로,<br />수학적 사고를 넘어 창의 활동과 영어, 독서까지 아이의 성장에 필요한 배움을 확장합니다.</p>
+        <p class="bp-intro__body" data-step="0"><strong class="bp-mark">소마 더 프라임</strong>은 ‘재미있는 수학 배움터’라는 소마의 철학을 바탕으로, <br />수학적 사고를 넘어 창의 활동과 영어, 독서까지 <br />아이의 성장에 필요한 배움을 확장합니다.</p>
       </div>
     </section>
 
