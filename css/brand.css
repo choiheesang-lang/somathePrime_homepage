@@ -15,28 +15,29 @@
 /* ── 페이지 머리 (8p ① ②) — 소마 프리미어 구성: 브레드크럼 띠 + 한 줄(왼쪽 제목 · 오른쪽 탭) ── */
 /* 브레드크럼은 공통 컴포넌트 .crumb(css/site.css, tools/build.py crumb()) */
 
-/* 제목 · 탭 줄 — 스크롤하면 GNB 바로 아래에 붙습니다(GNB가 숨으면 맨 위로) */
+/* 제목 · 탭 줄 — 피그마 TOP_1(18262:10714): 브레드크럼 아래 32 간격, 제목 세방고딕 Bold 36 #222824(행간 1.2) 왼쪽 ·
+   하위 메뉴 세방고딕 Regular 17 #222824(간격 80) 오른쪽 아래 맞춤, 아래 여백 16, 1px #EEEEEE 선. 전체 132.
+   스크롤하면 GNB 바로 아래에 붙습니다(GNB가 숨으면 맨 위로) */
 .bp-head {
   position: sticky; top: var(--header-h); z-index: 30;
   background: rgba(255, 255, 255, 0.96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line-neutral);
+  border-bottom: 1px solid #EEEEEE;
   transition: top 0.35s var(--ease-out);
 }
 body:has(.gnb2.is-hidden) .bp-head { top: 0; }
-.bp-head__in { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 88px; }
-.bp-head__title { font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
-.bp-tabs ul { display: flex; gap: 40px; }
+.bp-head__in { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-top: 32px; padding-bottom: 16px; }
+.bp .bp-head__title { font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: 0; color: #222824; }   /* .bp h1 규칙보다 우선 */
+.bp-tabs ul { display: flex; gap: 80px; }
 .bp-tabs a {
-  position: relative; isolation: isolate; display: block; padding: 6px 2px;
-  font-family: var(--font-title); font-size: 16px; font-weight: 400; color: var(--text-alternative);
+  position: relative; isolation: isolate; display: block; padding: 0; line-height: 24px;
+  font-family: var(--font-title); font-size: 17px; font-weight: 400; letter-spacing: -0.02em; color: #222824;
   transition: color 0.2s;
 }
 .bp-tabs a:hover { color: var(--text-normal); }
-/* 현재 탭 — 굵게 + 주황 형광 밑줄(소마 프리미어와 같은 방식) */
-.bp-tabs a[aria-current="page"] { font-weight: 700; color: var(--text-normal); }
+/* 현재 탭 — 글줄 아래 절반(12px)에 주황 50% 형광 띠(피그마 Rectangle 282) */
 .bp-tabs a[aria-current="page"]::before {
-  content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: 6px; height: 8px;
-  background: color-mix(in srgb, var(--primary-normal2) 45%, transparent);
+  content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; height: 12px;
+  background: color-mix(in srgb, var(--primary-normal2) 50%, transparent);
 }
 
 /* ── 상단 비주얼 (8p ③, 피그마 18153-11596) — 화면 폭 사진 · 가운데 흰 제목 · V 꺾임 · 키워드 카드 걸침 ── */
