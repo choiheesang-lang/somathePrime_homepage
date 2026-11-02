@@ -40,23 +40,26 @@ body.intro-entering .quick { transition: opacity 0.5s 0.35s, transform 0.8s var(
 body.intro-on #stage { touch-action: none; }
 
 /* SKIP — 아래 가운데 큰 버튼. 누르면 오프닝을 건너뛰고 바로 홈 */
+/* 글자 · 아이콘은 START 디스크와 같게 — Noto Sans KR 700 14 · 아이콘 상자 20 · 간격 4를 디스크 배율(--dk =
+   디스크 지름 / 96, home.js placeSkip)로 키웁니다. 1440에서 약 13px, 1920에서 약 16px */
 .intro-skip {
+  --dk: 1;
   position: fixed; left: 50%; bottom: 48px; z-index: 5; transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 8px;
-  height: 56px; padding: 0 28px 0 32px;
-  font-family: var(--font-title); font-size: var(--fs-brand-body-1); font-weight: 700; letter-spacing: 0.04em; color: #fff;
-  background: rgba(44, 42, 41, 0.62); border: 1px solid rgba(255, 255, 255, 0.32); border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; gap: calc(4px * var(--dk));
+  height: 56px; padding: 0 24px 0 28px;
+  font-family: var(--font); font-size: calc(14px * var(--dk)); font-weight: 700; letter-spacing: calc(-0.3px * var(--dk)); color: #fff;
+  background: rgba(44, 42, 41, 0.62); border: 0; border-radius: var(--r-pill);
   box-shadow: var(--shadow-md);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   cursor: pointer;
   transition: background-color 0.2s, opacity 0.4s, transform 0.25s var(--ease-out);
 }
-.intro-skip svg { width: 20px; height: 20px; }
+.intro-skip svg { width: calc(20px * var(--dk)); height: calc(20px * var(--dk)); }
 .intro-skip:hover { background: rgba(44, 42, 41, 0.86); }
 .intro-skip:active { transform: translateX(-50%) scale(0.97); }
 .intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 /* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
-body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); border-color: var(--line-neutral); }
+body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); }
 
 /* START 동그라미 → SKIP (home.js nearSkip)
    버튼 가장자리 120px 안에서 동그라미가 ease-in-out으로 32px까지 작아지고, 영역에 들어오는
@@ -66,9 +69,9 @@ body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 
 body.disc-near #play-btn .pb-label, body.disc-near #play-btn .pb-icon { opacity: 0; }
 body.ptr-on .intro-skip { cursor: none; }
 .intro-skip__inv {
-  position: absolute; inset: -1px;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 0 28px 0 32px; border-radius: inherit;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: calc(4px * var(--dk));
+  padding: 0 24px 0 28px; border-radius: inherit;
   background: #F1EEEC; color: var(--text-normal);
   clip-path: circle(var(--inv-r, 0px) at var(--inv-x, 50%) var(--inv-y, 50%));
   pointer-events: none;

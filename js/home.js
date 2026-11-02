@@ -108,6 +108,7 @@
     const skipBtn = document.getElementById('intro-skip');
     const placeSkip = () => {
       if (leaving || !body.classList.contains('is-armed')) return;
+      skipBtn.style.setProperty('--dk', (hero.discPx() / 96).toFixed(3));   // 글자 · 아이콘을 START 디스크 배율로
       const panel = document.querySelector('#stage .panel');
       const sats = [...document.querySelectorAll('#hero .b-sat')].map((e) => e.getBoundingClientRect());
       if (!panel || !sats.length) return;
