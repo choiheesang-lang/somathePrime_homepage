@@ -49,6 +49,19 @@ def gnb(active):
     return part("gnb").replace("{{items}}", "\n          ".join(items)).replace("{{mobile}}", "\n        ".join(mob))
 
 
+HOME_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 7.2 8 2.5l5.5 4.7V13a.5.5 0 0 1-.5.5H9.5V10h-3v3.5H3a.5.5 0 0 1-.5-.5V7.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>'
+
+
+def crumb(spec):
+    """서브페이지 브레드크럼(현재 위치) — 머리말 `crumb: 브랜드 > 브랜드 소개`. 링크 없는 표시 전용.
+    피그마 Components의 `Breadcrumb`(Depth 1 · Current · Show depth 1)과 같은 구성입니다."""
+    parts = [p.strip() for p in spec.split(">") if p.strip()]
+    items = [f'<li class="crumb__home">{HOME_ICON}<span class="sr-only">홈</span></li>']
+    items += [f"<li>{p}</li>" for p in parts[:-1]]
+    items.append(f'<li aria-current="page">{parts[-1]}</li>')
+    return '<nav class="crumb" aria-label="현재 위치">\n      <ol class="wrap">' + "".join(items) + "</ol>\n    </nav>"
+
+
 def build(page):
     raw = io.open(page, encoding="utf-8").read()
     m = re.match(r"---\n(.*?)\n---\n", raw, re.S)
@@ -68,6 +81,8 @@ def build(page):
         if "{{" + name + "}}" in body:
             body = body.replace("{{" + name + "}}", part(name))
     body = body.replace("{{gnb}}", gnb(meta.get("menu", "")))
+    if "{{crumb}}" in body:
+        body = body.replace("{{crumb}}", crumb(meta["crumb"]))
     out = head + "\n<body class=\"" + meta.get("body", "") + "\">\n" + body.rstrip() + "\n" + part("scripts") + js + "\n</body>\n</html>\n"
     left = re.findall(r"\{\{\w+\}\}", out)
     assert not left, (page.name, left)

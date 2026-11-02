@@ -176,6 +176,8 @@ body.ptr-on .intro-skip { cursor: none; }
 #s-intro { position: relative !important; height: auto !important; min-height: 100svh; padding-top: 120px; padding-bottom: 200px; }
 /* 슬라임이 위쪽(히어로 꺾임 옆 흰 삼각형)으로 넘어갈 수 있게 세로는 열고, 가로 마퀴만 자릅니다 */
 #s-intro { z-index: 1; overflow-x: clip; overflow-y: visible; }
+/* 장면 12 「더 넓어진 소마를 경험할 차례」 — 피그마 18127-6956과 같은 Background/Brand/Heavy(부모들이 투명이라 흰 body가 비쳤음) */
+#s-copy-2 { background: var(--bg-brand-heavy); }
 /* brand/display/bold(56) — 좁은 화면은 비례로 줄임 */
 .intro__slogan { font-family: var(--font-title); font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); }
 /* 장면 10 슬라임 — 캔버스 가운데를 알약 배지 가운데(.intro 맨 위 + 31px)에 맞춰 공이 배지 뒤로 모입니다.

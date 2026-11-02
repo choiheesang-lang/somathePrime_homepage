@@ -13,13 +13,7 @@
 }
 
 /* ── 페이지 머리 (8p ① ②) — 소마 프리미어 구성: 브레드크럼 띠 + 한 줄(왼쪽 제목 · 오른쪽 탭) ── */
-.bp-crumb ol { display: flex; align-items: center; height: 44px; font-size: 14px; color: var(--text-alternative); }
-.bp-crumb li { display: flex; align-items: center; }
-.bp-crumb li + li::before { content: ""; width: 4px; height: 4px; margin: 0 10px; border-radius: 50%; background: currentColor; opacity: 0.6; }
-.bp-crumb a { color: inherit; transition: color 0.2s; }
-.bp-crumb a:hover { color: var(--text-normal); }
-.bp-crumb svg { width: 16px; height: 16px; display: block; }
-.bp-crumb [aria-current] { color: var(--text-normal); }
+/* 브레드크럼은 공통 컴포넌트 .crumb(css/site.css, tools/build.py crumb()) */
 
 /* 제목 · 탭 줄 — 스크롤하면 GNB 바로 아래에 붙습니다(GNB가 숨으면 맨 위로) */
 .bp-head {
