@@ -47,16 +47,19 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
 }
 
 /* ── 상단 비주얼 (8p ③, 피그마 18153-11596) — 화면 폭 사진 · 가운데 흰 제목 · V 꺾임 · 키워드 카드 걸침 ── */
-.bp-kv { position: relative; background: linear-gradient(transparent 70%, var(--bg-brand-normal) 70%); }
-.bp-kv__photo { position: relative; height: clamp(440px, 38.3vw, 736px); overflow: hidden; }
+.bp-kv { position: relative; padding-top: 40px; background: linear-gradient(transparent 70%, var(--bg-brand-normal) 70%); }
+/* 폭 1200(이전처럼 콘텐츠보다 조금 넓게, 위 모서리 r24) · 아래 V 꺾임 */
+.bp-kv__photo { position: relative; width: min(1200px, 100% - var(--gutter) * 2); margin: 0 auto; aspect-ratio: 1200 / 620; overflow: hidden; border-radius: var(--r-24) var(--r-24) 0 0; }
 .bp-kv__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; max-width: none; }
 .bp-kv__photo::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.2); pointer-events: none; }
 .bp-kv__copy { position: absolute; left: 0; right: 0; top: 30%; z-index: 1; text-align: center; color: #fff; }
 .bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; opacity: 0.9; }
 .bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: #fff; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.18); }
 /* 카드 셋 — 사진(V 꺾임) 아래쪽에 걸쳐 올라옵니다. 크기는 피그마 비율(가운데 392 · 양옆 347 = 카드 320) */
-/* 카드 크기를 사진 폭에 묶어(1920에서 320 = 16.7vw) 어느 폭에서나 사진 아래 28%에 걸치고 제목과 겹치지 않게 */
-.bp-kv__cards { --card: min(320px, 16.7vw); position: relative; z-index: 2; margin-top: calc(var(--card) * -0.62); }
+/* 카드 크기를 사진 폭에 묶어(1200 사진에서 300) 어느 폭에서나 사진 아래쪽에 걸치고 제목과 겹치지 않게 */
+.bp-kv__cards { --card: min(300px, 25vw); position: relative; z-index: 2; margin-top: calc(var(--card) * -0.62); }
+/* 카드 글자도 브랜드 서체(세방고딕) */
+.bp-kv .kw-card__text b, .bp-kv .kw-card__text i { font-family: var(--font-title); }
 .bp-kv__cards .keywords { --card: inherit; }
 /* 아이콘 등장 전 상태 — 홈 장면 10(sections.css)과 같은 규칙을 이 자리에도 */
 body.has-reveal .bp-kv .ic-line path { stroke-dashoffset: 100; }
@@ -130,7 +133,7 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
   .bp-tabs { width: 100%; overflow-x: auto; scrollbar-width: none; }
   .bp-tabs ul { gap: 24px; }
   .bp-tabs a { font-size: 15px; white-space: nowrap; }
-  .bp-kv__photo { height: 420px; }
+  .bp-kv__photo { aspect-ratio: auto; height: 420px; border-radius: var(--r-16) var(--r-16) 0 0; }
   .bp-kv__copy { top: 30%; padding: 0 var(--gutter); }
   .bp-kv__cards { --card: calc((100vw - 2 * var(--gutter) - 12px) / 3.45); margin-top: calc(var(--card) * -0.75); }
   .bp-kv__cards .keywords { flex-direction: row; align-items: flex-start; gap: 6px; }
