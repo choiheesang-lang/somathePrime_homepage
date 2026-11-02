@@ -1,23 +1,103 @@
 ---
 title: 캠퍼스 안내 | 소마 더 프라임
-desc: 네 개의 브랜드가 하나로 이어지는 목동 200평 캠퍼스입니다.
+desc: 강의실의 모음이 아닌 하나의 학습 생태계. 네 개의 브랜드가 하나로 이어지는 목동 200평 캠퍼스를 공간과 사진으로 만나보세요.
 path: /brand/campus.html
 menu: brand
+menu-sub: 캠퍼스 안내
 crumb: 브랜드 > 캠퍼스 안내
-body: sub
+body: sub brand-page
+css: brand campus
+js: brand campus
 ---
   {{sprite}}
 
   {{gnb}}
 
-  <main id="content" class="page">
+  <main id="content" class="page bp cp">
     {{crumb}}
-    <section class="stub">
-      <div class="stub__box">
-        <h1>캠퍼스 안내</h1>
-        <p>네 개의 브랜드가 하나로 이어지는 목동 200평 캠퍼스입니다.</p>
-        <span class="stub__note">2단계에서 제작</span>
-        <div><a class="btn2 btn2--line btn2--wide" href="/">홈으로</a></div>
+    {{bphead}}
+
+    <!-- 11p ① 소개 문구 — 브랜드 소개 문구 섹션과 같은 톤(세방고딕 · 가운데) -->
+    <section class="cp-hero">
+      <div class="wrap">
+        <p class="bp-label" data-step="0">CAMPUS</p>
+        <h2 class="cp-hero__title" data-step="0">고정된 학원에서, <br />움직이는 학원으로.</h2>
+        <p class="cp-hero__body" data-step="1">강의실의 모음이 아닌 하나의 학습 생태계. <br />네 개의 브랜드가 하나로 이어지는 목동 200평 캠퍼스입니다.</p>
+      </div>
+    </section>
+
+    <!-- 11p ② ③ 공간 소개 — 아치형 사진 카드 3열, 아치 꼭대기에 동그란 아이콘(campus.js가 등장 · 호버를 움직입니다) -->
+    <section class="cp-spaces">
+      <div class="wrap">
+        <div class="cp-spaces__head">
+          <p class="bp-label" data-step="0">공간으로 만나는 배움</p>
+          <h2 class="cp-spaces__title" data-step="0">한 단계씩 생각이 자라는 공간</h2>
+        </div>
+        <ul class="cp-arches">
+          <li class="cp-arch" data-step="1">
+            <div class="cp-arch__text">
+              <h3 class="cp-arch__name">창의력 교실</h3>
+              <p class="cp-arch__desc">생각하는 힘을 키우는<br />탐구의 공간</p>
+            </div>
+            <div class="cp-arch__fig">
+              <div class="cp-arch__pic"><img src="/img/campus/class-01.webp" alt="핑크 벽과 원형 조명의 소마 창의력 교실" loading="lazy" /></div>
+              <span class="cp-arch__orb" aria-hidden="true"><svg class="cp-arch__ic" viewBox="0 0 48 48"><use href="#ic-space-class" /></svg></span>
+            </div>
+          </li>
+          <li class="cp-arch" data-step="1">
+            <div class="cp-arch__text">
+              <h3 class="cp-arch__name">독서 프로그램</h3>
+              <p class="cp-arch__desc">읽고, 표현하며<br />생각의 폭을 넓히는 공간</p>
+            </div>
+            <div class="cp-arch__fig">
+              <div class="cp-arch__pic"><img src="/img/campus/class-10.webp" alt="아치형 책장과 파란 의자가 있는 독서 교실" loading="lazy" /></div>
+              <span class="cp-arch__orb" aria-hidden="true"><svg class="cp-arch__ic" viewBox="0 0 48 48"><use href="#ic-space-read" /></svg></span>
+            </div>
+          </li>
+          <li class="cp-arch" data-step="1">
+            <div class="cp-arch__text">
+              <h3 class="cp-arch__name">학부모 파트너 라운지</h3>
+              <p class="cp-arch__desc">아이의 배움을 함께<br />살피는 공간</p>
+            </div>
+            <div class="cp-arch__fig">
+              <div class="cp-arch__pic"><img src="/img/campus/lounge-05.webp" alt="SOMA 간판 아래 둥근 소파가 놓인 라운지" loading="lazy" /></div>
+              <span class="cp-arch__orb" aria-hidden="true"><svg class="cp-arch__ic" viewBox="0 0 48 48"><use href="#ic-space-lounge" /></svg></span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 12p 캠퍼스 둘러보기 — 공간별 탭 + 커버플로우(elan Campus Introduction 구성) + 오시는 길 -->
+    <section class="cp-gallery">
+      <div class="wrap">
+        <div class="cp-gallery__head">
+          <div>
+            <p class="bp-label" data-step="0">GALLERY</p>
+            <h2 class="cp-gallery__title" data-step="0">캠퍼스 둘러보기</h2>
+            <p class="cp-gallery__body" data-step="1">아이의 배움과 활동을 고려해 설계한 <br />프리미엄 캠퍼스를 사진으로 만나보세요.</p>
+          </div>
+          <a class="btn2 btn2--line btn2--48 cp-gallery__go" href="/brand/location.html" data-step="1"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-11a6.5 6.5 0 0 1 13 0c0 5.6-6.5 11-6.5 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>오시는 길</a>
+        </div>
+
+        <div class="cp-tabs" role="tablist" aria-label="공간별 사진" data-step="2">
+          <button type="button" class="btn2 btn2--fill btn2--40" role="tab" aria-selected="true" data-set="entrance">입구</button>
+          <button type="button" class="btn2 btn2--line btn2--40" role="tab" aria-selected="false" data-set="class">강의실</button>
+          <button type="button" class="btn2 btn2--line btn2--40" role="tab" aria-selected="false" data-set="lounge">라운지</button>
+        </div>
+
+        <!-- 사진 목록은 여기 한 곳 — 파일은 /img/campus/{set}-{01..n}.webp -->
+        <div class="cp-flow" data-step="3" data-sets='{"entrance":{"label":"입구","n":9},"class":{"label":"강의실","n":12},"lounge":{"label":"라운지","n":11}}' aria-roledescription="carousel" aria-label="캠퍼스 사진">
+          <div class="cp-flow__stage">
+            <ul class="cp-flow__track" aria-live="polite"></ul>
+            <button type="button" class="cp-flow__btn cp-flow__btn--prev" aria-label="이전 사진"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14.5 6-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="cp-flow__btn cp-flow__btn--next" aria-label="다음 사진"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9.5 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <div class="cp-flow__foot">
+            <ol class="cp-flow__dots" aria-label="사진 선택"></ol>
+            <p class="cp-flow__cap"><span class="cp-flow__cap-set">입구</span> <b class="cp-flow__cap-cur">1</b><span class="cp-flow__cap-sep">/</span><span class="cp-flow__cap-total">9</span></p>
+          </div>
+        </div>
       </div>
     </section>
   </main>

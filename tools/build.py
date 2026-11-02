@@ -62,6 +62,13 @@ def crumb(spec):
     return '<nav class="crumb" aria-label="현재 위치">\n      <ol class="wrap">' + "".join(items) + "</ol>\n    </nav>"
 
 
+def bphead(meta):
+    """브랜드 서브페이지 머리(src/partials/bphead.html) — 하위 메뉴 탭은 MENU의 brand 항목에서, 현재 탭은 `menu-sub:`."""
+    sub = next(m for m in MENU if m[0] == "brand")[3]
+    tabs = "".join(f'<li><a href="{h}"{" aria-current=\"page\"" if t == meta.get("menu-sub") else ""}>{t}</a></li>' for t, h in sub)
+    return part("bphead").replace("{{tabs}}", tabs)
+
+
 def build(page):
     raw = io.open(page, encoding="utf-8").read()
     m = re.match(r"---\n(.*?)\n---\n", raw, re.S)
@@ -83,6 +90,8 @@ def build(page):
     body = body.replace("{{gnb}}", gnb(meta.get("menu", "")))
     if "{{crumb}}" in body:
         body = body.replace("{{crumb}}", crumb(meta["crumb"]))
+    if "{{bphead}}" in body:
+        body = body.replace("{{bphead}}", bphead(meta))
     out = head + "\n<body class=\"" + meta.get("body", "") + "\">\n" + body.rstrip() + "\n" + part("scripts") + js + "\n</body>\n</html>\n"
     left = re.findall(r"\{\{\w+\}\}", out)
     assert not left, (page.name, left)

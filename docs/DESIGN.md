@@ -156,3 +156,10 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 ### 서브페이지 브레드크럼 · 장면 12 바탕
 - 브레드크럼은 **링크 없는 표시 전용 컴포넌트** `.crumb`(css/site.css). 페이지 머리말에 `crumb: 브랜드 > 브랜드 소개`를 쓰고 본문에 `{{crumb}}` — `tools/build.py`의 `crumb()`가 홈 아이콘 + 단계 + 현재(aria-current)를 조립. 높이 44 · 14px · 4px 점(양옆 10) · 마지막만 Text/Normal. 피그마는 Components의 `Breadcrumb`(속성 Depth 1 · Current · Show depth 1). 브랜드 소개 · 캠퍼스 안내 · 오시는 길에 적용.
 - 홈 장면 12 「더 넓어진 소마를 경험할 차례」 바탕은 Background/Brand/Heavy(`#s-copy-2`, 피그마 18127-6956).
+
+### 캠퍼스 안내(기획서 11 · 12p) — `/brand/campus.html`, css/campus.css, js/campus.js
+- **머리**: 세 브랜드 서브페이지가 `src/partials/bphead.html`을 공유(`{{bphead}}`, 현재 탭은 머리말 `menu-sub:`). 브레드크럼 `crumb:`과 함께 씀.
+- **바탕 순서**: 흰색(소개 문구 「고정된 학원에서, 움직이는 학원으로.」 display · 가운데) → Brand Normal(공간 소개) → Brand Strong(캠퍼스 둘러보기).
+- **아치 카드 3열**(1160, 간격 24, 흰 r24, 패딩 32/28): 위 글(세방고딕 Bold 22 + Noto 15 두 줄), 아래 **아치 사진**(`border-radius: 999px 999px 24px 24px`, 비율 178:205 — 기획서 도형). 사진: 창의력 교실 class-01 · 독서 프로그램 class-10 · 학부모 파트너 라운지 lounge-05.
+- **동그란 아이콘**: 72px 흰 원(shadow-md) 중심이 아치 정점. 선 아이콘 `ic-space-class/read/lounge`(sprite, 48 viewBox · 선 1.8 · pathLength 100). **등장**: 아치가 아래에서 올라오고(clip-path inset) 원이 위에서 떨어져 정점에 착지하며 눌렸다(scaleY .84) 탄성으로 펴진 뒤 선이 그려짐, 카드마다 0.12초 간격, 이후 2px 숨쉬기. **호버**: 사진 1.04배, 원이 곡면 따라 굴렀다(rotate 10 → −6 → 0) 돌아옴. 동작 감소면 정지.
+- **커버플로우**(elan Campus Introduction 구성, 라이브러리 없음): 탭 pill(활성 Fill 40 · 비활성 Line 40) 입구 9 · 강의실 12 · 라운지 11장(`data-sets`, 파일 `img/campus/{set}-NN.webp`). 가운데 사진 폭 65%(16:9 · r24), 양옆 0.72배 · 바깥 가장자리가 판 가장자리에 닿게(흰 35% 덮개), 그 밖은 숨김. 72px 흰 원 화살표가 가운데 사진 좌우 가장자리에 걸침, 아래 8px 점(활성 Primary/Heavy) + 캡션 「입구 1 / 9」. 4.5초 자동(호버 · 포커스 · 화면 밖 · 동작 감소면 멈춤), 드래그 40px · ← →, 탭 바꾸면 첫 장. 모바일 86% · 화살표 44.
