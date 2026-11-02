@@ -5,8 +5,7 @@ path: /brand/
 menu: brand
 body: sub brand-page
 css: brand
-js: brand
-preload: /img/campus/entrance-01.webp
+js: brand brand-goo
 ---
   {{sprite}}
 
@@ -43,7 +42,8 @@ preload: /img/campus/entrance-01.webp
          홈 장면 10의 키워드 카드 셋이 걸쳐 있습니다(같은 조각 · 같은 등장 · 흔들림) -->
     <section class="bp-kv" aria-label="소마 더 프라임">
       <div class="bp-kv__photo is-folded">
-        <img src="/img/campus/entrance-01.webp" alt="SOMA THE PRIME 간판이 걸린 캠퍼스 입구" fetchpriority="high" />
+        <!-- 네 브랜드 색 슬라임(레퍼런스 cellinteractive.jp) — js/brand-goo.js의 WebGL 메타볼 -->
+        <canvas class="bp-kv__goo" aria-hidden="true"></canvas>
         <div class="bp-kv__copy">
           <p class="bp-kv__eyebrow" data-step="0">소마가 새롭게 여는 프리미엄 캠퍼스</p>
           <h2 class="bp-kv__title" data-step="0">배움의 영역을 넓히고<br />성장의 깊이를 더하다.</h2>

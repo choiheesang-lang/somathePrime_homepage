@@ -49,12 +49,15 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
 .bp-kv { position: relative; padding-top: 40px; background: linear-gradient(transparent 70%, var(--bg-brand-normal) 70%); }
 /* 폭 1200(이전처럼 콘텐츠보다 조금 넓게, 위 모서리 r24) · 아래 V 꺾임 — 꺾인 곳 · 아래 모서리도 둥글게.
    둥근 꺾임은 clip-path polygon으로 못 그려서 brand.js가 실제 크기로 path()를 써 넣습니다(없으면 .is-folded 직선 꺾임) */
-.bp-kv__photo { position: relative; width: min(1200px, 100% - var(--gutter) * 2); margin: 0 auto; aspect-ratio: 1200 / 620; overflow: hidden; border-radius: var(--r-24) var(--r-24) 0 0; }
-.bp-kv__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; max-width: none; }
-.bp-kv__photo::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.2); pointer-events: none; }
-.bp-kv__copy { position: absolute; left: 0; right: 0; top: 30%; z-index: 1; text-align: center; color: #fff; }
-.bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; opacity: 0.9; }
-.bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: #fff; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.18); }
+.bp-kv__photo { position: relative; width: min(1200px, 100% - var(--gutter) * 2); margin: 0 auto; aspect-ratio: 1200 / 620; overflow: hidden; border-radius: var(--r-24) var(--r-24) 0 0; background: var(--bg-brand-heavy); }
+/* 4색 슬라임 캔버스(brand-goo.js). WebGL이 없으면 .is-flat — 브랜드 색 원 넷을 겹친 정적 덩어리 */
+.bp-kv__goo { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.bp-kv__photo.is-flat .bp-kv__goo { display: none; }
+.bp-kv__photo.is-flat::before { content: ""; position: absolute; left: 50%; top: 50%; width: 64%; max-width: 440px; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
+  background: radial-gradient(circle at 30% 30%, var(--pal-brand-coral), transparent 60%), radial-gradient(circle at 72% 32%, var(--pal-brand-dusty-blue), transparent 60%), radial-gradient(circle at 30% 72%, var(--pal-brand-sage-green), transparent 60%), radial-gradient(circle at 70% 70%, var(--pal-brand-yellow), transparent 60%), var(--pal-brand-yellow); }
+.bp-kv__copy { position: absolute; left: 0; right: 0; top: 30%; z-index: 1; text-align: center; color: var(--text-normal); pointer-events: none; }
+.bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; color: var(--text-neutral); }
+.bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: var(--text-normal); }
 /* 카드 셋 — 사진(V 꺾임) 아래쪽에 걸쳐 올라옵니다. 크기는 피그마 비율(가운데 392 · 양옆 347 = 카드 320) */
 /* 카드 크기를 사진 폭에 묶어(1200 사진에서 300) 어느 폭에서나 사진 아래쪽에 걸치고 제목과 겹치지 않게 */
 .bp-kv__cards { --card: min(300px, 25vw); position: relative; z-index: 2; margin-top: calc(var(--card) * -0.62); }
