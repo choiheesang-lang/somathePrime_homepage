@@ -47,19 +47,19 @@ body.intro-on #stage { touch-action: none; }
   position: fixed; left: 50%; bottom: 48px; z-index: 5; transform: translateX(-50%);
   display: inline-flex; align-items: center; gap: calc(4px * var(--dk));
   height: 56px; padding: 0 24px 0 28px;
-  font-family: var(--font); font-size: calc(14px * var(--dk)); font-weight: 700; letter-spacing: calc(-0.3px * var(--dk)); color: #fff;
-  background: rgba(44, 42, 41, 0.62); border: 0; border-radius: var(--r-pill);
+  font-family: var(--font); font-size: calc(14px * var(--dk)); font-weight: 700; letter-spacing: calc(-0.3px * var(--dk)); color: var(--text-normal);
+  background: #fff; border: 0; border-radius: var(--r-pill);   /* 흰 버튼 — 어두운 무대 위에서 누를 수 있는 것으로 읽히게 */
   box-shadow: var(--shadow-md);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   cursor: pointer;
   transition: background-color 0.2s, opacity 0.4s, transform 0.25s var(--ease-out);
 }
 .intro-skip svg { width: calc(20px * var(--dk)); height: calc(20px * var(--dk)); }
-.intro-skip:hover { background: rgba(44, 42, 41, 0.86); }
+.intro-skip:hover { background: #F1EEEC; }
 .intro-skip:active { transform: translateX(-50%) scale(0.97); }
-.intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 5px var(--text-normal); }
 /* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
-body.intro-light .intro-skip { color: var(--text-normal); background: rgba(255, 255, 255, 0.78); }
+body.intro-light .intro-skip { color: var(--text-normal); background: #fff; box-shadow: var(--shadow-md), 0 0 0 1px var(--line-neutral); }
 
 /* START 동그라미 → SKIP (home.js nearSkip)
    버튼 가장자리 120px 안에서 동그라미가 ease-in-out으로 32px까지 작아지고, 영역에 들어오는
@@ -72,11 +72,10 @@ body.ptr-on .intro-skip { cursor: none; }
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center; gap: calc(4px * var(--dk));
   padding: 0 24px 0 28px; border-radius: inherit;
-  background: #F1EEEC; color: var(--text-normal);
+  background: #2C2A29; color: #fff;   /* 흰 버튼 위 검은 디스크 = 어둡게 반전 */
   clip-path: circle(var(--inv-r, 0px) at var(--inv-x, 50%) var(--inv-y, 50%));
   pointer-events: none;
 }
-body.intro-light .intro-skip__inv { background: #2C2A29; color: #fff; }
 @media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
 /* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
 

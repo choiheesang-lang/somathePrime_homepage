@@ -119,7 +119,7 @@ body.is-intro #stage { will-change: transform, opacity; }
   display: flex; flex-direction: column; align-items: center;
   gap: calc(16px * var(--s));
   font-family: var(--font-title);                 /* 세방고딕 Regular */
-  font-size: calc(16px * var(--s));
+  font-size: calc(14px * var(--s));               /* 한 단계 낮춤(16 → 14) */
   font-weight: 400;
   line-height: 1.2;
 }
@@ -329,7 +329,7 @@ body.hero-narrow .panel__slogan .dot { display: none; }
 body.hero-narrow .panel__slogan .ln  { display: block; }
 body.hero-narrow .panel__list {
   top: calc(358px * var(--s));
-  font-size: calc(23.8px * var(--s));                 /* Figma 12px */
+  font-size: calc(19.8px * var(--s));                 /* Figma 12px → 10px(한 단계 낮춤) */
   gap: calc(23.8px * var(--s));
 }
 
