@@ -43,13 +43,15 @@ STP.hero = (function () {
      디스크가 움직이면 스프링으로 한 템포 늦게 따라옵니다. 조절할 값은 여기 한 곳:
        r      뒤 블롭 반지름 = 디스크 반지름 × r
        off    치우침 거리    = 디스크 반지름 × off (각자 위 · 오른쪽 · 아래 · 왼쪽으로)
-       drift  치우침이 느리게 떠도는 양 — 거리 ±dist(반지름 비율), 각도 ±ang(rad), 속도 spd(rad/s)
+       drift  치우침이 느리게 떠도는 양 — 거리 ±dist(치우침 거리 비율, 「네 개의 브랜드」 판은 ±45%), 각도 ±ang(rad), 속도 spd(rad/s)
+       halo   디스크 아래 흰 빛 — 반지름 = 디스크 반지름 × halo.r, 밝기 halo.op
        stiff  스프링 강성(1/s²) — 클수록 빨리 따라붙음. 블롭마다 달라 부채꼴로 늘어집니다
        damp   감쇠(1/s) — 2·√stiff 이면 임계감쇠(넘치지 않음), 그보다 작으면 살짝 넘쳤다 돌아옴
        lagMax 디스크에서 최대 얼마나 뒤처질 수 있는지(디스크 반지름 비율) — 빨리 휘두를 때 떨어져 나가지 않게 */
   const TRAIL = {
     r: 0.92, off: 0.22,
-    drift: { dist: 0.09, ang: 0.45, spd: [0.33, 0.41, 0.29, 0.37] },
+    drift: { dist: 0.8, ang: 0.6, spd: [0.33, 0.41, 0.29, 0.37] },
+    halo: { r: 2.2, op: 0.6 },
     stiff: [170, 130, 100, 78],
     damp:  [21, 18, 15.5, 13.5],
     lagMax: 1.6,
@@ -216,6 +218,7 @@ STP.hero = (function () {
       pbHoles: SATS.map(sa => q(`#pb-knock .m-sat[data-i="${sa.i}"]`)),
       pbCutFills: SATS.map(sa => q(`.pb-cut[data-i="${sa.i}"] circle`)),
       trail: q('#hero-trail'),
+      discHalo: q('#hero-halo'), discHaloC: q('#halo'),   // (els.halo는 장면 7 burst 것)
       trailBlobs: SATS.map(sa => q(`#hero-trail .tr-blob[data-i="${sa.i}"]`)),
       blur: q('#goo-blur'),
       glowBlur: q('#glow-blur'),
@@ -496,9 +499,10 @@ STP.hero = (function () {
       const el = els.trailBlobs[i];
       el.setAttribute('cx', b.x.toFixed(1)); el.setAttribute('cy', b.y.toFixed(1)); el.setAttribute('r', (R * TRAIL.r).toFixed(1));
     });
+    if (els.discHaloC) { els.discHaloC.setAttribute('cx', ptr.v.x.toFixed(1)); els.discHaloC.setAttribute('cy', ptr.v.y.toFixed(1)); els.discHaloC.setAttribute('r', (R * TRAIL.halo.r).toFixed(1)); }
   }
   function trailSnap(v) { trail.forEach(b => { b.x = v.x; b.y = v.y; b.vx = 0; b.vy = 0; }); }
-  function discOpacity(o) { gsap.set(els.playCursor, { opacity: o }); if (els.trail) els.trail.style.opacity = o; }
+  function discOpacity(o) { gsap.set(els.playCursor, { opacity: o }); if (els.trail) els.trail.style.opacity = o; if (els.discHalo) els.discHalo.style.opacity = o * TRAIL.halo.op; }
   function placeDisc(v) {
     const tr = `translate(${v.x.toFixed(1)} ${v.y.toFixed(1)}) scale(${(discVB() / 96 * discK).toFixed(4)})`;
     for (const g of els.pbBodies) g.setAttribute('transform', tr);
