@@ -116,23 +116,25 @@
   if (age) {
     const NS = 'http://www.w3.org/2000/svg', C = 100, RR = 92, LEN = 2 * Math.PI * RR;
     const ticks = document.getElementById('age-ticks'), arc = document.getElementById('age-arc');
-    const dot = document.getElementById('age-dot'), num = document.getElementById('age-n');
+    const orbit = document.getElementById('age-orbit'), num = document.getElementById('age-n');
     const at = (k) => { const a = (-90 + k * 60) * Math.PI / 180; return [C + RR * Math.cos(a), C + RR * Math.sin(a)]; };
     for (let k = 0; k < 6; k++) { const [x, y] = at(k); const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('r', '3.5'); ticks.appendChild(c); }
+    // 점은 원 중심을 축으로 회전 — 각도를 계속 누적해 11 → 6도 앞으로(시계 방향) 원을 따라 넘어감
+    let deg = 0;
+    const turn = (d, snap) => { if (snap) orbit.style.transition = 'none'; deg = d; orbit.style.transform = `rotate(${d}deg)`; if (snap) { orbit.getBoundingClientRect(); orbit.style.transition = ''; } };
     const show = (k) => {
-      const [x, y] = at(k);
-      dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1));
+      turn(k === 0 && deg % 360 !== 0 ? deg + 60 : deg - (deg % 360) + k * 60);
       arc.style.strokeDasharray = (LEN * k / 6).toFixed(1) + ' ' + LEN.toFixed(1);
       num.innerHTML = String(6 + k);
     };
-    const still = () => { const [x, y] = at(5); dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1)); arc.style.strokeDasharray = (LEN * 5 / 6).toFixed(1) + ' ' + LEN.toFixed(1); num.innerHTML = '6<em>–</em>11'; };
+    const still = () => { turn(300, true); arc.style.strokeDasharray = (LEN * 5 / 6).toFixed(1) + ' ' + LEN.toFixed(1); num.innerHTML = '6<em>–</em>11'; };
     let k = 0, timer = null;
     const run = () => { show(k); k = (k + 1) % 6; };
     const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
     still();
     new IntersectionObserver((e) => {
       if (reduceMQ.matches) { still(); return; }
-      if (e[0].isIntersecting && !timer) { k = 0; run(); timer = setInterval(run, 900); }
+      if (e[0].isIntersecting && !timer) { turn(0, true); k = 0; run(); timer = setInterval(run, 900); }
       else if (!e[0].isIntersecting && timer) { clearInterval(timer); timer = null; still(); }
     }, { threshold: 0.3 }).observe(age);
   }
