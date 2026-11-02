@@ -123,5 +123,5 @@
 - 저장소: https://github.com/choiheesang-lang/somathePrime_homepage · 보정 원본 PNG(`img/수정이미지/`)는 .gitignore.
 
 ## 인트로 디스크 뒤 슬라임 넷 (2026-11-02)
-- `#hero-trail`(multiply svg)에 브랜드 색 원 넷, 그 아래 `#hero-halo`(흰 radial 빛, 디스크 1.5배 · 90%). `hero.js` `TRAIL`의 r · off · drift · stiff · damp · lagMax로 조절합니다. 디스크 opacity와 같이 켜고 끕니다(`discOpacity`).
+- `#hero-trail`(multiply svg)에 브랜드 색 원 넷, 그 아래 `#hero-halo`(흰 radial 빛, 디스크 2.2배 · 60%). `hero.js` `TRAIL`의 r · off · drift · stiff · damp · lagMax로 조절합니다. 디스크 opacity와 같이 켜고 끕니다(`discOpacity`).
 

@@ -51,10 +51,10 @@ STP.hero = (function () {
   const TRAIL = {
     r: 0.92, off: 0.22,
     drift: { dist: 0.8, ang: 0.6, spd: [0.33, 0.41, 0.29, 0.37] },
-    halo: { r: 1.5, op: 0.9 },
-    stiff: [900, 800, 700, 600],   // 거의 붙어 다님(스프링이 매우 단단)
-    damp:  [60, 57, 53, 49],       // ≈ 2·√stiff — 넘치지 않음
-    lagMax: 0.4,
+    halo: { r: 2.2, op: 0.6 },
+    stiff: [170, 130, 100, 78],
+    damp:  [21, 18, 15.5, 13.5],
+    lagMax: 1.6,
   };
   const trail = SATS.map((s, i) => ({ x: C.x, y: C.y, vx: 0, vy: 0, ph: i * 1.7, side: s.side }));
   const DOCK_T = [1.1, 1.9, 2.6, 3.3];
