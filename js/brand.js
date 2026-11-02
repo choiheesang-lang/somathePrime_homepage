@@ -110,6 +110,33 @@
     window.addEventListener('resize', draw);
   }
 
+  /* ── 연령 원(9p ④) — 눈금 6개(6~11세). 주황 점이 0.9초마다 한 칸씩 가고, 지나온 호는 진하게 차오르며
+     가운데 숫자가 6 → 11로 오른 뒤 처음으로. 화면에 보일 때만 돕니다. 동작 감소면 「6–11」 정지 ── */
+  const age = document.querySelector('.bp-age');
+  if (age) {
+    const NS = 'http://www.w3.org/2000/svg', C = 100, RR = 92, LEN = 2 * Math.PI * RR;
+    const ticks = document.getElementById('age-ticks'), arc = document.getElementById('age-arc');
+    const dot = document.getElementById('age-dot'), num = document.getElementById('age-n');
+    const at = (k) => { const a = (-90 + k * 60) * Math.PI / 180; return [C + RR * Math.cos(a), C + RR * Math.sin(a)]; };
+    for (let k = 0; k < 6; k++) { const [x, y] = at(k); const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('r', '3.5'); ticks.appendChild(c); }
+    const show = (k) => {
+      const [x, y] = at(k);
+      dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1));
+      arc.style.strokeDasharray = (LEN * k / 6).toFixed(1) + ' ' + LEN.toFixed(1);
+      num.innerHTML = String(6 + k);
+    };
+    const still = () => { const [x, y] = at(5); dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1)); arc.style.strokeDasharray = (LEN * 5 / 6).toFixed(1) + ' ' + LEN.toFixed(1); num.innerHTML = '6<em>–</em>11'; };
+    let k = 0, timer = null;
+    const run = () => { show(k); k = (k + 1) % 6; };
+    const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+    still();
+    new IntersectionObserver((e) => {
+      if (reduceMQ.matches) { still(); return; }
+      if (e[0].isIntersecting && !timer) { k = 0; run(); timer = setInterval(run, 900); }
+      else if (!e[0].isIntersecting && timer) { clearInterval(timer); timer = null; still(); }
+    }, { threshold: 0.3 }).observe(age);
+  }
+
   const settle = () => ScrollTrigger.refresh();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
   window.addEventListener('load', settle, { once: true });

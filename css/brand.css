@@ -81,14 +81,22 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
 .bp-prime__sub { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.4vw, 20px); font-weight: 700; color: var(--text-normal); }
 /* 본문은 제목과 다른 서체 — 깔끔한 고딕(Noto Sans KR), 기획서 9p ② */
 .bp-prime__body { margin-top: 16px; font-family: var(--font); font-size: 16px; line-height: 1.9; color: var(--text-neutral); word-break: keep-all; }
-.bp-prime__visual { position: relative; display: flex; align-items: flex-end; gap: 32px; justify-self: end; margin: 0; }
+.bp-prime__visual { position: relative; display: flex; align-items: center; gap: 32px; justify-self: end; margin: 0; }
 .bp-prime__visual img { width: 296px; aspect-ratio: 296 / 366; object-fit: cover; border-radius: var(--r-24); box-shadow: var(--shadow-md); }
-/* 연령 — 사진 오른쪽 (9p ④) */
-.bp-age { display: flex; flex-direction: column; padding-bottom: 8px; font-family: var(--font-title); color: var(--text-normal); }
-.bp-age__k { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; color: var(--text-neutral); }
-.bp-age__n { white-space: nowrap; margin-top: 4px; font-size: clamp(64px, 6vw, 96px); font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
-.bp-age__n i { font-style: normal; margin: 0 0.04em; color: var(--text-alternative); }
-.bp-age__en { margin-top: 8px; font-size: 16px; font-weight: 700; letter-spacing: 0.1em; color: var(--primary-heavy); }
+/* 사진은 기획서처럼 타원 */
+.bp-prime__visual img { border-radius: 50%; }
+/* 연령 — 사진 오른쪽 원(9p ④). 흑백에 포인트만 주황(Primary/normal2) */
+.bp-age { position: relative; flex: none; width: 220px; aspect-ratio: 1; display: grid; place-items: center; align-self: center; }
+.bp-age__ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bp-age__track { fill: none; stroke: var(--line-normal); stroke-width: 1.5; }
+.bp-age__arc { fill: none; stroke: var(--text-normal); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 578 578; transition: stroke-dasharray 0.6s var(--ease-out); }
+.bp-age__ticks circle { fill: var(--text-normal); }
+.bp-age__dot { fill: var(--primary-normal2); transition: cx 0.6s var(--ease-out), cy 0.6s var(--ease-out); }
+.bp-age__in { position: relative; display: flex; flex-direction: column; align-items: center; font-family: var(--font-title); color: var(--text-normal); text-align: center; }
+.bp-age__k { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: var(--text-neutral); }
+.bp-age__n { margin-top: 2px; font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bp-age__n em { font-style: normal; color: var(--primary-normal2); }
+.bp-age__en { margin-top: 4px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-neutral); }
 
 /* ── 차별점 (9p ⑤) — 이 페이지의 유일한 진한 면 ── */
 .bp-diff { padding: 120px 0 130px; background: var(--primary-heavy); color: #fff; }
@@ -140,7 +148,11 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
   .bp-intro, .bp-prime, .bp-space, .bp-end { padding: 80px 0; }
   .bp-intro { padding-top: 56px; }
   .bp-intro__body br { display: none; }
-  .bp-prime__visual img { width: 200px; }
+  .bp-prime__visual img { width: 150px; }
+  .bp-prime__visual { gap: 16px; }
+  .bp-age { width: 160px; }
+  .bp-age__n { font-size: 40px; }
+  .bp-age__k, .bp-age__en { font-size: 11px; }
   .bp-diff { padding: 80px 0; }
   .bp-diff__row { grid-template-columns: 36px 1fr 24px 1.2fr; gap: 12px; padding: 20px 0; }
   .bp-diff__ic { width: 36px; height: 36px; }
