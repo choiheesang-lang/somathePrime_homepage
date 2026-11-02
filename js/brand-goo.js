@@ -2,7 +2,7 @@
    brand-goo.js — 브랜드 소개 상단 비주얼의 4색 슬라임
    레퍼런스 cellinteractive.jp 첫 화면(bundle.js의 QT · lA 클래스)과 같은 구조를 라이브러리 없이 옮겼습니다.
 
-   1) 물리(레퍼런스는 cannon-es, 중력 0) — 공 6개. 질량 .4, 선형 감쇠 .9(밀리면 금방 멈춤),
+   1) 물리(레퍼런스는 cannon-es, 중력 0) — 공 4개. 질량 .4, 선형 감쇠 .9(밀리면 금방 멈춤),
       충돌 반지름은 보이는 반지름의 .65배라 서로 겹치지 못하고 밀어냅니다. 매 스텝 크기 16의 복원력이
       "중심에서 사인 곡선으로 조금 흔들리는 목표점"을 향해 걸려 뭉친 채 천천히 자리를 바꿉니다.
       커서는 반폭 1.25R의 보이지 않는 상자(KINEMATIC) — 겹친 공을 밀어내서 지나가면 공들이 사방으로
@@ -13,7 +13,9 @@
       가우스 블러(가로 · 세로) → 출력에서 alpha = a×80 − 15 로 다시 또렷하게.
       색은 따로 작은 반경으로만 흐려(D · E) 공마다 제 색이 남고 경계만 부드럽게 넘어갑니다.
    3) 색 — 네 브랜드 코어 컬러(css/tokens.css --pal-brand-*)의 선명 버전(색상 유지 · 채도 ×1.3 · 명도 −4%)
-      + 코랄 · 파랑 반복 = 6개. 파스텔 원색은 블러로 섞이면 탁해져서 슬라임에서만 올립니다.
+      하나씩 = 공 4개. 파스텔 원색은 블러로 섞이면 탁해져서 슬라임에서만 올립니다.
+      넷이 모두 뭉치면(중심에서 가장 먼 공 ≤ 2.6·RB) 약 1초에 걸쳐 검정 잉크(--primary-normal)로 물들고,
+      커서로 흩어지면 각자 제 색으로 돌아옵니다.
    화면 밖이면 멈추고, 동작 감소면 뭉친 상태 한 프레임만 그립니다. WebGL이 없으면 .is-flat(CSS 정적 덩어리).
    ───────────────────────────────────────────────────────────── */
 (function () {
@@ -43,17 +45,19 @@
   const FALLBACK = ['#F2A48C', '#F6D98A', '#98B8E3', '#B7CFA3'];
   const BRAND = ['--pal-brand-coral', '--pal-brand-yellow', '--pal-brand-dusty-blue', '--pal-brand-sage-green']
     .map((n, i) => vivid(hex(css(n) || FALLBACK[i]), 1.3, -0.04));
-  const COLORS = [0, 1, 2, 3, 0, 2].map((i) => BRAND[i]);          // 코랄 · 노랑 · 파랑 · 녹색 · 코랄 · 파랑
+  const COLORS = [0, 1, 2, 3].map((i) => BRAND[i]);                // 코랄 · 노랑 · 파랑 · 녹색 — 브랜드 하나에 공 하나
   const N = COLORS.length;
+  const INK = hex(css('--primary-normal') || '#2C2A29');            // 넷이 모두 뭉치면 이 잉크(홈 검은 슬라임 = 소마더프라임)로
 
   /* ── 셰이더 ── */
   const K = 32;                                                     // 블러 탭 수
   const VS_BALL = 'attribute vec2 q; uniform vec2 uC; uniform vec2 uS; varying vec2 vP; void main(){ vP = q; gl_Position = vec4(uC + q * uS, 0.0, 1.0); }';
   // 가장자리 안티앨리어싱(uEdge = 1.5px / 반지름px) + 밝은 쪽만 살짝 하이라이트(어둡게 하지 않음)
-  const FS_BALL = `precision highp float; varying vec2 vP; uniform vec3 uColor; uniform vec3 uL; uniform float uEdge;
+  const FS_BALL = `precision highp float; varying vec2 vP; uniform vec3 uColor; uniform vec3 uInkColor; uniform float uInk; uniform vec3 uL; uniform float uEdge;
     void main(){ float r = length(vP); float a = 1.0 - smoothstep(1.0 - uEdge, 1.0, r); if (a <= 0.0) discard;
       vec3 n = vec3(vP, sqrt(max(0.0, 1.0 - r * r))); float d = clamp(dot(n, uL), 0.1, 1.0);
-      gl_FragColor = vec4(min(vec3(1.0), uColor + (d - 0.5) * 0.10) * a, a); }`;   // premultiplied — 가장자리가 검정과 섞여 어두운 테두리가 생기지 않게
+      vec3 c = mix(uColor, uInkColor, uInk);
+      gl_FragColor = vec4(min(vec3(1.0), c + (d - 0.5) * 0.10) * a, a); }`;   // premultiplied — 가장자리가 검정과 섞여 어두운 테두리가 생기지 않게
   const VS_QUAD = 'attribute vec2 q; varying vec2 vUv; void main(){ vUv = q * 0.5 + 0.5; gl_Position = vec4(q, 0.0, 1.0); }';
   // 블러 — premultiplied 텍스처라 네 채널을 그대로 가중 평균하면 레퍼런스의 "알파 가중 색 평균"과 같습니다
   const FS_BLUR = `precision highp float; varying vec2 vUv; uniform sampler2D uT; uniform vec2 uDir; uniform float uW[${K}];
@@ -79,6 +83,7 @@
   const bindQuad = (p) => { const a = gl.getAttribLocation(p, 'q'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0); };
   gl.useProgram(P_BALL);
   gl.uniform3f(u(P_BALL, 'uL'), 0.63 / 1.193, 0.16 / 1.193, 1 / 1.193);   // 레퍼런스 빛 방향 (.63, .16, 1) 정규화
+  gl.uniform3fv(u(P_BALL, 'uInkColor'), INK);
   gl.useProgram(P_OUT);
   gl.uniform1f(u(P_OUT, 'uContrast'), 80);
   gl.uniform1f(u(P_OUT, 'uSubtract'), 15);
@@ -105,8 +110,8 @@
   let W = 0, H = 0, dpr = 1, unit = 1, R = 1.5, RB = 0.975, PB = 1.875, CY = 0;
   const balls = [];
   const rnd = (a, b) => a + Math.random() * (b - a);
-  for (let i = 0; i < N; i++) balls.push({ x: 0, y: 0, vx: 0, vy: 0, ang: (i * 60 + rnd(-20, 20)) * Math.PI / 180 });
-  const spawnOutside = () => {                                      // 판 바깥 원 위에 60° 간격으로
+  for (let i = 0; i < N; i++) balls.push({ x: 0, y: 0, vx: 0, vy: 0, ang: (i * 360 / N + 45 + rnd(-20, 20)) * Math.PI / 180 });
+  const spawnOutside = () => {                                      // 판 바깥 원 위에 같은 간격으로
     const rad = Math.max(W, H) / unit * 0.75 + R;
     balls.forEach((b) => { b.x = Math.cos(b.ang) * rad; b.y = Math.sin(b.ang) * rad; b.vx = b.vy = 0; });
   };
@@ -117,7 +122,7 @@
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     unit = H / 11.55;
     const narrow = W < 768;
-    R = narrow ? 1.1 : 1.5; RB = R * (narrow ? 1.0 : 0.65); PB = 1.25 * R; CY = narrow ? 0.5 : 0;
+    R = narrow ? 1.25 : 1.7; RB = R * (narrow ? 1.0 : 0.65); PB = 1.25 * R; CY = narrow ? 0.5 : 0;   // 넷이라 조금 크게
     const sw = Math.max(64, Math.round(W * 0.06)), shh = Math.max(32, Math.round(sw * H / W));
     if (F) Object.values(F).forEach((o) => { gl.deleteTexture(o.t); gl.deleteFramebuffer(o.f); });
     F = { a: fbo(Math.round(cv.width / 2), Math.round(cv.height / 2)), b: fbo(sw, shh), c: fbo(sw, shh), d: fbo(sw, shh), e: fbo(sw, shh) };
@@ -136,10 +141,16 @@
 
   /* ── 물리 스텝(1/60) — 레퍼런스 QT.update 식 + 부드러운 접촉 ── */
   const DT = 1 / 60, DAMP = Math.pow(1 - 0.9, DT), FORCE = 16 / 0.4, SOFT = 0.25, NEAR = 0.6, STAGGER = 0.07;
-  let elapsed = 0;
+  let elapsed = 0, ink = 0;
+  const INK_EASE = 1 - Math.pow(0.1, DT);                           // 약 1초에 90%
   const step = () => {
     elapsed += DT;
     const e = elapsed;
+    // 합쳐짐 — 중심에서 가장 먼 공까지 거리. 2×2로 붙으면 ≈1.41·RB → 잉크 1, 흩어지면 0
+    let mx = 0, my = 0; for (let i = 0; i < N; i++) { mx += balls[i].x; my += balls[i].y; } mx /= N; my /= N;
+    let dmax = 0; for (let i = 0; i < N; i++) dmax = Math.max(dmax, Math.hypot(balls[i].x - mx, balls[i].y - my));
+    const inkT = Math.max(0, Math.min(1, (2.6 * RB - dmax) / (0.6 * RB)));
+    ink += (inkT - ink) * INK_EASE;
     ptr.x += (ptr.tx - ptr.x) * 0.1; ptr.y += (ptr.ty - ptr.y) * 0.1;
     for (let i = 0; i < N; i++) {
       if (e < i * STAGGER) continue;                                 // 등장 — 공마다 70ms씩 늦게 출발
@@ -195,6 +206,7 @@
     gl.useProgram(P_BALL); gl.bindBuffer(gl.ARRAY_BUFFER, quad); bindQuad(P_BALL);
     const sx = 2 * unit / W, sy = 2 * unit / H;                       // 유닛 → 클립 공간
     gl.uniform1f(u(P_BALL, 'uEdge'), 1.5 / (R * unit * dpr / 2));
+    gl.uniform1f(u(P_BALL, 'uInk'), ink);
     for (let i = 0; i < N; i++) {
       const b = balls[i];
       gl.uniform2f(u(P_BALL, 'uC'), b.x * sx, b.y * sy);

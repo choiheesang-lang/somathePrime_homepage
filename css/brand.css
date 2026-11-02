@@ -55,9 +55,10 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
 .bp-kv__photo.is-flat .bp-kv__goo { display: none; }
 .bp-kv__photo.is-flat::before { content: ""; position: absolute; left: 50%; top: 50%; width: 64%; max-width: 440px; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
   background: radial-gradient(circle at 30% 30%, var(--pal-brand-coral), transparent 60%), radial-gradient(circle at 72% 32%, var(--pal-brand-dusty-blue), transparent 60%), radial-gradient(circle at 30% 72%, var(--pal-brand-sage-green), transparent 60%), radial-gradient(circle at 70% 70%, var(--pal-brand-yellow), transparent 60%), var(--pal-brand-yellow); }
-.bp-kv__copy { position: absolute; left: 0; right: 0; top: 30%; z-index: 1; text-align: center; color: var(--text-normal); pointer-events: none; }
-.bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; color: var(--text-neutral); }
-.bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: var(--text-normal); }
+/* 글자는 흰색 + difference 블렌드 — 밝은 판 위에서는 어둡게, 뭉쳐서 검어진 슬라임 위에서는 밝게 반전(레퍼런스의 exclusion 방식) */
+.bp-kv__copy { position: absolute; left: 0; right: 0; top: 30%; z-index: 1; text-align: center; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+.bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; color: #fff; opacity: 0.8; }
+.bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: #fff; }
 /* 카드 셋 — 사진(V 꺾임) 아래쪽에 걸쳐 올라옵니다. 크기는 피그마 비율(가운데 392 · 양옆 347 = 카드 320) */
 /* 카드 크기를 사진 폭에 묶어(1200 사진에서 300) 어느 폭에서나 사진 아래쪽에 걸치고 제목과 겹치지 않게 */
 .bp-kv__cards { --card: min(300px, 25vw); position: relative; z-index: 2; margin-top: calc(var(--card) * -0.62); }
