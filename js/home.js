@@ -157,7 +157,7 @@
     let skipT;
     window.addEventListener('resize', () => { clearTimeout(skipT); skipT = setTimeout(placeSkip, 300); });
     // 히어로 사진이 디코드된 뒤 시작합니다(최대 0.9초 대기) — 랜딩 main.js와 같은 이유
-    const photo = new Image(); photo.src = '/img/hero.webp';
+    const photo = new Image(); photo.src = '/img/hero-campus.webp';
     let started = false;
     const start = () => { if (!started) { started = true; go(); } };
     (photo.decode ? photo.decode() : Promise.resolve()).then(start, start);
