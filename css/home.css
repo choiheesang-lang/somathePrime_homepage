@@ -174,12 +174,17 @@ body.ptr-on .intro-skip { cursor: none; }
    평범한 흐름의 섹션입니다. */
 #s-intro { position: relative !important; height: auto !important; min-height: 100svh; padding-top: 120px; padding-bottom: 200px; }
 .intro__slogan { font-family: var(--font-title); font-size: clamp(28px, 2.6vw, 40px); font-weight: 700; line-height: 1.35; }
-/* 장면 10 슬라임 — 슬로건 · 키워드 글줄 뒤(가운데 y ≈ 340), 알약 배지는 덩어리 위쪽에 남습니다. 커서 밀어냄은 window에서 받으므로 pointer-events 없음 */
-.intro__goo { position: absolute; left: 0; right: 0; top: 60px; height: 560px; pointer-events: none; }
-/* 글자는 밝은 색 + difference — 흰 바탕에서는 어둡게, 뭉쳐 검어진 슬라임 위에서는 밝게 반전(브랜드 소개 상단과 같은 규칙) */
+/* 장면 10 슬라임 — 캔버스 가운데를 알약 배지 가운데(.intro 맨 위 + 31px)에 맞춰 공이 배지 뒤로 모입니다.
+   커서 밀어냄은 window에서 받으므로 pointer-events 없음 */
+.intro__goo { position: absolute; left: 50%; top: 31px; width: min(1200px, 100vw); height: 560px; transform: translate(-50%, -50%); pointer-events: none; }
+/* 배지 · 글자는 밝은 색 + difference — 흰 바탕에서는 어둡게, 뭉쳐 검어진 슬라임 위에서는 밝게 반전(브랜드 소개 상단과 같은 규칙).
+   배지 판은 difference와 섞이면 회색 얼룩이 되므로 투명하게, 테두리만 남깁니다 */
+.intro__pill { position: relative; background: none; border-color: rgba(255, 255, 255, 0.35); backdrop-filter: none; -webkit-backdrop-filter: none; mix-blend-mode: difference; }
+.intro__pill small { color: #A3A3A3; }
+.intro__pill span { color: #ECEAE9; }
 .intro__slogan { color: #ECEAE9; mix-blend-mode: difference; }
 .intro__list { color: #B0B0B0; mix-blend-mode: difference; }
-@media (max-width: 640px) { .intro__goo { top: 120px; height: 420px; } }   /* 배지(알약)는 덩어리 위에 남도록 */
+@media (max-width: 640px) { .intro__goo { height: 420px; } }
 .intro__more {
   display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
   font-family: var(--font-title); font-size: var(--fs-brand-body-2); font-weight: 700; color: var(--text-neutral);
