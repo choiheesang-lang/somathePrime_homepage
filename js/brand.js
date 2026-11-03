@@ -79,7 +79,7 @@
   }
   /* ── 상단 비주얼의 둥근 V 꺾임 ──
      .is-folded(직선 다각형)와 같은 모양을 꼭짓점마다 둥글린 path()로 바꿉니다. 위 두 모서리 r24,
-     아래 좌우 모서리(옆면 → 사선) r24, 가운데 꼭지 r48. 각 꼭짓점에서 양쪽 변을 따라 r만큼 물러난
+     아래 좌우 모서리(옆면 → 사선) r24, 가운데 꼭지도 r24(피그마 bg 벡터). 각 꼭짓점에서 양쪽 변을 따라 r만큼 물러난
      두 점을 꼭짓점을 조절점으로 한 곡선(Q)으로 잇습니다. 크기가 바뀌면 다시 그립니다. */
   const kv = document.querySelector('.bp-kv__photo');
   if (kv && window.CSS && CSS.supports('clip-path', 'path("M0 0")')) {
@@ -99,10 +99,10 @@
     const draw = () => {
       const w = kv.clientWidth, h = kv.clientHeight;
       if (!w || !h) return;
-      const fold = Math.min(136, Math.max(40, window.innerWidth * 0.07));   // --fold-depth: clamp(40px, 7vw, 136px)과 같은 값
+      const fold = w * 0.12;   // 피그마 판 1200 × 700에서 꺾임 144(양옆 556) — css/brand.css --fold-depth와 같은 비율
       const R = parseFloat(getComputedStyle(kv).borderTopLeftRadius) || 24;
       const pts = [[0, 0], [w, 0], [w, h - fold], [w / 2, h], [0, h - fold]];
-      kv.style.clipPath = `path("${round(pts, [R, R, R, R * 2, R])}")`;
+      kv.style.clipPath = `path("${round(pts, [R, R, R, R, R])}")`;   // 피그마 bg 벡터는 모든 꼭짓점 r24
       kv.style.borderRadius = '0';
     };
     draw();
@@ -122,7 +122,8 @@
     for (let k = 0; k < 6; k++) { const [x, y] = at(k); const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('r', '2.5'); ticks.appendChild(c); }
     // 범위 표시 — 6세(맨 위) · 11세(마지막 눈금) 바깥에 작은 숫자
     const labs = document.getElementById('age-labs');
-    [[0, '6'], [5, '11']].forEach(([k, t]) => { const a = (-90 + k * 60) * Math.PI / 180; const x = C + (RR + 24) * Math.cos(a), y = C + (RR + 24) * Math.sin(a); const e = document.createElementNS(NS, 'text'); e.setAttribute('x', x.toFixed(1)); e.setAttribute('y', y.toFixed(1)); e.textContent = t; labs.appendChild(e); });
+    // 6 · 11 라벨 — 점(r 16.5)과 겹치지 않게 링 바깥 30
+    [[0, '6'], [5, '11']].forEach(([k, t]) => { const a = (-90 + k * 60) * Math.PI / 180; const x = C + (RR + 30) * Math.cos(a), y = C + (RR + 30) * Math.sin(a); const e = document.createElementNS(NS, 'text'); e.setAttribute('x', x.toFixed(1)); e.setAttribute('y', y.toFixed(1)); e.textContent = t; labs.appendChild(e); });
 
     // 나이별 색 — 홈 슬라임과 같은 잉크 + 네 브랜드 코어 컬러 + 흰색
     const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -130,7 +131,7 @@
     const paint = (k) => { dot.style.fill = COLORS[k]; };
 
     // 슬라임 모양 — js/home.js quad의 blobPath 사본(사인 2·3·5배 흔들림 → 부드러운 베지어), 이 점 크기 기준
-    const B = { x: C, y: C - RR, r: 11, amp: 0.14, tt: 0, om: [1.3, -1.6, 0.9], ph: [0.4, 2.1, 4.0] }, N = 20;
+    const B = { x: C, y: C - RR, r: 16.5, amp: 0.14, tt: 0, om: [1.3, -1.6, 0.9], ph: [0.4, 2.1, 4.0] }, N = 20;
     const blob = () => {
       const px = new Array(N), py = new Array(N), amp = B.amp * B.r;
       for (let i = 0; i < N; i++) {

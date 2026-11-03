@@ -123,5 +123,5 @@
 - 저장소: https://github.com/choiheesang-lang/somathePrime_homepage · 보정 원본 PNG(`img/수정이미지/`)는 .gitignore.
 
 ## 브랜드 소개 페이지 (2026-11-02)
-- 기획서 8~10p를 `/brand/`에 구현. 9p 교구 사진은 기획서 pptx(`ppt/media/image20.png`, 296×366)에서 꺼내 `img/brand/prime-kids.webp`. 차별점 아이콘 3개를 sprite에 추가(`ic-diff-*`). 피그마 「브랜드소개」(18227-8859)는 코드 확정 뒤 옮길 예정.
+- 기획서 8~10p를 `/brand/`에 구현. 9p 교구 사진은 기획서 pptx(`ppt/media/image20.png`, 296×366)에서 꺼내 `img/brand/prime-kids.webp`(2026-11-03 피그마 새 시안의 사진 `img/brand/prime-kid-blocks.webp`로 교체). 차별점 아이콘 3개를 sprite에 추가(`ic-diff-*`). 피그마 「브랜드소개」(18227-8859)는 코드 확정 뒤 옮길 예정.
 

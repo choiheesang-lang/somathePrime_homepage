@@ -40,19 +40,23 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
   background: color-mix(in srgb, var(--primary-normal2) 50%, transparent);
 }
 
-/* ── 상단 비주얼 (8p ③, 피그마 18153-11596) — 화면 폭 사진 · 가운데 흰 제목 · V 꺾임 · 키워드 카드 걸침 ── */
-.bp-kv { position: relative; padding-top: 40px; background: linear-gradient(transparent 70%, var(--bg-brand-normal) 70%); }
-/* 폭 1200(이전처럼 콘텐츠보다 조금 넓게, 위 모서리 r24) · 아래 V 꺾임 — 꺾인 곳 · 아래 모서리도 둥글게.
-   둥근 꺾임은 clip-path polygon으로 못 그려서 brand.js가 실제 크기로 path()를 써 넣습니다(없으면 .is-folded 직선 꺾임) */
-.bp-kv__photo { position: relative; width: min(1200px, 100% - var(--gutter) * 2); margin: 0 auto; aspect-ratio: 1200 / 620; overflow: hidden; border-radius: var(--r-24) var(--r-24) 0 0; background: var(--bg-brand-heavy); }
-/* 4색 슬라임 캔버스 — 공통 규칙은 css/site.css([data-goo]), 스크립트는 js/goo.js */
+/* ── 상단 비주얼 (8p ③, 피그마 브랜드소개 18262-10253) — 1200 판(Brand Heavy) · V 꺾임 · 4색 슬라임 · 키워드 카드 걸침 ── */
+/* 판 폭(--kvw)에 모든 치수를 묶습니다 — 피그마 1200 기준 판 높이 700 · 꺾임 144(양옆 556) · 카드 320 · 카드 시작 y446 */
+.bp-kv { --kvw: min(1200px, 100vw - var(--gutter) * 2); position: relative; padding-top: 48px; }
+/* 위 두 모서리 r24 · V 꺾임은 brand.js가 둥근 path()로 그립니다(없으면 .is-folded 직선 꺾임) */
+.bp-kv__photo {
+  --fold-depth: calc(var(--kvw) * 0.12);
+  position: relative; width: var(--kvw); margin: 0 auto; aspect-ratio: 1200 / 700; overflow: hidden;
+  border-radius: var(--r-24); background: var(--bg-brand-heavy);
+}
+/* 4색 슬라임 캔버스 — 판 위쪽 520(피그마 motion y −8). 공통 규칙은 css/site.css([data-goo]), 스크립트는 js/goo.js */
+.bp-kv__photo > .bp-kv__goo { top: calc(-8 / 700 * 100%); bottom: auto; height: calc(520 / 700 * 100%); }
 /* 글자는 흰색 + difference 블렌드 — 밝은 판 위에서는 어둡게, 뭉쳐서 검어진 슬라임 위에서는 밝게 반전(레퍼런스의 exclusion 방식) */
-.bp-kv__copy { position: absolute; left: 0; right: 0; top: 30%; z-index: 1; text-align: center; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+.bp-kv__copy { position: absolute; left: 0; right: 0; top: calc(186 / 700 * 100%); z-index: 1; text-align: center; color: #fff; mix-blend-mode: difference; pointer-events: none; }
 .bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; color: #fff; opacity: 0.8; }
 .bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: #fff; }
-/* 카드 셋 — 사진(V 꺾임) 아래쪽에 걸쳐 올라옵니다. 크기는 피그마 비율(가운데 392 · 양옆 347 = 카드 320) */
-/* 카드 크기를 사진 폭에 묶어(1200 사진에서 300) 어느 폭에서나 사진 아래쪽에 걸치고 제목과 겹치지 않게 */
-.bp-kv__cards { --card: min(300px, 25vw); position: relative; z-index: 2; margin-top: calc(var(--card) * -0.62); }
+/* 카드 셋 — 판 위에서 446(꺾임 위)부터 걸쳐 내려옵니다. 카드 320 = 판 폭의 26.67%, 가운데 칸(391.9)이 끝나는 곳이 블록 끝(838) */
+.bp-kv__cards { --card: calc(var(--kvw) * 320 / 1200); position: relative; z-index: 2; margin-top: calc(var(--kvw) * (446 - 700) / 1200); }
 /* 카드 글자도 브랜드 서체(세방고딕) */
 .bp-kv .kw-card__text b, .bp-kv .kw-card__text i { font-family: var(--font-title); }
 .bp-kv__cards .keywords { --card: inherit; }
@@ -60,17 +64,16 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
 body.has-reveal .bp-kv .ic-line path { stroke-dashoffset: 100; }
 body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
 
-/* ── 소개 문구 (8p ④) — 브랜드 서체 · 가운데 ── */
-.bp-intro { padding: 72px 0 140px; background: var(--bg-brand-normal); text-align: center; }
+/* ── 소개 문구 (8p ④, 피그마 Intro 18262-9706) — Brand Heavy 띠 · 브랜드 서체 · 가운데 ── */
+.bp-intro { padding: 72px 0; background: var(--bg-brand-heavy); text-align: center; }
+.bp .bp-intro__title { font-family: var(--font-title); font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; color: var(--text-normal); }
 .bp-intro__body {
   font-family: var(--font-title); font-size: clamp(18px, 1.6vw, 24px); font-weight: 400; line-height: 1.8;
   letter-spacing: -0.02em; color: var(--text-normal); word-break: keep-all;
 }
-/* [소마 더 프라임] 강조 — Bold + Primary/normal2 형광 밑줄 */
-.bp-mark { font-weight: 700; color: var(--text-normal); background: linear-gradient(transparent 58%, color-mix(in srgb, var(--primary-normal2) 35%, transparent) 58% 92%, transparent 92%); padding: 0 2px; }
 
-/* ── 프라임 시기 (9p ①~④) — Brand Strong ── */
-.bp-prime { padding: 140px 0; background: var(--bg-brand-heavy); }   /* 한 단계 어둡게(Strong → Heavy) */
+/* ── 프라임 시기 (9p ①~④, 피그마 Prime years 18262-9713) — Brand Normal(위 소개 문구 Heavy 띠와 번갈아) ── */
+.bp-prime { padding: 140px 0; background: var(--bg-brand-normal); }
 .bp-prime__in { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
 .bp-prime__title { margin-top: 16px; font-size: clamp(30px, 3.2vw, 48px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
 .bp-prime__sub { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.4vw, 20px); font-weight: 700; color: var(--text-normal); }
@@ -130,15 +133,21 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
 
 /* ── 로고 띠 · 하단 CTA (10p ④⑤) — 흰색 ── */
 .bp-end { padding: 120px 0 140px; background: #fff; }
-.bp-logos { display: flex; justify-content: center; align-items: center; gap: clamp(32px, 6vw, 96px); color: var(--primary-heavy); }
-.bp-logos svg { height: 36px; width: auto; display: block; }
-.bp-logos svg.is-play { height: 48px; }
+/* 네 브랜드 로고 — Brand Normal 판(r24 · 안쪽 96/112 · 간격 96, 피그마 18262-9822). 로고마다 160 칸 가운데, 높이는 li의 --h */
+.bp-logos {
+  display: flex; justify-content: center; align-items: center; gap: 96px; padding: 96px 112px;
+  background: var(--bg-brand-normal); border-radius: var(--r-24); color: var(--primary-heavy);
+}
+.bp-logos li { flex: none; width: 160px; display: grid; place-items: center; }
+.bp-logos svg { height: var(--h, 36px); width: auto; display: block; }
 .bp-cta { display: flex; justify-content: center; gap: 16px; margin-top: 72px; }
 
 /* ── 반응형 ── */
 @media (max-width: 1024px) {
   .bp-prime__in, .bp-space__in, .bp-diff .wrap { grid-template-columns: 1fr; gap: 48px; }
   .bp-prime__visual { justify-self: start; }
+  .bp-logos { gap: 32px; padding: 64px 40px; }
+  .bp-logos li { width: auto; }
 }
 @media (max-width: 640px) {
   .bp-head__in { flex-direction: column; align-items: flex-start; gap: 4px; min-height: 0; padding-top: 14px; padding-bottom: 6px; }
@@ -146,12 +155,12 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
   .bp-tabs { width: 100%; overflow-x: auto; scrollbar-width: none; }
   .bp-tabs ul { gap: 24px; }
   .bp-tabs a { font-size: 15px; white-space: nowrap; }
-  .bp-kv__photo { aspect-ratio: auto; height: 420px; border-radius: var(--r-16) var(--r-16) 0 0; }
+  .bp-kv__photo { aspect-ratio: auto; height: 420px; border-radius: var(--r-16); }
   .bp-kv__copy { top: 30%; padding: 0 var(--gutter); }
   .bp-kv__cards { --card: calc((100vw - 2 * var(--gutter) - 12px) / 3.45); margin-top: calc(var(--card) * -0.75); }
   .bp-kv__cards .keywords { flex-direction: row; align-items: flex-start; gap: 6px; }
-  .bp-intro, .bp-prime, .bp-space, .bp-end { padding: 80px 0; }
-  .bp-intro { padding-top: 56px; }
+  .bp-prime, .bp-space, .bp-end { padding: 80px 0; }
+  .bp-intro { padding: 48px 0; }
   .bp-intro__body br { display: none; }
   .bp-prime__visual img { width: 150px; }
   .bp-prime__visual { gap: 16px; }
@@ -168,8 +177,9 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
   .bp-diff__to svg { width: 18px; height: 18px; }
   .bp-diff__new { font-size: 16px; }
   .bp-space__cta { right: 12px; bottom: 12px; }
-  .bp-logos { flex-wrap: wrap; gap: 24px 36px; }
-  .bp-logos svg { height: 26px; }
-  .bp-logos svg.is-play { height: 36px; }
+  .bp-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 16px; padding: 40px 24px; border-radius: var(--r-16); }
+  .bp-logos li { width: auto; }
+  .bp-logos svg { height: calc(var(--h, 36px) * 0.75); }
+  .bp .bp-intro__title { font-size: 24px; }
   .bp-cta { flex-direction: column; align-items: stretch; margin-top: 48px; }
 }

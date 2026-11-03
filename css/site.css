@@ -148,29 +148,27 @@ address { font-style: normal; }
   content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 700; pointer-events: none;
 }
 .gnb2__item:is(:hover, :focus-within, .is-active) > .gnb2__link { font-weight: 700; }
-/* 2depth — 주황 판(Primary/normal2) 위 흰 글자. 메뉴 글자 왼쪽 끝에 맞춰 바로 아래에 엽니다 */
+/* 2depth — 주황 판(Primary/normal2) 위 흰 글자. 메뉴 글자 가운데 아래에 열고 항목도 가운데 정렬(피그마 2depth 18291-12479) */
 .gnb2__sub {
-  position: absolute; left: 0; top: calc(100% - 4px);
-  display: flex; flex-direction: column; gap: var(--space-16);
+  position: absolute; left: 50%; top: calc(100% - 4px);
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-16);
   min-width: 175px; padding: var(--space-16);
   background: var(--primary-normal2); border-radius: var(--r-8);
   box-shadow: 0 0 1px rgba(68, 68, 68, 0.21), 0 4px 12px rgba(68, 68, 68, 0.12);   /* 피그마 E200 */
-  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
   transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
 }
 .gnb2__item:hover > .gnb2__sub, .gnb2__item:focus-within > .gnb2__sub {
-  opacity: 1; visibility: visible; transform: none;
+  opacity: 1; visibility: visible; transform: translate(-50%, 0);
   transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
 }
-/* 호버 — pill 띠(검정 16%)가 글자를 감쌉니다 */
+/* 호버 · 현재 항목은 굵게만(띠 없음). 키보드 초점은 밑줄로 */
 .gnb2__sub a {
-  display: inline-flex; flex-direction: column; padding: 0 12px; white-space: nowrap;
+  display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
   font-family: var(--font-title); font-size: var(--fs-brand-body-2); line-height: 22px; color: #fff;
-  border-radius: var(--r-pill);
-  transition: background-color 0.2s;
 }
-.gnb2__sub a:is(:hover, :focus-visible, [aria-current="page"]) { background: rgba(0, 0, 0, 0.16); font-weight: 700; }
-.gnb2__sub a:focus-visible { outline: none; }
+.gnb2__sub a:is(:hover, :focus-visible, [aria-current="page"]) { font-weight: 700; }
+.gnb2__sub a:focus-visible { outline: none; text-decoration: underline; text-underline-offset: 4px; }
 .gnb2__burger { display: none; }
 
 @media (max-width: 1280px) { .gnb2__menu { gap: 48px; } }
