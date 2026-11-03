@@ -108,11 +108,11 @@ body.ptr-on .intro-skip { cursor: none; }
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 25.25%, rgba(0, 0, 0, 0) 50%);
 }
-/* 아래 그라디언트 — 피그마 Main visual의 Hero tint(Rectangle 325: 아래 절반 435~888, 브랜드색 1 → 0).
+/* 아래 그라디언트 — 피그마 Main visual의 Hero tint(Rectangle 325: 아래 절반 435~888, 브랜드색 1 → 0, 레이어 투명도 70%).
    색은 사진 넘김과 상관없이 네 브랜드색을 24s 주기로 천천히 돕니다(--hero-tint, base.css @property) */
 .kv__slides::before {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 51%; pointer-events: none;
-  background: linear-gradient(0deg, var(--hero-tint) 0%, transparent 100%);
+  background: linear-gradient(0deg, var(--hero-tint) 0%, transparent 100%); opacity: 0.7;
 }
 .kv__slides { animation: hero-tint 24s linear infinite; }
 @keyframes hero-tint {
@@ -145,7 +145,7 @@ body.ptr-on .intro-skip { cursor: none; }
 .kv__copy.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0.15s, 0.15s, 0s; }
 .kv__eyebrow { padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
 .kv__title { display: flex; flex-direction: column; white-space: nowrap; font-family: var(--font-title); font-size: clamp(34px, 3.2vw, 46px); font-weight: 700; line-height: 1.12; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
-.kv__sub { margin-top: -8px; padding: 0 2px; font-size: 14px; font-weight: 500; line-height: 2; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
+.kv__sub { margin-top: -8px; padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 400; line-height: 2; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
 
 /* 컨트롤 — 피그마 Carousel control(18212-8344): 흰 상자(r8, 높이 40, 안쪽 4 · 왼쪽 20) 안에
    숫자 · ‹ | › · 멈춤, 상자 10 아래에 5초 진행 바. 상자 안은 Primary/Heavy 글자 · 아이콘,
@@ -313,7 +313,7 @@ body.ptr-on .intro-skip { cursor: none; }
 .visit__info dd { margin: 0; color: var(--text-neutral); }
 .visit__links { display: flex; gap: 8px; margin-top: auto; }
 .visit__map { min-height: 360px; background: #EEEAE4; }
-.visit__map svg { width: 100%; height: 100%; }
+.visit__map img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 49% 40%; }   /* 핀(목동서로 349)이 가운데 근처에 남게 */
 @media (max-width: 900px) {
   .visit { padding: 80px 0 96px; }
   .visit__card { grid-template-columns: 1fr; }

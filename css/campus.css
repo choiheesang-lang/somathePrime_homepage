@@ -7,7 +7,7 @@
 
 /* ── 11p ① 소개 문구 ── */
 .cp-hero { padding: 96px 0 120px; background: #fff; text-align: center; }
-.cp-hero__title { margin-top: 16px; font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); letter-spacing: -0.02em; }
+.cp-hero__title { margin-top: 16px; font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); letter-spacing: -0.02em; word-break: keep-all; }
 .cp-hero__body { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.5vw, 22px); line-height: 1.8; letter-spacing: -0.02em; color: var(--text-neutral); word-break: keep-all; }
 
 /* ── 11p ② ③ 공간 소개 — 아치 카드 3열 ── */
@@ -72,11 +72,7 @@ body.has-reveal .cp-arch__ic { stroke-dashoffset: 100; }
 .cp-flow__btn--prev { left: calc(50% - var(--wc) / 2); margin-left: -36px; }
 .cp-flow__btn--next { right: calc(50% - var(--wc) / 2); margin-right: -36px; }
 /* 점 · 캡션 */
-.cp-flow__foot { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 28px; }
-.cp-flow__dots { display: flex; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.cp-flow__dots button { width: 8px; height: 8px; padding: 0; border-radius: 50%; background: var(--line-normal); transition: background 0.2s, transform 0.2s; }
-.cp-flow__dots button[aria-current="true"] { background: var(--primary-heavy); transform: scale(1.25); }
-.cp-flow__dots button:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 3px; }
+.cp-flow__foot { display: flex; justify-content: center; margin-top: 44px; }   /* 점은 빼고(피그마 Coverflow) 캡션만 — 위 간격 28 → 44 */
 .cp-flow__cap { font-size: 14px; color: var(--text-alternative); font-variant-numeric: tabular-nums; }
 .cp-flow__cap b { margin-left: 6px; font-weight: 700; color: var(--text-normal); }
 .cp-flow__cap-sep { margin: 0 4px; }
@@ -102,5 +98,4 @@ body.has-reveal .cp-arch__ic { stroke-dashoffset: 100; }
   .cp-flow__btn svg { width: 22px; height: 22px; }
   .cp-flow__btn--prev { margin-left: -14px; }
   .cp-flow__btn--next { margin-right: -14px; }
-  .cp-flow__foot { flex-direction: column; gap: 12px; }
 }

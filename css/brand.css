@@ -53,7 +53,7 @@ body:has(.gnb2.is-hidden) .bp-head { top: 0; }
 .bp-kv__photo > .bp-kv__goo { top: calc(-8 / 700 * 100%); bottom: auto; height: calc(520 / 700 * 100%); }
 /* 글자는 흰색 + difference 블렌드 — 밝은 판 위에서는 어둡게, 뭉쳐서 검어진 슬라임 위에서는 밝게 반전(레퍼런스의 exclusion 방식) */
 .bp-kv__copy { position: absolute; left: 0; right: 0; top: calc(186 / 700 * 100%); z-index: 1; text-align: center; color: #fff; mix-blend-mode: difference; pointer-events: none; }
-.bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 700; letter-spacing: -0.01em; color: #fff; opacity: 0.8; }
+.bp-kv__eyebrow { font-family: var(--font-title); font-size: clamp(14px, 1.1vw, 18px); font-weight: 400; letter-spacing: -0.01em; color: #fff; opacity: 0.8; }
 .bp .bp-kv__title { margin-top: 14px; font-size: clamp(32px, 3.4vw, 56px); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: #fff; }
 /* 카드 셋 — 판 위에서 446(꺾임 위)부터 걸쳐 내려옵니다. 카드 320 = 판 폭의 26.67%, 가운데 칸(391.9)이 끝나는 곳이 블록 끝(838) */
 .bp-kv__cards { --card: calc(var(--kvw) * 320 / 1200); position: relative; z-index: 2; margin-top: calc(var(--kvw) * (446 - 700) / 1200); }

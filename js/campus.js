@@ -4,7 +4,7 @@
       착지하며 눌렸다 펴진 뒤 선 아이콘이 그려집니다. 평소엔 2px 숨 쉬고, 카드 호버면 곡면을 따라
       살짝 굴렀다 돌아옵니다. 동작 감소면 모두 정지 상태.
    2) 커버플로우(elan Campus Introduction): 탭(입구 · 강의실 · 라운지) → 가운데 큰 사진 양옆으로 이전 ·
-      다음이 작게 비침, 화살표 · 점 · 드래그 · 키보드, 4.5초 자동 넘김(호버 · 포커스 · 화면 밖이면 멈춤).
+      다음이 작게 비침, 화살표 · 드래그 · 키보드, 4.5초 자동 넘김(호버 · 포커스 · 화면 밖이면 멈춤).
    섹션 글의 등장(data-step)은 brand.js의 reveal()이 맡습니다.
    ───────────────────────────────────────────────────────────── */
 (function () {
@@ -42,7 +42,7 @@
   const flow = document.querySelector('.cp-flow');
   if (!flow) return;
   const SETS = JSON.parse(flow.dataset.sets);
-  const track = flow.querySelector('.cp-flow__track'), dots = flow.querySelector('.cp-flow__dots');
+  const track = flow.querySelector('.cp-flow__track');
   const cap = { set: flow.querySelector('.cp-flow__cap-set'), cur: flow.querySelector('.cp-flow__cap-cur'), total: flow.querySelector('.cp-flow__cap-total') };
   const tabs = [...document.querySelectorAll('.cp-tabs [role="tab"]')];
   let set = 'entrance', cur = 0, slides = [], timer = null, onScreen = false, paused = false;
@@ -65,13 +65,12 @@
       li.classList.toggle('is-active', a === 0);
       li.setAttribute('aria-hidden', a === 0 ? 'false' : 'true');
     });
-    [...dots.children].forEach((b, i) => b.setAttribute('aria-current', i === cur ? 'true' : 'false'));
     cap.set.textContent = SETS[set].label; cap.cur.textContent = cur + 1; cap.total.textContent = N();
   };
 
   const build = () => {
     flow.classList.add('no-anim');
-    track.innerHTML = ''; dots.innerHTML = ''; slides = [];
+    track.innerHTML = ''; slides = [];
     for (let i = 0; i < N(); i++) {
       const li = document.createElement('li'); li.className = 'cp-flow__slide';
       const img = document.createElement('img');
@@ -79,9 +78,6 @@
       img.loading = i < 3 ? 'eager' : 'lazy'; img.draggable = false;
       li.appendChild(img); li.addEventListener('click', () => { if (!li.classList.contains('is-active') && !dragged) go(i); });
       track.appendChild(li); slides.push(li);
-      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', `${i + 1}번 사진`);
-      b.addEventListener('click', () => go(i));
-      const dl = document.createElement('li'); dl.appendChild(b); dots.appendChild(dl);
     }
     cur = 0; place();
     track.getBoundingClientRect();                               // 전환 없이 자리 잡은 뒤 다시 켬

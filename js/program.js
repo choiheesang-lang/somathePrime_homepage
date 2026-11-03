@@ -1,9 +1,7 @@
 /* ─────────────────────────────────────────────────────────────
    program.js — 교육 프로그램 (기획서 14 · 15p)
-   1) 머리 앵커 탭 스크롤 스파이(네 개의 프로그램 · 관찰평가 시스템).
-   2) 가로 아코디언: 호버 · 클릭 · 키보드로 활성, 4.5초 자동 순환(홈 쿼드 판과 같은 리듬 — 화면 밖 · 호버 중 멈춤),
-      성장 트랙의 행과 동기화.
-   3) 관찰평가: 스크롤 등장 때 BEFORE 점수 막대가 차오르고(0 → 72), AFTER 레이더가 축 → 격자 → 다각형 순서로 펼쳐지며
+   1) 가로 아코디언: 호버 · 클릭 · 키보드로 활성, 4.5초 자동 순환(홈 쿼드 판과 같은 리듬 — 화면 밖 · 호버 중 멈춤).
+   2) 관찰평가: 스크롤 등장 때 BEFORE 점수 막대가 차오르고(0 → 72), AFTER 레이더가 축 → 격자 → 다각형 순서로 펼쳐지며
       꼭짓점이 튐. BEFORE/AFTER 토글이면 같은 다각형이 「점수 하나(한 축만 남은 가시)」와 「다섯 면」 사이를 변형.
    섹션 글의 등장(data-step)은 brand.js의 reveal(). 동작 감소면 전환 즉시 · 자동 없음 · 완성 상태.
    ───────────────────────────────────────────────────────────── */
@@ -11,33 +9,14 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hasGsap = !!(window.gsap && window.ScrollTrigger);
 
-  /* ── 1) 앵커 탭 스파이 ── */
-  const tabs = [...document.querySelectorAll('.bp-tabs a[href^="#"]')];
-  if (tabs.length) {
-    const secs = tabs.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-    const mark = () => {
-      const y = window.scrollY + window.innerHeight * 0.4;
-      let cur = -1; secs.forEach((s, i) => { if (s.offsetTop <= y) cur = i; });
-      tabs.forEach((a, i) => { if (i === cur) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-    };
-    window.addEventListener('scroll', mark, { passive: true }); window.addEventListener('resize', mark); mark();
-    tabs.forEach((a) => a.addEventListener('click', (e) => {
-      const t = document.querySelector(a.getAttribute('href')); if (!t) return;
-      e.preventDefault(); const head = document.querySelector('.bp-head'); const off = (head ? head.offsetHeight : 0) + 76;
-      window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - off, behavior: reduce ? 'auto' : 'smooth' });
-      history.replaceState(null, '', a.getAttribute('href'));
-    }));
-  }
-
-  /* ── 2) 아코디언 + 트랙 ── */
+  /* ── 1) 아코디언 ── */
   const acc = document.querySelector('.pg-acc');
   if (acc) {
-    const panels = [...acc.querySelectorAll('.pg-panel')], rows = [...document.querySelectorAll('.pg-track__row')];
+    const panels = [...acc.querySelectorAll('.pg-panel')];
     let cur = 0, timer = null, onScreen = false, hovering = false;
     const show = (i) => {
       cur = (i + panels.length) % panels.length;
       panels.forEach((p, k) => { const on = k === cur; p.classList.toggle('is-on', on); p.setAttribute('aria-selected', on); p.tabIndex = on ? 0 : -1; });
-      rows.forEach((r, k) => r.classList.toggle('is-on', k === cur));
     };
     const stop = () => { clearInterval(timer); timer = null; };
     const restart = () => { stop(); if (!reduce && onScreen && !hovering) timer = setInterval(() => show(cur + 1), 4500); };
@@ -50,12 +29,11 @@
       });
     });
     acc.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch') return; hovering = false; restart(); });
-    rows.forEach((r, i) => r.addEventListener('click', () => { show(i); restart(); }));
     new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; restart(); }, { threshold: 0.3 }).observe(acc);
     show(0);
   }
 
-  /* ── 3) 관찰평가 — 점수 막대 · 레이더 · 토글 ── */
+  /* ── 2) 관찰평가 — 점수 막대 · 레이더 · 토글 ── */
   const radar = document.querySelector('.pg-radar');
   if (radar) {
     const NS = 'http://www.w3.org/2000/svg', CX = 170, CY = 160, R = 118;

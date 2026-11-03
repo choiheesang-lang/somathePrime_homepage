@@ -47,7 +47,7 @@
   const BRAND = ['--pal-brand-coral', '--pal-brand-yellow', '--pal-brand-dusty-blue', '--pal-brand-sage-green']
     .map((n, i) => vivid(hex(css(n) || FALLBACK[i]), 1.3, -0.04));
   const COLORS = [0, 1, 2, 3].map((i) => BRAND[i]).concat([hex(css('--pal-stone-gray-50') || '#E1DEDA')]);   // 코랄 · 노랑 · 파랑 · 녹색(브랜드 하나에 공 하나) + 밝은 웜그레이 공 하나
-  const SCALE = parseFloat(box.dataset.gooScale) || 1;               // 공 크기 배율 — 홈 장면 10은 .5
+  const SCALE = parseFloat(box.dataset.gooScale) || 1;               // 공 크기 배율 — 홈 장면 10은 .5, 브랜드 소개는 .9
   const UNIT = parseFloat(box.dataset.gooUnit) || 0;                 // 유닛 px 고정(캔버스를 키워도 공 크기 · 움직임 그대로). 없으면 캔버스 높이 / 11.55
   const LIFT = parseFloat(box.dataset.gooLift) || 0;                 // 모이는 점을 위로(유닛) — 흔들림 항(.77·|cos|)이 평균 .49만큼 아래로 끄는 것을 상쇄
   const N = COLORS.length;
@@ -121,10 +121,12 @@
   };
   const size = () => {
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    W = box.clientWidth; H = box.clientHeight;
+    // 그리기 판은 캔버스 자신의 크기 — 캔버스가 호스트보다 작으면(브랜드 소개: 판 700 중 위 520) 호스트 비율로 그리면 세로로 눌립니다.
+    // 유닛(공 크기의 기준)은 그대로 호스트 높이 / 11.55
+    W = cv.clientWidth; H = cv.clientHeight;
     if (!W || !H) return;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    unit = UNIT || H / 11.55;
+    unit = UNIT || box.clientHeight / 11.55;
     const narrow = W < 768;
     R = (narrow ? 1.25 : 1.7) * SCALE; RB = R * (narrow ? 1.0 : 0.65); PB = 1.25 * R; CY = (narrow ? 0.5 : 0) * SCALE + LIFT;
     // 블러 버퍼 — 공 반지름이 버퍼에서 늘 약 5.5px이 되게(폭 고정 비율이면 작은 공은 2~3px로 뭉개져 외곽 · 색 경계가 계단처럼 거칠어짐)
@@ -137,7 +139,7 @@
   const ptr = { tx: 1e3, ty: 1e3, x: 1e3, y: 1e3, seen: false };
   if (hover && !reduce) {
     window.addEventListener('pointermove', (e) => {
-      const r = box.getBoundingClientRect();
+      const r = cv.getBoundingClientRect();
       ptr.tx = (e.clientX - r.left - r.width / 2) / unit;
       ptr.ty = -(e.clientY - r.top - r.height / 2) / unit;
       if (!ptr.seen) { ptr.seen = true; ptr.x = ptr.tx; ptr.y = ptr.ty; }   // 첫 이벤트는 바로 그 자리에서 시작
@@ -234,7 +236,7 @@
   };
 
   size(); spawnOutside();
-  new ResizeObserver(() => { size(); draw(); }).observe(box);
+  new ResizeObserver(() => { size(); draw(); }).observe(cv);
   if (reduce) { for (let i = 0; i < 240; i++) step(); draw(); return; }   // 동작 감소 — 뭉친 상태 한 프레임
 
   let raf = 0, last = 0, acc = 0, begun = false;

@@ -10,34 +10,11 @@
 
 /* ── 14p ① 소개 ── */
 .pg-hero { padding: 96px 0 120px; background: #fff; text-align: center; }
-.pg-hero__title { margin-top: 16px; font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); letter-spacing: -0.02em; }
+.pg-hero__title { margin-top: 16px; font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); letter-spacing: -0.02em; word-break: keep-all; }
 .pg-hero__body { margin-top: 24px; font-family: var(--font-title); font-size: clamp(17px, 1.5vw, 22px); line-height: 1.8; letter-spacing: -0.02em; color: var(--text-neutral); word-break: keep-all; }
 
-/* ── 14p ② ③ 성장 트랙 + 아코디언 ── */
+/* ── 14p ② ③ 아코디언 ── */
 .pg-journey { padding: 96px 0 140px; background: var(--bg-brand-normal); }
-
-/* 성장 트랙 — 6칸(6세~초4). 행마다 구간 막대(--from · --to, 0~5)와 왼쪽 슬라임 점. 활성 행만 진하게 */
-.pg-track { --cols: 5; padding: 0 20px; }
-.pg-track__rows { position: relative; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.pg-track__row { position: relative; height: 22px; opacity: 0.38; transition: opacity 0.5s; }
-.pg-track__row.is-on { opacity: 1; }
-.pg-track__bar {
-  position: absolute; top: 6px; height: 10px; border-radius: 999px; background: var(--c);
-  left: calc(var(--from) / var(--cols) * 100%); width: calc((var(--to) - var(--from)) / var(--cols) * 100%);
-  transition: transform 0.5s var(--ease-out);
-}
-.pg-track__row.is-on .pg-track__bar { transform: scaleY(1.4); }
-.pg-track__dot {
-  position: absolute; top: 50%; left: calc(var(--from) / var(--cols) * 100%); width: 22px; height: 22px; margin: -11px 0 0 -11px;
-  color: var(--c); fill: currentColor; filter: drop-shadow(0 2px 4px rgba(44, 42, 41, 0.18));
-  transition: transform 0.5s var(--ease-out);
-}
-.pg-track__row.is-on .pg-track__dot { transform: scale(1.5); }
-.pg-track__row em { position: absolute; top: 50%; left: calc(var(--to) / var(--cols) * 100%); margin: -9px 0 0 14px; font-family: var(--font-title); font-size: 13px; font-style: normal; font-weight: 700; color: var(--text-neutral); white-space: nowrap; }
-.pg-track__row[style*="--to: 5"] em { left: auto; right: 0; margin: -9px 0 0; transform: translateY(-14px); }   /* 끝까지 가는 구간은 라벨을 막대 위로 */
-.pg-track__axis { position: relative; margin: 14px 0 0; padding: 14px 0 0; list-style: none; display: flex; justify-content: space-between; border-top: 1px solid var(--line-normal); font-size: 13px; color: var(--text-alternative); font-variant-numeric: tabular-nums; }
-.pg-track__axis li { width: 0; display: flex; justify-content: center; white-space: nowrap; }
-.pg-track__axis li::before { content: ""; position: absolute; top: -1px; width: 1px; height: 6px; background: var(--line-normal); }
 
 /* 가로 아코디언 — 활성 패널이 2.6배로 벌어짐. 판은 쿼드 판의 그라데이션 언어, 활성이면 사진이 원으로 번짐 */
 .pg-acc { display: flex; gap: 12px; height: 560px; margin: 48px 0 0; padding: 0; list-style: none; }
@@ -75,8 +52,7 @@
 .pg-panel__points { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.6; opacity: 0.9; }
 .pg-panel__points li { padding-left: 14px; position: relative; word-break: keep-all; }
 .pg-panel__points li::before { content: ""; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
-.pg-panel__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 28px; }
-.pg-panel__age { display: inline-flex; align-items: center; height: 30px; padding: 0 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font-family: var(--font-title); font-size: 14px; font-weight: 700; }
+.pg-panel__foot { display: flex; align-items: center; margin-top: 28px; }   /* 피그마 Program / Accordion — 나이 칩 없이 자세히만 왼쪽 */
 .pg-panel__more { --ink: #fff; }
 .pg-panel__more:hover { --bg: rgba(255, 255, 255, 0.16); }
 
@@ -146,9 +122,6 @@
 @media (max-width: 768px) {
   .pg-hero, .pg-journey, .pg-assess, .pg-cta { padding: 72px 0 88px; }
   .pg-hero__title br, .pg-hero__body br, .pg-assess__body br, .pg-cta__title br { display: none; }
-  .pg-track { padding: 0 8px; }
-  .pg-track__row em { font-size: 11px; }
-  .pg-track__axis { font-size: 11px; }
   /* 세로 아코디언 — 활성 420, 비활성 72(로고 + 이름 한 줄) */
   .pg-acc { flex-direction: column; height: auto; gap: 10px; margin-top: 36px; }
   .pg-panel { flex: none; height: 72px; transition: height 0.6s var(--ease-out), box-shadow 0.5s; }
