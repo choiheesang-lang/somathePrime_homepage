@@ -40,7 +40,7 @@ address { font-style: normal; }
 
 /* ── GNB ─────────────────────────────────────────────────────────
    피그마 GNB/login: 위 28 유틸 바(#F7F7F7, 아래 선 #EEE) + 100 메뉴 바.
-   유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ · 센터 바로가기 | 알림.
+   유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ | 로그아웃.
    메뉴 바는 왼쪽 로고 108×40, 오른쪽 메뉴 6개(16 Regular, 간격 72) — 피그마 18103-6570.
    메뉴에 올리면 굵어지고 주황(Primary/normal2) 2depth 판이 열리며, 2depth는 pill 띠로 짚습니다(18166-8652).
    두 타입(피그마 GNB 세트 18291-11394, tools/build.py 머리말 `gnb:`) — 색은 모두 tokens.css의 --gnb-*:
@@ -63,8 +63,7 @@ address { font-style: normal; }
   --gnb-bg: var(--gnb-bg-sub); --gnb-ink: var(--gnb-ink-sub); --gnb-line: var(--gnb-line-sub);
   --gnb-sub: var(--gnb-util-sub);       /* 유틸 바 글자 · 화살표 */
   --gnb-util-bg: var(--gnb-util-bg-sub);
-  --gnb-chip-bg: #fff; --gnb-chip-line: #D8D8D8;   /* 유틸 바 화살표 상자 · 센터 바로가기 칩 */
-  --gnb-badge: var(--primary-normal2);
+  --gnb-chip-bg: #fff; --gnb-chip-line: #D8D8D8;   /* 유틸 바 화살표 상자 · 세로선 */
   --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
 }
 /* main 벌 — 투명. 글자 · 로고 · 유틸 바 모두 흰색, 화살표 상자는 테두리만 */
@@ -83,7 +82,7 @@ address { font-style: normal; }
 }
 .gnb2__acct { display: flex; align-items: center; gap: var(--space-16); }
 .gnb2__dd { position: relative; }
-.gnb2__dd-btn, .gnb2__center {
+.gnb2__dd-btn, .gnb2__logout {
   display: inline-flex; align-items: center; gap: 4px;
   font-family: var(--font-title); font-weight: 400; font-size: 13px; line-height: 16px; letter-spacing: 0;
   color: var(--gnb-sub); transition: color 0.3s;
@@ -95,13 +94,7 @@ address { font-style: normal; }
 }
 .gnb2__chev svg { width: 16px; height: 16px; flex: none; transition: transform 0.2s; }
 .gnb2__dd.is-open .gnb2__chev svg { transform: rotate(180deg); }
-.gnb2__center {
-  gap: 2px; height: 18px; padding: 0 4px; font-size: var(--fs-system-caption);
-  background: var(--gnb-chip-bg); border: 1px solid var(--gnb-chip-line); border-radius: var(--r-4);
-  transition: color 0.3s, background-color 0.3s, border-color 0.3s;
-}
-.gnb2__center svg { width: 10px; height: 12px; }
-.gnb2__dd-btn:hover, .gnb2__center:hover { color: var(--gnb-ink); }
+.gnb2__dd-btn:hover, .gnb2__logout:hover { color: var(--gnb-ink); }
 .gnb2__drop {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 2;
   min-width: 132px; padding: 6px;
@@ -121,13 +114,6 @@ address { font-style: normal; }
 .gnb2__drop a:hover, .gnb2__drop a:focus-visible { background: var(--bg-brand-normal); color: var(--text-normal); }
 .gnb2__drop a[aria-current] { color: var(--text-normal); font-weight: 700; }
 .gnb2__vr { width: 1px; height: 8px; background: var(--gnb-chip-line); }
-.gnb2__alert { position: relative; display: inline-flex; align-items: center; color: var(--gnb-sub); transition: color 0.3s; }
-.gnb2__alert svg { width: 19px; height: 19px; }
-.gnb2__badge {
-  display: grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px;
-  font-family: var(--font-title); font-size: var(--fs-system-caption); line-height: 1; color: #fff;
-  background: var(--gnb-badge); border-radius: var(--r-4);
-}
 
 .gnb2__inner {
   position: relative; flex: 1;
@@ -203,7 +189,6 @@ address { font-style: normal; }
 }
 .mnav__user { font-size: var(--fs-system-label-1); color: var(--text-neutral); }
 .mnav__user b { font-family: var(--font-title); color: var(--text-normal); }
-.mnav__acct .gnb2__alert { padding: 4px; margin-right: -4px; }
 .mnav__list { padding: 8px var(--gutter) 24px; }
 .mnav__list > li { border-bottom: 1px solid var(--line-alternative); }
 .mnav__top { display: block; padding: 18px 0; font-family: var(--font-title); font-size: var(--fs-brand-heading); font-weight: 700; }

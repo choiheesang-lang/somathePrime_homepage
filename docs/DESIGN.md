@@ -34,7 +34,7 @@
 | 묶음 | 토큰 | 값 · 메모 |
 |---|---|---|
 | 색 — Primary | `--primary-normal` · `--primary-strong` · `--primary-heavy` | Stone Gray 10 · 20 · 30. 글자 · 버튼 기본 |
-| 색 — Primary 2 | `--primary-normal2` | `#F19A2F`(Semantic/Primary/normal2, 18166-8712). 넓게 까는 포인트 면(GNB 2depth 판, 알림 배지, 센터 핀) — 그 위 글자는 흰색 |
+| 색 — Primary 2 | `--primary-normal2` | `#F19A2F`(Semantic/Primary/normal2, 18166-8712). 넓게 까는 포인트 면(GNB 2depth 판) — 그 위 글자는 흰색 |
 | 색 — 글자 | `--text-normal` · `--text-neutral` · `--text-disable` · Text/Inverse(흰색) | 사진 위 글자는 Inverse |
 | 색 — GNB | `--gnb-bg-main/sub` · `--gnb-ink-main/sub` · `--gnb-util-main/sub` · `--gnb-util-bg-sub` · `--gnb-line-main/sub` | 피그마 Component 컬렉션 `GNB/*`. main 투명(검정 4%) + 흰 / sub 흰 바탕 + 검정 78% |
 | 색 — 슬라임 | `--goo-coral/yellow/blue/green/grey` | 피그마 `Slime/*`. 브랜드 4색의 선명 버전(채도 ×1.3 · 명도 −4%) + Stone Gray 50 |
@@ -100,6 +100,7 @@
 ### GNB — 두 타입(피그마 GNB 세트 18291:11394, 2026-11-03)
 - 위 28 유틸 바 + 아래 메뉴 바. 로고 108×40, 메뉴 세방고딕 16 Regular · 간격 72. 호버 · 현재 메뉴는 Bold(굵은 폭을 `data-label`로 미리 잡아 밀림 없음).
 - **sub(`.gnb2--sub`, 피그마 `Property 1=sub.hover` 18103:6570)** — 모든 서브페이지. 흰 바탕(96% + blur) · 유틸 바 #F7F7F7 · 선 #EEE · 글자 검정 78%(유틸 58%) · 컬러 로고.
+- **유틸 바(2026-11-03, 전 페이지 공통)**: 오른쪽에 「홍길동 ⌄ · 교육기관 ⌄ | 로그아웃」. 센터 바로가기 칩 · 알림 종(배지)은 뺐습니다. 로그아웃은 드롭다운 버튼과 같은 글자(세방 13, `--gnb-sub` → 호버 `--gnb-ink`)이고, 홍길동 드롭다운 안의 중복 로그아웃도 뺐습니다. 모바일 전체 메뉴도 종 · 센터 바로가기 없이 「수강료 납부 · 로그아웃」.
 - **main(`.gnb2--main`, 피그마 `Property 1=main` 18291:11395)** — 메인만(머리말 `gnb: main`). 사진 위에 투명(검정 4%) · 유틸 바 바탕 없음 · 선 #EEE 20% · 글자 · 로고 · 유틸 글자 모두 흰색, 화살표 상자는 테두리만. **올리면(:hover · :focus-within) sub 벌로 바뀌고**(0.3s), **사진 칸(`[data-gnb-solid-after]` = `#kv-slides`)의 꺾임 위 가장자리가 헤더 아래선에 닿으면 `.is-solid`로 흰색**(js/site.js) — 되돌아오면 다시 투명. 내리면 숨고 올리면 나오는 규칙 · 인트로 중 숨김은 그대로.
 - 색은 모두 `--gnb-*` 토큰(tokens.css ↔ 피그마 Component 컬렉션 `GNB/*`, 두 변형의 바탕 · 선 · 글자 · 로고 벡터에 바인딩).
 - 2depth(피그마 세트 18291:12479, 2026-11-03부터 sub.hover 한 변형)는 **메뉴 글자 가운데 아래**에 `--primary-normal2` 판(r8, p16, 폭 175)으로 열리고, 항목은 흰 글자 16 **가운데 정렬**, 호버 · 키보드 초점 · 현재 항목은 **굵게만**(pill 띠 없음, 키보드 초점은 밑줄 추가). 1depth 글자색은 `GNB/Ink/Main` 흰 · `GNB/Ink/Sub` 검정 78% — 코드는 `--gnb-ink`를 따르므로 투명 GNB 위에서는 흰색, 흰 GNB(호버 · 히어로 아래)에서는 검정이 됩니다. 메인에서 메뉴에 올리면 GNB가 먼저 흰색이 되므로 열리는 2depth는 늘 sub.hover 모양입니다.
@@ -115,7 +116,7 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 
 - 오시는 길 카드(`.visit__card` r20), 네 개의 브랜드 판(`.quad__faces` r24 · 모바일 r16), 장면 10 키워드 카드, 장면 12 사진 카드
 - 관심고객 팝업 카드와 입력 · 체크박스(r4 ~ r6)
-- GNB 유틸 드롭다운(r8)과 그 항목(r4), 알림 배지(r4), 센터 바로가기(r4)
+- GNB 유틸 드롭다운(r8)과 그 항목(r4)
 - 퀵메뉴 카드(r16)와 그 안 항목(r12), 작은 아이콘 버튼: 캐러셀 ‹ › · 멈춤(r8)
 - 인트로 유리 카드(r8)와 SKIP(알약)
 
