@@ -54,7 +54,7 @@
 | Slime / Scene 10 | 알약 배지 뒤 공 5개 — 흩어짐 → 모임 → 검정 잉크 | `.intro__goo` (js/goo.js) | Slime / Scene 10 18314:8615 (메인 Scene 10 Column 안 인스턴스 18314:8620) |
 | Quad overlay | 활성 면 덮개, 클릭하면 원 마스크로 걷힘 | `.quad__face::after` (js/home.js quad) | Quad overlay 18316:8614 (소마 면 18225:8275 안 인스턴스 18316:8617) |
 | Arch figure | 캠퍼스 안내 아치 사진 + 꼭대기 흰 원 아이콘 | `.cp-arch__fig` (css/campus.css · js/campus.js) | Campus / Arch figure 18329:8883 (`Space=창의력 교실 · 독서 프로그램 · 학부모 라운지`) |
-| Coverflow | 캠퍼스 둘러보기 커버플로우(가운데 + 양옆 사진 · 원 버튼 · 캡션 — 점은 2026-11-03 삭제, 캡션 위 44. 코드 탭은 밑줄 탭, 피그마는 아직 pill) | `.cp-flow` (js/campus.js) | Campus / Coverflow 18329:9048 (`Tab=입구 · 강의실 · 라운지`, 각 첫 장) |
+| Coverflow | 캠퍼스 둘러보기 커버플로우(가운데 + 양옆 사진 · 원 버튼 · 캡션 — 점은 2026-11-03 삭제, 캡션 위 44. 탭은 밑줄 탭 — 아래 Campus / Tabs) | `.cp-flow` (js/campus.js) | Campus / Coverflow 18329:9048 (`Tab=입구 · 강의실 · 라운지`, 각 첫 장) |
 | 공간 아이콘 | 창의력 교실 · 독서 · 라운지 선 아이콘 | sprite `#ic-space-class/read/lounge` | Icon/space-class 18329:8820 · space-read 18329:8826 · space-lounge 18329:8831 (Icons 줄, 24 · 선 1.6 · Text/Normal) |
 | 오시는 길 아이콘 | 전화 · 길찾기 · 로드뷰 선 아이콘(주소 핀은 Icon/pin) | brand-location.html 인라인 svg · `.lc-tool svg` | Icon/phone 18338:9118 · route 18338:9122 · roadview 18338:9127 (Icons 줄, 24 · 선 1.6 · Text/Normal — 정보 띠는 18px Text/Alternative, 지도 도구는 20px) |
 | 그림 지도 | 목동서로 349 그림 지도(핀 · 라벨) — 오시는 길 페이지(홈 오시는 길은 2026-11-03부터 피그마 Visit card의 샘플 지도 이미지 `img/visit-map.webp`) | `src/partials/map.html` (js/location.js 핀 낙하) | Location / Map 18338:9198 (1160×560, Components의 Visit card 옆. 지도 연동 자리라 바탕 · 블록은 그림 색 그대로, 길 노랑 · 흰색만 변수) |
@@ -62,6 +62,7 @@
 | 성장 트랙 행 | 구간 막대 + 왼쪽 슬라임 점 — **코드에서 삭제(2026-11-03, 피그마 기준)**, 컴포넌트만 남김 | (삭제 — 예전 `.pg-track__bar` · `.pg-track__dot`) | Program / Track bar 18348:9257 (`State=Off · On`, 폭 = 구간 길이, 색은 Bar · Dot 덮어쓰기) |
 | 관찰평가 레이더 | AFTER 카드 5각 레이더(격자 · 축 · 면 · 점 · 라벨) | `.pg-radar` (js/program.js) | Program / Radar 18348:9289 (340×320, 면 Primary/Lamp/Coral 55%, 라벨은 Noto Bold 13 — 코드는 세방고딕) |
 | 반 편성 아이콘 | RESULT 카드 아이콘 | sprite `#ic-diff-lesson` | Icon/diff-lesson 18348:9264 (Icons 줄, 카드에선 56 · 흰 · 선 2.1) |
+| 캠퍼스 공간 탭 | 캠퍼스 둘러보기 밑줄 탭(세방 18 · 장수 · 2px 밑줄) | `.cp-tabs` · `.cp-tab` · `.cp-tabs__bar` (js/campus.js) | Campus / Tabs 18390:10536 (`State=입구 · 강의실 · 라운지`, 1160×49, 코드에서 캡처. 본문엔 `State=입구` 인스턴스 18390:10537을 pill 탭 위에 겹쳐 둠 — 세방 인스턴스는 플러그인이 프레임에 못 넣어 사용자가 드래그) |
 | 프로그램 아코디언 | 네 프로그램 가로 아코디언(열린 패널 = 브랜드) | `.pg-acc` (js/program.js 4.5초 순환) | Program / Accordion 18373:10105 (`Brand=소마 · 플레이팩토 · 마이온 · 리딩오션`, 1160×560, 각 열림 상태를 코드에서 캡처. 나이 칩 숨김 → 코드도 삭제, 「자세히」 왼쪽) |
 | 게시판 왼쪽 메뉴 | 소식 2depth 세로 메뉴 한 항목 | 코드 미구현(news.html stub) | Board / Side menu item 18354:9591 (`State=Default · Active`, 텍스트 Label, 200×52 · Body 2, Active 밑줄 2px Primary/Normal) |
 | 게시판 배지 | 새 글 「N」 · 상단 고정 「공지」 | 코드 미구현 | Board / Badge 18354:9586 (`Type=New · Notice`) |
@@ -196,7 +197,7 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 - **바탕 순서**: 흰색(소개 문구 「고정된 학원에서, 움직이는 학원으로.」 display · 가운데, 한 줄 · keep-all) → Brand Normal(공간 소개) → Brand Strong(캠퍼스 둘러보기).
 - **아치 카드 3열**(1160, 간격 24, 흰 r24, 패딩 32/28): 위 글(세방고딕 Bold 22 + Noto 15 두 줄), 아래 **아치 사진**(`border-radius: 999px 999px 24px 24px`, 비율 178:205 — 기획서 도형). 사진: 창의력 교실 class-01 · 독서 프로그램 class-10 · 학부모 파트너 라운지 lounge-05.
 - **동그란 아이콘**: 72px 흰 원(shadow-md) 중심이 아치 정점. 선 아이콘 `ic-space-class/read/lounge`(sprite, 48 viewBox · 선 1.8 · pathLength 100). **등장**: 아치가 아래에서 올라오고(clip-path inset) 원이 위에서 떨어져 정점에 착지하며 눌렸다(scaleY .84) 탄성으로 펴진 뒤 선이 그려짐, 카드마다 0.12초 간격, 이후 2px 숨쉬기. **호버**: 사진 1.04배, 원이 곡면 따라 굴렀다(rotate 10 → −6 → 0) 돌아옴. 동작 감소면 정지.
-- **커버플로우**(elan Campus Introduction 구성, 라이브러리 없음): 밑줄 탭(2026-11-03 pill → 밑줄 — 「오시는 길」 pill과 구분. 세방고딕 18 · 비활성 Text/Alternative · 활성 Bold Text/Normal + 2px 밑줄이 활성 탭 아래로 미끄러짐, 이름 옆 장수, 피그마 미반영) 입구 9 · 강의실 12 · 라운지 11장(`data-sets`, 파일 `img/campus/{set}-NN.webp`). 가운데 사진 폭 65%(16:9 · r24), 양옆 0.72배 · 바깥 가장자리가 판 가장자리에 닿게(흰 35% 덮개), 그 밖은 숨김. 72px 흰 원 화살표가 가운데 사진 좌우 가장자리에 걸침, 아래 8px 점(활성 Primary/Heavy) + 캡션 「입구 1 / 9」. 4.5초 자동(호버 · 포커스 · 화면 밖 · 동작 감소면 멈춤), 드래그 40px · ← →, 탭 바꾸면 첫 장. 모바일 86% · 화살표 44.
+- **커버플로우**(elan Campus Introduction 구성, 라이브러리 없음): 밑줄 탭(2026-11-03 pill → 밑줄 — 「오시는 길」 pill과 구분. 세방고딕 18 · 비활성 Text/Alternative · 활성 Bold Text/Normal + 2px 밑줄이 활성 탭 아래로 미끄러짐, 이름 옆 장수, 피그마 `Campus / Tabs` 18390:10536) 입구 9 · 강의실 12 · 라운지 11장(`data-sets`, 파일 `img/campus/{set}-NN.webp`). 가운데 사진 폭 65%(16:9 · r24), 양옆 0.72배 · 바깥 가장자리가 판 가장자리에 닿게(흰 35% 덮개), 그 밖은 숨김. 72px 흰 원 화살표가 가운데 사진 좌우 가장자리에 걸침, 아래 8px 점(활성 Primary/Heavy) + 캡션 「입구 1 / 9」. 4.5초 자동(호버 · 포커스 · 화면 밖 · 동작 감소면 멈춤), 드래그 40px · ← →, 탭 바꾸면 첫 장. 모바일 86% · 화살표 44.
 
 ### 오시는 길(기획서 13p) — `/brand/location.html`, css/location.css, js/location.js
 - 기존 홈페이지 「찾아오시는 길」 구성: 라벨 LOCATION + 제목 「오시는 길」(2026-11-03 피그마 기준으로 바꿈) → **카드**(r20 · 1px 선): 위 **정보 띠**(Brand Normal — 로고 130, 1px 세로선, 「소마 더 프라임 목동 캠퍼스」, 핀 · 전화 아이콘의 주소 · 전화 행, 주소 옆 「복사」(클립보드 → 「복사됨」), 오른쪽 카카오맵 · 네이버 지도 Line 40) → 아래 **지도 560**(그림 지도 `src/partials/map.html`을 홈 오시는 길과 공유 — 기존 홈페이지 지도 연동이 들어올 자리) → 지도 오른쪽 아래 **길찾기 · 로드뷰** 유리 pill(44, 카카오맵 링크). 아래 교통 · 주차 한 줄(회색 15).
