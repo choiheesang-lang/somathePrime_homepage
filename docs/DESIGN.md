@@ -62,6 +62,12 @@
 | 성장 트랙 행 | 구간 막대 + 왼쪽 슬라임 점 | `.pg-track__bar` · `.pg-track__dot` | Program / Track bar 18348:9257 (`State=Off · On`, 폭 = 구간 길이, 색은 Bar · Dot 덮어쓰기) |
 | 관찰평가 레이더 | AFTER 카드 5각 레이더(격자 · 축 · 면 · 점 · 라벨) | `.pg-radar` (js/program.js) | Program / Radar 18348:9289 (340×320, 면 Primary/Lamp/Coral 55%, 라벨은 Noto Bold 13 — 코드는 세방고딕) |
 | 반 편성 아이콘 | RESULT 카드 아이콘 | sprite `#ic-diff-lesson` | Icon/diff-lesson 18348:9264 (Icons 줄, 카드에선 56 · 흰 · 선 2.1) |
+| 게시판 왼쪽 메뉴 | 소식 2depth 세로 메뉴 한 항목 | 코드 미구현(news.html stub) | Board / Side menu item 18354:9591 (`State=Default · Active`, 텍스트 Label, 200×52 · Body 2, Active 밑줄 2px Primary/Normal) |
+| 게시판 배지 | 새 글 「N」 · 상단 고정 「공지」 | 코드 미구현 | Board / Badge 18354:9586 (`Type=New · Notice`) |
+| 게시판 열 머리 | 번호 80 · 제목 채움 · 작성자 100 · 작성일 120 · 조회 80 | 코드 미구현 | Board / Head 18356:9572 (880×56, 위 2px Text/Normal · 아래 1px Line/Normal/Normal) |
+| 게시판 행 | 목록 한 줄 | 코드 미구현 | Board / Row 18356:9612 (`Type=Default · Notice`, 텍스트 No · Title · Writer · Date · Views, 불리언 New) |
+| 페이지 번호 | 처음 · 이전 · 1~5 · 다음 · 마지막 | 코드 미구현 | Board / Page item 18354:9596 (`State=Default · Current`) · Board / Pagination 18356:9613 |
+| 게시판 아이콘 | 검색 · 처음 · 마지막 | 코드 미구현 | Icon/search 18354:9575 · Icon/chevrons-left 18354:9578 · Icon/chevrons-right 18354:9581 (Icons 줄) |
 | 퀵메뉴 | 흰 카드(r16 · 16 · 24 · 16) | `.quick` | Quick menu 18126:6550 |
 | 캐러셀 컨트롤 | 흰 상자(r8) + 아이콘 버튼(r8) | `.kv__ctrl` | Carousel control 18212:8344 |
 | SKIP | 알약 | `.intro-skip` | — |
@@ -205,3 +211,8 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 - **관찰평가**: BEFORE/AFTER pill 토글 → 무대 1fr · 56 · 1.35fr · 56 · 1fr — BEFORE 카드(점수 막대 0→72 + 숫자 카운트) → 화살표 원 → AFTER 카드(5각 레이더: 격자 3겹 점선 · 축 5 · 코랄 55% 다각형 · 꼭짓점 점 · 라벨, 등장 시 축 → 격자 → 다각형 back.out → 점 튐) → 화살표 → RESULT 카드(아이에게 맞는 반 편성). BEFORE면 다각형이 「행동」 축만 남은 가시로 접히고 BEFORE 카드가 섬. 동작 감소면 완성 상태.
 - **CTA**: 「가르치는 것이 아니라, 성장시키는 것」 + 「상담 신청하기」 Fill 48 wide → `/news.html#qna`, 제목 양옆 슬라임 점 넷 장식.
 - **피그마 교육 프로그램(2026-11-03)**: 프레임 「교육프로그램」 18343:9023 = 오시는길 프레임을 복제한 GNB · TOP_1(브레드크럼 「교육 프로그램」 1단계, 세 번째 탭 숨김) · footer/web(y3343, 높이 3608) + 본문 `Body · 교육 프로그램` 18344:9236(코드 첫 화면: 소마 패널 열림 · AFTER). 색은 Semantic 변수(흰 반투명은 Static/White + 투명도), 반경 Radius, 열린 패널 · AFTER 카드 Shadow/md, 평가 카드 inset 링은 안쪽 흰 선 12% · 30%, Noto 글자 System 스타일. 패널 그라데이션은 캡처에서 정지점이 빠져 코드 값으로 다시 만듦(브랜드색 42% 흰 섞음 → Primary/Lamp/*, 끝 정지점만 변수) · 열린 패널 덮개(코랄 45% → 어둡게 62%)는 변수 없음. 로고는 Logo/* 인스턴스(열림 흰 · 닫힘 Text/Normal), 트랙 · 레이더 · 슬라임 점 · 반 편성 아이콘 · 화살표는 위 컴포넌트 인스턴스. 세방고딕 때문에 프레임은 web 섹션 자리(섹션 안 x12348)에, 본문은 y260 자리에 겹쳐 두었으므로 드래그로 넣을 것. 사용자 몫: TOP_1 제목 「교육 프로그램」 · 탭 「네 개의 프로그램 / 관찰평가 시스템」, 자세히 ×4(Button/Ghost 32) · BEFORE(Ghost 32) · AFTER(Fill 32) · 상담 신청하기(Fill 48 wide) 인스턴스 교체. 이전 캡처 18277:9125(페이지 루트 「교육프로그램」)는 구버전.
+### 소식(공지사항) — 피그마 먼저(코드 `/news.html`은 아직 stub, 기존 소마 홈페이지 게시판 연동 예정)
+- **참고**: 입시탐탐 「입시 秀다방」 게시판(https://www.ipsi-timetime.com/menu/213/board/board_list)의 **왼쪽 메뉴 + 컨텐츠 구성**만(그 사이트 GNB · 퀵메뉴 제외).
+- **구성**: GNB(sub) · TOP_1(브레드크럼 「소식 > 공지사항」, 탭 숨김 — 2depth는 왼쪽 메뉴가 맡음) → 본문 위 64 · 아래 140, 컨텐츠 1160 = **LNB 200 + 간격 80 + 컨텐츠 880**. LNB는 Side menu item 5개(시간표 · 공지사항 Active · 홍보자료 · FAQ · 1:1 문의). 컨텐츠는 제목 「공지사항」 + 오른쪽 「전체 128건」 → Board / Head + Row 12개(상단 고정 Notice 2 · 새 글 N) → 40 → Brand Normal r16 판(페이지 번호 + 검색: 기존 `Select` 40 「제목」 120 + 기존 `Input` 40 360, 아이콘 Icon/search · 라벨 · 도움말 숨김). 찾기 버튼 · 글쓰기는 없음(공지사항, 버튼은 세방고딕이라 플러그인으로 못 넣음).
+- **피그마(2026-11-03)**: 프레임 「소식」 18353:9371(본문 `Body · 소식 공지사항` 18357:9584는 Noto 글자만이라 프레임 안에 바로 조립, 높이 1805). web 섹션 자리(섹션 안 x14713)에 겹쳐만 두었으므로 프레임을 섹션으로 드래그. 사용자 몫: TOP_1 제목 「브랜드」 → 「소식」, 컨텐츠 제목 「공지사항」(지금 Noto Bold 28)을 세방고딕 Brand 스타일로.
+
