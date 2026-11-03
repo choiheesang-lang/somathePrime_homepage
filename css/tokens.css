@@ -105,6 +105,7 @@
   --line-alternative:      rgba(112, 115, 124, 0.08);
   --line-strong:           rgba(112, 115, 124, 0.52);
   --line-solid-normal:     var(--pal-cool-neutral-96);
+  --line-solid-neutral:    #EAEBEC;                 /* 피그마 Line/Solid/Neutral — 퀵메뉴 판 테두리 */
 
   /* Fill */
   --fill-normal:           rgba(112, 115, 124, 0.08);

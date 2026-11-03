@@ -71,7 +71,7 @@
 | 게시판 행 | 목록 한 줄 | 코드 미구현 | Board / Row 18356:9612 (`Type=Default · Notice`, 텍스트 No · Title · Writer · Date · Views, 불리언 New) |
 | 페이지 번호 | 처음 · 이전 · 1~5 · 다음 · 마지막 | 코드 미구현 | Board / Page item 18354:9596 (`State=Default · Current`) · Board / Pagination 18356:9613 |
 | 게시판 아이콘 | 검색 · 처음 · 마지막 | 코드 미구현 | Icon/search 18354:9575 · Icon/chevrons-left 18354:9578 · Icon/chevrons-right 18354:9581 (Icons 줄) |
-| 퀵메뉴 | 흰 카드(r16 · 16 · 24 · 16) | `.quick` | Quick menu 18126:6550 |
+| 퀵메뉴 | 판 하나(Brand Heavy · 1px Line/Solid/Neutral · r16 · Shadow/md, 로고 → 항목 다섯 → TOP) | `.quick` | Quick menu 18126:6550 (페이지마다 1920 기준 x1612 · y306) |
 | 캐러셀 컨트롤 | 흰 상자(r8) + 아이콘 버튼(r8) | `.kv__ctrl` | Carousel control 18212:8344 |
 | SKIP | 알약 | `.intro-skip` | — |
 | 인트로 카드 | 유리 카드(r8) · 커서 스포트라이트 테두리 | `.panel` | title 컴포넌트의 「폭팔전_모양」 |
@@ -105,7 +105,9 @@
 - 2depth(피그마 세트 18291:12479, 2026-11-03부터 sub.hover 한 변형)는 **메뉴 글자 가운데 아래**에 `--primary-normal2` 판(r8, p16, 폭 175)으로 열리고, 항목은 흰 글자 16 **가운데 정렬**, 호버 · 키보드 초점 · 현재 항목은 **굵게만**(pill 띠 없음, 키보드 초점은 밑줄 추가). 1depth 글자색은 `GNB/Ink/Main` 흰 · `GNB/Ink/Sub` 검정 78% — 코드는 `--gnb-ink`를 따르므로 투명 GNB 위에서는 흰색, 흰 GNB(호버 · 히어로 아래)에서는 검정이 됩니다. 메인에서 메뉴에 올리면 GNB가 먼저 흰색이 되므로 열리는 2depth는 늘 sub.hover 모양입니다.
 
 ### 퀵메뉴
-오른쪽 위(헤더 아래 24px)에 폭 88의 흰 카드, 그 아래 따로 떨어진 TOP 카드. 묶음 사이는 짧은 가로선(32 · 16)으로 나눕니다. 모바일은 오른쪽 아래 버튼 둘(관심고객 등록 알약 · TOP 원)입니다.
+피그마 Quick menu(18126:6550, 2026-11-03 개편): 폭 84 **판 하나** — Background/Brand/Heavy(#F1EEEC) · 1px Line/Solid/Neutral(#EAEBEC) · r16 · Shadow/md, 안쪽 24 · 16, 간격 16. 위부터 SOMA THE PRIME 로고 59×22 → 선 50 → 항목 다섯(관심고객 등록 · 교육 프로그램 · 1:1 문의 · 오시는 길 · 수강료 납부, 폭 50, 아이콘 24 Text/Normal 선 + Noto Bold 12/1.5 Text/Neutral, 사이 1px Line/Normal/Neutral 선 · 간격 8) → TOP(세방 Bold 14). 관심고객 등록도 다른 항목과 같은 모양(검정 강조 없음). 호버면 글자가 진해지고 아이콘이 2px 올라감.
+- **자리**: 1920에서 오른쪽 224 · 위 306(콘텐츠 1160 오른쪽 끝 + 72) — `right: max(24px, 50vw − 736px)`, 좁은 화면은 오른쪽 24. 위는 `clamp(헤더 + 16, 100vh − 561, 306)`이라 낮은 화면에서는 아래가 잘리지 않게 올라감. 모든 페이지 공통(`src/partials/quick.html`).
+- 모바일은 그대로 오른쪽 아래 버튼 둘(관심고객 등록 알약 · TOP 원), 판 · 로고 · 선은 숨김.
 
 ## 5. 둥근 모서리 — 내용 상자에만
 
