@@ -71,7 +71,6 @@ address { font-style: normal; }
   --gnb-bg: var(--gnb-bg-main); --gnb-ink: var(--gnb-ink-main); --gnb-line: var(--gnb-line-main);
   --gnb-sub: var(--gnb-util-main); --gnb-util-bg: transparent;
   --gnb-chip-bg: transparent; --gnb-chip-line: rgba(255, 255, 255, 0.4);
-  --lp-ink: #fff; --lp-o: #fff; --lp-g: #fff; --lp-c: #fff;
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
 
@@ -122,8 +121,12 @@ address { font-style: normal; }
   width: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 8px var(--gutter) 0;
   display: flex; align-items: center; justify-content: space-between;
 }
-.gnb2__brand { display: block; line-height: 0; }
-.gnb2__brand .logo-prime { width: 108px; height: 40px; }
+.gnb2__brand { position: relative; display: block; line-height: 0; }
+.gnb2__brand .logo-prime { width: 108px; height: 40px; transition: opacity 0.3s; }
+/* 흰 로고 — 피그마 logo(18291:11475)를 내보낸 svg/logo-prime-white.svg. 투명 GNB(main 벌)에서만 컬러 로고와 바꿔 보입니다 */
+.gnb2__brand .logo-prime-white { position: absolute; left: 0; top: 50%; width: 108px; height: 40px; translate: 0 -50%; max-width: none; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.gnb2--main:not(:hover, :focus-within, .is-solid) .gnb2__brand .logo-prime { opacity: 0; }
+.gnb2--main:not(:hover, :focus-within, .is-solid) .gnb2__brand .logo-prime-white { opacity: 1; }
 .gnb2__menu { display: flex; gap: 72px; }
 .gnb2__item { position: relative; }
 .gnb2__link {
@@ -163,7 +166,7 @@ address { font-style: normal; }
 @media (max-width: 1024px) {
   .gnb2__top, .gnb2__nav { display: none; }
   .gnb2__inner { padding-top: 0; }
-  .gnb2__brand .logo-prime { width: 82.7px; height: 30.6px; }
+  .gnb2__brand :is(.logo-prime, .logo-prime-white) { width: 82.7px; height: 30.6px; }
   .gnb2__burger {
     display: flex; flex-direction: column; justify-content: center; gap: 5px;
     width: 44px; height: 44px; margin-right: -10px; padding: 0 10px;

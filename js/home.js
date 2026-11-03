@@ -218,6 +218,18 @@
     window.addEventListener('stp:intro-done', run);   // 인트로가 걷히면 그때부터 5초를 셉니다
   })();
 
+  /* ── 메인 비주얼 배너 켜고 끄기 — 배너가 있을 때 · 없을 때를 보는 디자인 확인용 ─────
+     판을 누르면 내용이 사라지고, 같은 자리(버튼은 남아 있음)를 다시 누르면 돌아옵니다. 저장하지 않습니다. */
+  (function kvBanner() {
+    const b = document.getElementById('kv-banner');
+    if (!b) return;
+    b.addEventListener('click', () => {
+      const off = b.classList.toggle('is-off');
+      b.setAttribute('aria-pressed', String(!off));
+      b.setAttribute('aria-label', off ? '관심고객 등록 배너 보이기' : '관심고객 등록 배너 숨기기');
+    });
+  })();
+
   /* ── 영역 클릭 이동 (5p ③ 브랜드 소개 · 7p ② 캠퍼스 안내) ───────────
      섹션 안의 버튼·링크는 자기 일을 하고, 그 밖의 빈 곳을 누르면 이동합니다. */
   document.querySelectorAll('[data-href]').forEach((sec) => {

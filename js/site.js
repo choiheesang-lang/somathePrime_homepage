@@ -40,7 +40,8 @@
      헤더 아래선에 닿는 순간부터. 되돌아오면 다시 투명. 기준 요소가 없으면 80px. */
   if (header && header.classList.contains('gnb2--main')) {
     const after = document.querySelector('[data-gnb-solid-after]');
-    const px = (n) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(n)) || 0;
+    // 기준 요소에서 읽습니다 — 메인 비주얼은 꺾임 깊이를 따로 둡니다(home.css .kv)
+    const px = (n) => parseFloat(getComputedStyle(after || document.documentElement).getPropertyValue(n)) || 0;
     const solid = () => {
       if (!after) return window.scrollY > 80;
       const r = after.getBoundingClientRect();

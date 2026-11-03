@@ -33,7 +33,7 @@
 body.has-reveal .cp-arch__ic { stroke-dashoffset: 100; }
 
 /* ── 12p 캠퍼스 둘러보기 ── */
-.cp-gallery { padding: 120px 0 140px; background: var(--bg-brand-strong); }
+.cp-gallery { padding: 120px 0 140px; background: var(--bg-brand-strong); overflow-x: clip; }   /* 커버플로 옆 사진이 화면 밖으로 나가 문서 폭을 넓히지 않게 */
 .cp-gallery__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
 .cp-gallery__title { margin-top: 14px; font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
 .cp-gallery__body { margin-top: 16px; font-size: 16px; line-height: 1.8; color: var(--text-neutral); word-break: keep-all; }

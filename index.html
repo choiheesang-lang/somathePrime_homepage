@@ -216,7 +216,7 @@
       </div>
     </div>
     <div class="gnb2__inner">
-      <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
+      <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg><img class="logo-prime-white" src="/svg/logo-prime-white.svg" width="108" height="40" alt="" /></a>
       <nav class="gnb2__nav" aria-label="주요 메뉴">
         <ul class="gnb2__menu">
           <li class="gnb2__item has-sub"><a class="gnb2__link" href="/brand/" data-label="브랜드">브랜드</a><ul class="gnb2__sub"><li><a href="/brand/" data-label="브랜드 소개">브랜드 소개</a></li><li><a href="/brand/campus.html" data-label="캠퍼스 안내">캠퍼스 안내</a></li><li><a href="/brand/location.html" data-label="오시는 길">오시는 길</a></li></ul></li>
@@ -537,35 +537,42 @@
             <p class="kv__sub">교실의 경계를 넘어<br />하나로 이어지는 학습 생태계</p>
           </div>
         </div>
-        <div class="kv__ctrl" role="group" aria-label="사진 넘기기">
-          <p class="kv__count" id="kv-count" aria-live="polite"><b>1</b><span>/</span>3</p>
-          <div class="kv__nav">
-            <button type="button" class="kv__btn" id="kv-prev" aria-label="이전 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <i class="kv__sep" aria-hidden="true"></i>
-            <button type="button" class="kv__btn" id="kv-next" aria-label="다음 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="kv__ctrls">
+          <div class="kv__ctrl" role="group" aria-label="사진 넘기기">
+            <p class="kv__count" id="kv-count" aria-live="polite"><b>1</b><span>/</span>3</p>
+            <div class="kv__nav">
+              <button type="button" class="kv__btn" id="kv-prev" aria-label="이전 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <i class="kv__sep" aria-hidden="true"></i>
+              <button type="button" class="kv__btn" id="kv-next" aria-label="다음 사진"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+            <button type="button" class="kv__btn kv__btn--toggle" id="kv-toggle" aria-pressed="false" aria-label="자동 넘김 멈춤">
+              <svg class="i-pause" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.2" height="12" rx="0.6"/><rect x="11.8" y="4" width="3.2" height="12" rx="0.6"/></svg>
+              <svg class="i-play" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.5 4.6v10.8a.8.8 0 0 0 1.22.68l8.5-5.4a.8.8 0 0 0 0-1.36l-8.5-5.4A.8.8 0 0 0 6.5 4.6z"/></svg>
+            </button>
+            <span class="kv__bar" aria-hidden="true"><i id="kv-bar"></i></span>
           </div>
-          <button type="button" class="kv__btn kv__btn--toggle" id="kv-toggle" aria-pressed="false" aria-label="자동 넘김 멈춤">
-            <svg class="i-pause" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.2" height="12" rx="0.6"/><rect x="11.8" y="4" width="3.2" height="12" rx="0.6"/></svg>
-            <svg class="i-play" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.5 4.6v10.8a.8.8 0 0 0 1.22.68l8.5-5.4a.8.8 0 0 0 0-1.36l-8.5-5.4A.8.8 0 0 0 6.5 4.6z"/></svg>
-          </button>
-          <span class="kv__bar" aria-hidden="true"><i id="kv-bar"></i></span>
+          <button type="button" class="btn2 btn2--fill btn2--40 kv__lead" data-lead-open>관심고객 등록<svg class="btn2__arrow" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 9h10.5M9.75 4.75L14 9l-4.25 4.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </div>
-      <!-- 관심고객 등록 배너 — 피그마 Frame 3641(18378:17515) 자리: 1200×160, 사진 아래 V 꺾임에 걸침.
-           판 전체가 버튼 하나라 누르면 등록 팝업이 열립니다(js/lead.js data-lead-open) -->
-      <button type="button" class="kv-banner" data-lead-open>
-        <span class="kv-banner__text">
-          <span class="kv-banner__tag">12월 OPEN</span>
-          <strong class="kv-banner__title">소마 더 프라임 목동 캠퍼스, 가장 먼저 만나보세요</strong>
-          <span class="kv-banner__sub">관심고객으로 등록하시면 오픈 소식과 설명회 일정을 먼저 알려드려요.</span>
+      <!-- 관심고객 등록 배너 — 피그마 banner(18426:10608) 자리: 1200×160, 아래 끝이 사진 바닥에서 182(꺾임 248의 0.734).
+           타이포만으로 — 워드마크(O만 로고의 오렌지) · 포인트색 밑줄 문구 · 큰 「12」, 그래픽은 옅은 V 패턴과 작은 V 하나.
+           디자인 확인용: 누르면 내용이 사라지고, 빈 자리를 다시 누르면 돌아옵니다(js/home.js). 등록 팝업은 컨트롤 옆 버튼 · 퀵메뉴로 -->
+      <button type="button" class="kv-banner" id="kv-banner" aria-pressed="true" aria-label="관심고객 등록 배너 숨기기">
+        <span class="kv-banner__body">
+          <span class="kv-banner__brand">
+            <i class="kv-banner__v" aria-hidden="true"></i>
+            <strong class="kv-banner__mark">S<em>O</em>MA THE PRIME</strong>
+            <span class="kv-banner__place">MOKDONG CAMPUS</span>
+          </span>
+          <span class="kv-banner__msg">
+            <span class="kv-banner__hook"><span>목동 캠퍼스,</span><span>가장 먼저 만나보세요</span></span>
+            <span class="kv-banner__sub">관심고객 등록 시 오픈 · 설명회 소식을 먼저 알려드려요</span>
+          </span>
+          <span class="kv-banner__date">
+            <span class="kv-banner__month">december</span>
+            <span class="kv-banner__num">12<small>OPEN</small></span>
+          </span>
         </span>
-        <span class="kv-banner__art" aria-hidden="true">
-          <svg class="kv-banner__blob" style="--c: var(--goo-coral)"><use href="#blob-1" /></svg>
-          <svg class="kv-banner__blob" style="--c: var(--goo-yellow)"><use href="#blob-2" /></svg>
-          <svg class="kv-banner__blob" style="--c: var(--goo-green)"><use href="#blob-3" /></svg>
-          <svg class="kv-banner__blob" style="--c: var(--goo-blue)"><use href="#blob-4" /></svg>
-        </span>
-        <span class="kv-banner__cta btn2 btn2--fill btn2--48">관심고객 등록<svg class="btn2__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </button>
     </section>
 
@@ -709,7 +716,7 @@
             <path class="quad__blob" id="quad-drop-crisp" d="" />
             <path class="quad__blob" id="quad-main-crisp" d="" />
           </g>
-          <g class="quad__mark" id="quad-mark"><use href="#logo-prime" x="632" y="319" width="136" height="50" /></g>
+          <g class="quad__mark" id="quad-mark"><image href="/svg/logo-prime-white.svg" x="632" y="318.85" width="136" height="50.3" /></g>
         </svg>
       </div>
       <div class="wrap">

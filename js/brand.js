@@ -5,7 +5,8 @@
 (function () {
   if (!window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
-  const REVEAL = { y: 40, dur: 0.85, ease: 'power3.out', gap: 0.14, sub: 0.07, start: 'top 85%' };
+  // start는 섹션 상자 기준 — 첫 요소 기준(85%)이면 섹션 위 여백만 보이고 글은 아직 숨어 빈 판처럼 보였습니다
+  const REVEAL = { y: 40, dur: 0.85, ease: 'power3.out', gap: 0.14, sub: 0.07, start: 'top 90%' };
   function reveal(box, reduce) {
     const steps = new Map();
     box.querySelectorAll('[data-step]').forEach((el) => {
@@ -16,7 +17,7 @@
     if (!steps.size) return;
     const order = [...steps.keys()].sort((a, b) => a - b);
     const tl = gsap.timeline({
-      scrollTrigger: { trigger: steps.get(order[0])[0], start: REVEAL.start, toggleActions: 'play none none reverse' },
+      scrollTrigger: { trigger: box, start: REVEAL.start, toggleActions: 'play none none reverse' },
     });
     order.forEach((k, i) => {
       tl.fromTo(steps.get(k),
