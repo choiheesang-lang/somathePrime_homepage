@@ -62,6 +62,7 @@
 | 성장 트랙 행 | 구간 막대 + 왼쪽 슬라임 점 — **코드에서 삭제(2026-11-03, 피그마 기준)**, 컴포넌트만 남김 | (삭제 — 예전 `.pg-track__bar` · `.pg-track__dot`) | Program / Track bar 18348:9257 (`State=Off · On`, 폭 = 구간 길이, 색은 Bar · Dot 덮어쓰기) |
 | 관찰평가 레이더 | AFTER 카드 5각 레이더(격자 · 축 · 면 · 점 · 라벨) | `.pg-radar` (js/program.js) | Program / Radar 18348:9289 (340×320, 면 Primary/Lamp/Coral 55%, 라벨은 Noto Bold 13 — 코드는 세방고딕) |
 | 반 편성 아이콘 | RESULT 카드 아이콘 | sprite `#ic-diff-lesson` | Icon/diff-lesson 18348:9264 (Icons 줄, 카드에선 56 · 흰 · 선 2.1) |
+| 관심고객 등록 배너 | 메인 비주얼 아래 꺾임에 걸친 1200×160 밝은 판(태그 · 제목 · 설명 · 슬라임 4색 · 채움 버튼 48) | `.kv-banner` (data-lead-open) | Home / Lead banner 18396:10552 (코드에서 캡처, 슬라임은 sprite blob 경로로 다시 그린 벡터 + Slime/* 변수. 본문엔 인스턴스 18396:10553을 검정 임시 판 Frame 3641 위에 겹쳐 둠 — 사용자가 드래그. Main visual의 예전 「관심고객 등록」 버튼 18177:13592는 숨김) |
 | 캠퍼스 공간 탭 | 캠퍼스 둘러보기 밑줄 탭(세방 18 · 장수 · 2px 밑줄) | `.cp-tabs` · `.cp-tab` · `.cp-tabs__bar` (js/campus.js) | Campus / Tabs 18390:10536 (`State=입구 · 강의실 · 라운지`, 1160×49, 코드에서 캡처. 본문엔 `State=입구` 인스턴스 18390:10537을 pill 탭 위에 겹쳐 둠 — 세방 인스턴스는 플러그인이 프레임에 못 넣어 사용자가 드래그) |
 | 프로그램 아코디언 | 네 프로그램 가로 아코디언(열린 패널 = 브랜드) | `.pg-acc` (js/program.js 4.5초 순환) | Program / Accordion 18373:10105 (`Brand=소마 · 플레이팩토 · 마이온 · 리딩오션`, 1160×560, 각 열림 상태를 코드에서 캡처. 나이 칩 숨김 → 코드도 삭제, 「자세히」 왼쪽) |
 | 게시판 왼쪽 메뉴 | 소식 2depth 세로 메뉴 한 항목 | 코드 미구현(news.html stub) | Board / Side menu item 18354:9591 (`State=Default · Active`, 텍스트 Label, 200×52 · Body 2, Active 밑줄 2px Primary/Normal) |
