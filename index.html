@@ -517,8 +517,6 @@
         <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/lounge-03.webp" alt="구름 조명 아래 아치형 책장과 트랙 바닥이 이어진 라운지 전경" loading="lazy" /></figure>
       </div>
       <div class="kv__panel">
-        <!-- 관심고객 등록 — 문구 세 벌 바깥이라 사진이 바뀌어도 늘 보입니다. 채움 버튼 48(DESIGN.md 4) -->
-        <button type="button" class="kv__lead btn2 btn2--fill btn2--48" data-lead-open>관심고객 등록<svg class="btn2__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="kv__copies">
           <div class="kv__copy is-on">
             <p class="kv__eyebrow">SOMA THE PRIME</p>
@@ -550,6 +548,22 @@
           <span class="kv__bar" aria-hidden="true"><i id="kv-bar"></i></span>
         </div>
       </div>
+      <!-- 관심고객 등록 배너 — 피그마 Frame 3641(18378:17515) 자리: 1200×160, 사진 아래 V 꺾임에 걸침.
+           판 전체가 버튼 하나라 누르면 등록 팝업이 열립니다(js/lead.js data-lead-open) -->
+      <button type="button" class="kv-banner" data-lead-open>
+        <span class="kv-banner__text">
+          <span class="kv-banner__tag">12월 OPEN</span>
+          <strong class="kv-banner__title">소마 더 프라임 목동 캠퍼스, 가장 먼저 만나보세요</strong>
+          <span class="kv-banner__sub">관심고객으로 등록하시면 오픈 소식과 설명회 일정을 먼저 알려드려요.</span>
+        </span>
+        <span class="kv-banner__art" aria-hidden="true">
+          <svg class="kv-banner__blob" style="--c: var(--goo-coral)"><use href="#blob-1" /></svg>
+          <svg class="kv-banner__blob" style="--c: var(--goo-yellow)"><use href="#blob-2" /></svg>
+          <svg class="kv-banner__blob" style="--c: var(--goo-green)"><use href="#blob-3" /></svg>
+          <svg class="kv-banner__blob" style="--c: var(--goo-blue)"><use href="#blob-4" /></svg>
+        </span>
+        <span class="kv-banner__cta btn2 btn2--fill btn2--48">관심고객 등록<svg class="btn2__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </button>
     </section>
 
     <!-- 기획서 5p — 랜딩 장면 10에서 슬로건만 바꿈. 영역을 누르면 브랜드 소개로 -->

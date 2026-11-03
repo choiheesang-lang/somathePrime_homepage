@@ -33,7 +33,8 @@ body.intro-entering .gnb2 { transition: transform 0.7s var(--ease-out); }
 body.intro-entering .kv__panel > * { transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out); }
 body.intro-entering .kv__copies { transition-delay: 0.45s; }
 body.intro-entering .kv__ctrl { transition-delay: 0.55s; }
-body.intro-entering .kv__lead { transition-delay: 0.65s; }
+body.intro-on .kv-banner { opacity: 0; translate: 0 16px; }
+body.intro-entering .kv-banner { transition: opacity 0.6s var(--ease-out) 0.65s, translate 0.8s var(--ease-out) 0.65s; }
 body.intro-entering .quick { transition: opacity 0.5s 0.35s, transform 0.8s var(--ease-out) 0.35s; }
 /* 랜딩의 START 대기 화면을 그대로 씁니다 — 커서 디스크(START/SKIP)와 터치용 고정 디스크.
    손가락 드래그가 스크롤로 끊기지 않도록 인트로 동안 스테이지의 터치 동작을 막습니다. */
@@ -132,14 +133,12 @@ body.ptr-on .intro-skip { cursor: none; }
 .kv__panel {
   --edge: max(var(--gutter), calc((100vw - var(--layout-content)) / 2));
   position: absolute; left: 0; right: 0; z-index: 1;
-  top: var(--header-h); bottom: var(--fold-depth);
+  top: var(--header-h); bottom: calc(var(--fold-depth) + var(--banner-h) + 24px);   /* 아래 관심고객 등록 배너 위까지 */
   display: flex; flex-direction: column; justify-content: center;
   padding: 0 var(--edge);
   color: #fff;
 }
 /* 문구 세 벌은 같은 칸에 겹쳐 두고 사진과 함께 크로스페이드 */
-/* 관심고객 등록 — 채움 버튼 48(.btn2--fill, site.css). 여기서는 자리만 */
-.kv__lead { order: 2; align-self: center; margin-top: 42px; }   /* 피그마 y 600 — 컨트롤(상자 + 진행 바) 아래 42 */
 .kv__copies { display: grid; margin: 0 0 48px; }
 .kv__copy { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out), visibility 0s 0.5s; }
 .kv__copy.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0.15s, 0.15s, 0s; }
@@ -171,6 +170,37 @@ body.ptr-on .intro-skip { cursor: none; }
 .kv__bar { position: absolute; left: 0; right: 0; bottom: -12px; height: 2px; border-radius: 2px; background: rgb(var(--kv-c) / 0.08); overflow: hidden; }
 .kv__bar i { display: block; height: 100%; width: 100%; background: rgb(var(--kv-c) / 0.58); transform-origin: left; transform: scaleX(0); }
 
+/* 관심고객 등록 배너 — 피그마 Frame 3641(18378:17515): 1200×160 밝은 판, 아래 끝이 V 꺾임 시작선(사진 아래 --fold-depth).
+   왼쪽 태그 · 제목 · 한 줄, 오른쪽 네 브랜드 슬라임 + 채움 버튼 48. 판 전체가 버튼(등록 팝업) */
+.kv { --banner-h: 160px; }
+.kv-banner {
+  position: absolute; z-index: 2; left: 50%; bottom: var(--fold-depth); transform: translateX(-50%);
+  width: min(1200px, 100% - 2 * var(--gutter)); height: var(--banner-h);
+  display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 32px; padding: 0 48px 0 56px;
+  background: var(--bg-brand-normal); border-radius: var(--r-16); box-shadow: var(--shadow-md);
+  text-align: left; cursor: pointer;
+}
+.kv-banner:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 3px; }
+.kv-banner__text { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+.kv-banner__tag { display: inline-flex; align-items: center; height: 26px; padding: 0 12px; border-radius: 999px; background: #fff; font-family: var(--font-title); font-size: 13px; font-weight: 700; color: var(--primary-normal); }
+.kv-banner__title { margin-top: 2px; font-family: var(--font-title); font-size: clamp(20px, 1.6vw, 26px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; color: var(--text-normal); word-break: keep-all; }
+.kv-banner__sub { font-family: var(--font); font-size: 15px; line-height: 1.6; color: var(--text-neutral); letter-spacing: -0.01em; word-break: keep-all; }
+/* 슬라임 넷 — 코랄 · 노랑 · 녹색 · 파랑이 겹쳐 뭉친 덩어리. 호버면 조금 벌어짐 */
+.kv-banner__art { position: relative; width: 132px; height: 96px; }
+.kv-banner__blob { position: absolute; width: 56px; height: 56px; fill: var(--c); transition: translate 0.6s var(--ease-out), rotate 0.6s var(--ease-out); }
+.kv-banner__blob:nth-child(1) { left: 6px;  top: 30px; rotate: -12deg; }
+.kv-banner__blob:nth-child(2) { left: 38px; top: 4px;  width: 50px; height: 50px; rotate: 18deg; }
+.kv-banner__blob:nth-child(3) { left: 44px; top: 42px; width: 48px; height: 48px; rotate: 40deg; }
+.kv-banner__blob:nth-child(4) { left: 78px; top: 22px; width: 52px; height: 52px; rotate: -24deg; }
+.kv-banner:hover .kv-banner__blob:nth-child(1) { translate: -6px 4px; }
+.kv-banner:hover .kv-banner__blob:nth-child(2) { translate: -2px -6px; }
+.kv-banner:hover .kv-banner__blob:nth-child(3) { translate: 2px 6px; }
+.kv-banner:hover .kv-banner__blob:nth-child(4) { translate: 7px -3px; }
+.kv-banner:hover .kv-banner__cta { --bg: var(--primary-strong); }
+.kv-banner__cta .btn2__arrow { transition: translate 0.3s var(--ease-out); }
+.kv-banner:hover .kv-banner__cta .btn2__arrow { translate: 4px 0; }
+@media (prefers-reduced-motion: reduce) { .kv-banner__blob, .kv-banner__cta .btn2__arrow { transition: none; } }
+
 @media (max-width: 1024px) {
   /* 모바일: 사진(위, V 꺾임) → 글(아래). 글은 흰 바탕 위라 진한 색으로 돌아옵니다 */
   .kv { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column; }
@@ -182,7 +212,14 @@ body.ptr-on .intro-skip { cursor: none; }
   }
   .kv__ctrl { box-shadow: inset 0 0 0 1px var(--line-neutral); }   /* 흰 바탕 위라 상자 윤곽만 */
   .kv__copies { margin: 0; }
-  .kv__lead { align-self: flex-start; margin-top: 0; }
+  /* 배너는 글 아래 흐름으로 — 세로로 쌓고 슬라임은 오른쪽 위에 작게 */
+  .kv-banner {
+    position: relative; left: auto; bottom: auto; transform: none;
+    width: auto; height: auto; margin: 0 var(--gutter) 48px;
+    grid-template-columns: 1fr auto; gap: 20px 12px; padding: 28px 24px 24px;
+  }
+  .kv-banner__art { align-self: start; scale: 0.58; transform-origin: top right; margin: -4px -4px -40px -55px; }   /* 132×96을 0.58로 — 바깥 여백으로 자리도 76×56만 */
+  .kv-banner__cta { grid-column: 1 / -1; justify-content: center; }
 }
 
 /* ── 장면 10 (5p) — 랜딩 그대로, 고정만 풉니다 ──────────────────────
