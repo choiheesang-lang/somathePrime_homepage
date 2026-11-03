@@ -65,6 +65,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 @property --lp-o   { syntax: '<color>'; inherits: true; initial-value: #E39241; }
 @property --lp-g   { syntax: '<color>'; inherits: true; initial-value: #5FA756; }
 @property --lp-c   { syntax: '<color>'; inherits: true; initial-value: #E39241; }
+/* 메인 비주얼 아래 그라디언트 색(css/home.css hero-tint) — 등록해야 키프레임에서 네 브랜드색 사이가 보간됩니다 */
+@property --hero-tint { syntax: '<color>'; inherits: true; initial-value: #F6D98A; }
+/* 꺾임 깊이(tokens.css clamp) — 등록하면 getComputedStyle이 px로 풀어 주어 js/site.js가 투명 GNB 전환 지점을 잴 수 있습니다 */
+@property --fold-depth { syntax: '<length>'; inherits: true; initial-value: 40px; }
 .logo-prime { display: block; overflow: visible; }
 
 /* Reading downward hides the bar; any upward move brings it back (js/main.js). It stays

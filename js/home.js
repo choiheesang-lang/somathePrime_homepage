@@ -382,8 +382,25 @@
         placeBack(0); back.forEach(write);
       }
 
+      /* 덮개 걷기 — 활성 면을 클릭하면 클릭 지점에서 원(--cr, css mask)이 커지며 덮개만 사라집니다(피그마 Quad overlay State=Clear).
+         걷힌 동안은 자동 순환을 멈추고, 다시 클릭하면 원이 닫히며 덮개 복귀 · 다른 면이 활성되면 리셋 */
+      let cleared = -1, clearTw = null;
+      const setClear = (i, on, cx, cy) => {
+        const f = faces[i];
+        if (clearTw) clearTw.kill();
+        if (on) { f.style.setProperty('--cx', cx + '%'); f.style.setProperty('--cy', cy + '%'); }
+        f.classList.toggle('is-clear', on); f.setAttribute('aria-pressed', String(on));
+        cleared = on ? i : -1;
+        const cr = { v: parseFloat(f.style.getPropertyValue('--cr')) || 0 };
+        const put = () => f.style.setProperty('--cr', cr.v.toFixed(1) + '%');
+        if (reduce) { cr.v = on ? 150 : 0; put(); return; }
+        clearTw = gsap.to(cr, { v: on ? 150 : 0, duration: on ? 0.7 : 0.5, ease: on ? 'power2.out' : 'power2.in', onUpdate: put });
+      };
+      const resetClear = () => { if (cleared >= 0) { const i = cleared; cleared = -1; faces[i].classList.remove('is-clear'); faces[i].setAttribute('aria-pressed', 'false'); faces[i].style.setProperty('--cr', '0%'); } };
+
       /* 면 전환 — 사진은 슬라임이 사라진 자리(--rx --ry)에서 원이 커지며 드러납니다 */
       const setOn = (i, revealFrom) => {
+        if (cleared >= 0 && cleared !== i) resetClear();
         faces.forEach((f, k) => f.classList.toggle('is-on', k === i));
         cur = i;
         const photo = faces[i].querySelector('.quad__photo');
@@ -418,11 +435,23 @@
       function refill() { refillTw = gsap.to(size, { base: R, duration: 3, ease: 'sine.inOut', onComplete: () => { refillTw = null; } }); }
       const next = () => activate(ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length]);
       function stopTimer() { if (timer) { timer.kill(); timer = null; } }
-      function schedule() { stopTimer(); if (onScreen && !hovering) timer = gsap.delayedCall(CYCLE, next); }
+      function schedule() { stopTimer(); if (onScreen && !hovering && cleared < 0) timer = gsap.delayedCall(CYCLE, next); }
 
+      /* 클릭(탭 · Enter · Space): 비활성 면이면 활성, 활성 면이면 덮개 걷기 ↔ 복귀 */
+      const press = (i, cx, cy) => {
+        if (i !== cur || busy) { activate(i); return; }
+        const on = cleared !== i;
+        setClear(i, on, cx, cy);
+        if (on) stopTimer(); else schedule();
+      };
       faces.forEach((f, i) => {
         f.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; hovering = true; stopTimer(); activate(i); });
-        f.addEventListener('click', () => activate(i));
+        f.addEventListener('click', (e) => {
+          const r = f.getBoundingClientRect();
+          const cx = e.clientX ? (e.clientX - r.left) / r.width * 100 : 50, cy = e.clientY ? (e.clientY - r.top) / r.height * 100 : 50;
+          press(i, cx, cy);
+        });
+        f.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); press(i, 50, 50); } });
       });
       root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch') return; hovering = false; ptr.has = false; if (!busy) schedule(); });
       root.addEventListener('pointermove', (e) => {

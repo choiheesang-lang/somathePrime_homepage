@@ -3,6 +3,7 @@ title: 소마 더 프라임 | SOMA the Prime — 12월 목동 OPEN
 desc: 사고력 수학 · 창의 교구 수학 · 글로벌 영어 독서 · 사고력 독서. 네 개의 브랜드가 하나로 이어지는 프리미엄 캠퍼스, 소마 더 프라임. 12월 목동 OPEN.
 path: /
 menu:
+gnb: main
 css: hero home
 js: hero home goo
 preload: /img/campus/entrance-01.webp
@@ -30,7 +31,9 @@ body: home
     <!-- 메인 비주얼 (기획서 4p ③④) — 미래탐구 브랜드 사이트 비주얼 구성(피그마 18155-8475).
          사진 세 장과 문구 세 벌이 함께 넘어가고, 사진 아래는 사이트 아이덴티티인 V 꺾임입니다. -->
     <section class="kv" id="s-main" aria-roledescription="carousel" aria-label="소마 더 프라임 캠퍼스">
-      <div class="kv__slides is-folded" id="kv-slides">
+      <!-- data-gnb-solid-after: 투명 GNB(.gnb2--main)는 이 사진 칸(꺾임 위 가장자리)을 지나면 흰색이 됩니다 — js/site.js.
+           모바일에서는 사진 아래 흰 글 칸이 .kv 안에 이어지므로 섹션이 아니라 사진 칸에 답니다 -->
+      <div class="kv__slides is-folded" id="kv-slides" data-gnb-solid-after>
         <figure class="kv__slide is-on" aria-roledescription="slide" aria-label="1 / 3"><img src="/img/campus/entrance-01.webp" alt="SOMA THE PRIME 간판이 걸린 캠퍼스 입구 정면" fetchpriority="high" /></figure>
         <figure class="kv__slide" aria-roledescription="slide" aria-label="2 / 3"><img src="/img/campus/lounge-01.webp" alt="라운지 — 네 브랜드 이름이 둘러싼 SOMA THE PRIME 천장 사인과 TV 책장" loading="lazy" /></figure>
         <figure class="kv__slide" aria-roledescription="slide" aria-label="3 / 3"><img src="/img/campus/lounge-03.webp" alt="구름 조명 아래 아치형 책장과 트랙 바닥이 이어진 라운지 전경" loading="lazy" /></figure>
@@ -87,7 +90,7 @@ body: home
            리딩오션 → 마이온(DOM은 2×2 그리드 순서라 아래 줄은 마이온 · 리딩오션). js/home.js quad · DESIGN.md 6 -->
       <div class="quad" id="quad" data-step="1">
         <ul class="quad__faces">
-          <li class="quad__face is-on" data-brand="soma" style="--c: var(--pal-brand-coral); --rx: 70%; --ry: 70%">
+          <li class="quad__face is-on" data-brand="soma" tabindex="0" role="button" aria-pressed="false" style="--c: var(--pal-brand-coral); --rx: 70%; --ry: 70%">
             <img class="quad__photo" src="/img/campus/class-02.webp" alt="소마 교실 — 분홍 벽과 둥근 테이블" loading="lazy" />
             <div class="quad__body">
               <span class="quad__logo"><svg viewBox="0 0 174 40" role="img" aria-label="소마"><use href="#lg-soma" /></svg></span>
@@ -95,7 +98,7 @@ body: home
               <span class="quad__desc">정답보다 과정을 중시하는 사고력 수학</span>
             </div>
           </li>
-          <li class="quad__face" data-brand="playfacto" style="--c: var(--pal-brand-yellow); --rx: 30%; --ry: 70%">
+          <li class="quad__face" data-brand="playfacto" tabindex="0" role="button" aria-pressed="false" style="--c: var(--pal-brand-yellow); --rx: 30%; --ry: 70%">
             <img class="quad__photo" src="/img/campus/class-06.webp" alt="플레이팩토 교실 — 노랑 · 보라 교구장" loading="lazy" />
             <div class="quad__body">
               <span class="quad__logo"><svg viewBox="0 0 96 64" role="img" aria-label="플레이팩토" class="is-play"><use href="#lg-playfacto" /></svg></span>
@@ -103,7 +106,7 @@ body: home
               <span class="quad__desc">손으로 만지며 원리를 깨치는 유아 수학</span>
             </div>
           </li>
-          <li class="quad__face" data-brand="myon" style="--c: var(--pal-brand-sage-green); --rx: 70%; --ry: 30%">
+          <li class="quad__face" data-brand="myon" tabindex="0" role="button" aria-pressed="false" style="--c: var(--pal-brand-sage-green); --rx: 70%; --ry: 30%">
             <img class="quad__photo" src="/img/campus/class-09.webp" alt="마이온 교실 — 초록 벽의 영어 독서 공간" loading="lazy" />
             <div class="quad__body">
               <span class="quad__logo"><svg viewBox="0 0 201 62" role="img" aria-label="Renaissance myON"><use href="#lg-myon-wide" /></svg></span>
@@ -111,7 +114,7 @@ body: home
               <span class="quad__desc">7,000권 이상의 인터랙티브 영어 원서</span>
             </div>
           </li>
-          <li class="quad__face" data-brand="reading" style="--c: var(--pal-brand-dusty-blue); --rx: 30%; --ry: 30%">
+          <li class="quad__face" data-brand="reading" tabindex="0" role="button" aria-pressed="false" style="--c: var(--pal-brand-dusty-blue); --rx: 30%; --ry: 30%">
             <img class="quad__photo" src="/img/campus/class-10.webp" alt="리딩오션 교실 — 파란 벽의 독서 토론 공간" loading="lazy" />
             <div class="quad__body">
               <span class="quad__logo"><svg viewBox="0 0 151 50" role="img" aria-label="리딩오션"><use href="#lg-reading" /></svg></span>

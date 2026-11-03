@@ -6,7 +6,7 @@
    ───────────────────────────────────────────────────────────── */
 
 /* 슬라임 점 색 — goo.js의 선명 팔레트(브랜드 색 채도 ×1.3 · 명도 −4%)와 같은 값 */
-.pg { --goo-coral: #F58C66; --goo-yellow: #F7D257; --goo-blue: #76A9EE; --goo-green: #A3D189; }
+/* 슬라임 선명 4색은 css/tokens.css의 --goo-* (피그마 Slime/*)를 그대로 씁니다 */
 
 /* ── 14p ① 소개 ── */
 .pg-hero { padding: 96px 0 120px; background: #fff; text-align: center; }

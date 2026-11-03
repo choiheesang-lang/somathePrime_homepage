@@ -128,6 +128,19 @@
   --inverse-label:         var(--pal-cool-neutral-99);
   --material-dimmer:       rgba(23, 23, 25, 0.52);
 
+  /* GNB 두 타입 — Figma "Component" 컬렉션 GNB/* (피그마 GNB 세트 18291-11394: main · sub.hover). docs/DESIGN.md
+     main = 메인 페이지, 사진 위 투명(검정 4%) + 흰 글자 · 흰 로고 / sub = 서브페이지, 흰 바탕 + 검정 글자.
+     메인은 호버하거나 히어로를 지나면 sub 벌로 바뀝니다(css/site.css .gnb2--main). */
+  --gnb-bg-main:      rgba(0, 0, 0, 0.04);        /* GNB/Bg/Main */
+  --gnb-bg-sub:       rgba(255, 255, 255, 0.96);  /* GNB/Bg/Sub (피그마 #FFF — 코드는 96% + blur) */
+  --gnb-ink-main:     #FFFFFF;                    /* GNB/Ink/Main — 메뉴 글자 · 로고 */
+  --gnb-ink-sub:      rgba(0, 0, 0, 0.78);        /* GNB/Ink/Sub */
+  --gnb-util-main:    rgba(255, 255, 255, 0.8);   /* GNB/Util/Main — 유틸 바 글자 · 화살표 */
+  --gnb-util-sub:     rgba(0, 0, 0, 0.58);        /* GNB/Util/Sub */
+  --gnb-util-bg-sub:  #F7F7F7;                    /* GNB/UtilBg/Sub — 유틸 바 바탕(main은 투명) */
+  --gnb-line-main:    rgba(238, 238, 238, 0.2);   /* GNB/Line/Main — 유틸 바 아래 선 · 헤더 아래 선 */
+  --gnb-line-sub:     #EEEEEE;                    /* GNB/Line/Sub */
+
   /* ───────────────────────────────────────────────────────────
      L3 · FOUNDATION — Figma Typography · Spacing · Radius · Shadow
      ─────────────────────────────────────────────────────────── */
@@ -187,6 +200,17 @@
   --hero-veil:       rgba(0, 0, 0, 0.11);  /* 장면 2 이후 베일 */
   --hero-glass-bg:     rgba(255, 255, 255, 0.01);
   --hero-glass-border: rgba(221, 221, 221, 0.2);
+  /* 메인 비주얼 아래 그라디언트 색 — 4 브랜드색을 24s 주기로 돕니다(css/home.css hero-tint, 피그마 Hero tint 세트).
+     @property 등록은 css/base.css. 기본값은 피그마 Slide 1(노랑) */
+  --hero-tint: var(--pal-brand-yellow);
+
+  /* 슬라임 선명 4색 — js/goo.js가 브랜드 4색을 채도 ×1.3 · 명도 −4%로 올린 값(블러로 섞여도 탁해지지 않게).
+     Figma "Component" 컬렉션 Slime/* 와 1:1 — 교육 프로그램 장식 점(css/program.css), 피그마 Slime / Scene 10 세트 */
+  --goo-coral:  #F58C66;
+  --goo-yellow: #F7D257;
+  --goo-blue:   #76A9EE;
+  --goo-green:  #A3D189;
+  --goo-grey:   var(--pal-stone-gray-50);
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

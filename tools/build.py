@@ -32,7 +32,8 @@ def part(name):
     return io.open(PARTS / f"{name}.html", encoding="utf-8").read().rstrip()
 
 
-def gnb(active):
+def gnb(active, kind="sub"):
+    """GNB 두 타입(피그마 GNB 세트 18291-11394) — 머리말 `gnb: main`이면 투명(메인 비주얼 위), 아니면 흰 바탕(서브)."""
     items = []
     for key, label, href, sub in MENU:
         cur = ' aria-current="page"' if key == active else ""
@@ -46,7 +47,8 @@ def gnb(active):
     for key, label, href, sub in MENU:
         subs = "".join(f'<li><a href="{h}">{t}</a></li>' for t, h in sub)
         mob.append(f'<li><a class="mnav__top" href="{href}">{label}</a>' + (f"<ul>{subs}</ul>" if subs else "") + "</li>")
-    return part("gnb").replace("{{items}}", "\n          ".join(items)).replace("{{mobile}}", "\n        ".join(mob))
+    return (part("gnb").replace("{{kind}}", "gnb2--main" if kind == "main" else "gnb2--sub")
+            .replace("{{items}}", "\n          ".join(items)).replace("{{mobile}}", "\n        ".join(mob)))
 
 
 HOME_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 7.2 8 2.5l5.5 4.7V13a.5.5 0 0 1-.5.5H9.5V10h-3v3.5H3a.5.5 0 0 1-.5-.5V7.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>'
@@ -95,7 +97,7 @@ def build(page):
     for name in ("sprite", "lead", "footer", "quick", "stage", "scene10", "scene12", "keywords", "map"):
         if "{{" + name + "}}" in body:
             body = body.replace("{{" + name + "}}", part(name))
-    body = body.replace("{{gnb}}", gnb(meta.get("menu", "")))
+    body = body.replace("{{gnb}}", gnb(meta.get("menu", ""), meta.get("gnb", "sub")))
     if "{{crumb}}" in body:
         body = body.replace("{{crumb}}", crumb(meta["crumb"]))
     if "{{bphead}}" in body:

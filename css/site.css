@@ -43,25 +43,40 @@ address { font-style: normal; }
    유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ · 센터 바로가기 | 알림.
    메뉴 바는 왼쪽 로고 108×40, 오른쪽 메뉴 6개(16 Regular, 간격 72) — 피그마 18103-6570.
    메뉴에 올리면 굵어지고 주황(Primary/normal2) 2depth 판이 열리며, 2depth는 pill 띠로 짚습니다(18166-8652).
-   바탕은 늘 흰색입니다(투명 → 호버 흰색은 해 보고 되돌렸습니다). */
+   두 타입(피그마 GNB 세트 18291-11394, tools/build.py 머리말 `gnb:`) — 색은 모두 tokens.css의 --gnb-*:
+   · .gnb2--sub  서브페이지. 흰 바탕(96% + blur) + 검정 78% 글자 + 컬러 로고 = 피그마 sub.hover.
+   · .gnb2--main 메인. 사진 위 투명(검정 4%) + 흰 글자 · 흰 로고 · 유틸 바 바탕 없음 = 피그마 main.
+     올리거나(:hover · :focus-within) 히어로를 지나 .is-solid가 붙으면(js/site.js) sub 벌로 바뀝니다. */
 .gnb2 {
   position: fixed; inset: 0 0 auto; z-index: 50;
   height: var(--header-h);
   display: flex; flex-direction: column;
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom: 1px solid var(--line-neutral);
+  background: var(--gnb-bg);
+  border-bottom: 1px solid var(--gnb-line);
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  /* 랜딩과 같은 로고 컬러 벌 (base.css의 @property 등록을 그대로 씁니다) */
-  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
-  transition: transform 0.35s var(--ease-out);
+  transition: transform 0.35s var(--ease-out), background-color 0.3s, border-color 0.3s,
+              --lp-ink 0.3s, --lp-o 0.3s, --lp-g 0.3s, --lp-c 0.3s;
 }
 .gnb2.is-hidden { transform: translateY(-100%); }
+/* sub 벌 — 서브페이지, 그리고 메인의 호버 · 히어로 아래. 로고는 랜딩과 같은 컬러 벌(base.css의 @property 등록) */
 .gnb2, .mnav {
-  --gnb-sub: rgba(0, 0, 0, 0.58);     /* 유틸 바 글자 · 화살표 */
+  --gnb-bg: var(--gnb-bg-sub); --gnb-ink: var(--gnb-ink-sub); --gnb-line: var(--gnb-line-sub);
+  --gnb-sub: var(--gnb-util-sub);       /* 유틸 바 글자 · 화살표 */
+  --gnb-util-bg: var(--gnb-util-bg-sub);
+  --gnb-chip-bg: #fff; --gnb-chip-line: #D8D8D8;   /* 유틸 바 화살표 상자 · 센터 바로가기 칩 */
   --gnb-badge: var(--primary-normal2);
+  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
+}
+/* main 벌 — 투명. 글자 · 로고 · 유틸 바 모두 흰색, 화살표 상자는 테두리만 */
+.gnb2--main:not(:hover, :focus-within, .is-solid) {
+  --gnb-bg: var(--gnb-bg-main); --gnb-ink: var(--gnb-ink-main); --gnb-line: var(--gnb-line-main);
+  --gnb-sub: var(--gnb-util-main); --gnb-util-bg: transparent;
+  --gnb-chip-bg: transparent; --gnb-chip-line: rgba(255, 255, 255, 0.4);
+  --lp-ink: #fff; --lp-o: #fff; --lp-g: #fff; --lp-c: #fff;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
 }
 
-.gnb2__top { flex: none; height: var(--gnb-util-h); background: #F7F7F7; border-bottom: 1px solid #EEEEEE; }
+.gnb2__top { flex: none; height: var(--gnb-util-h); background: var(--gnb-util-bg); border-bottom: 1px solid var(--gnb-line); transition: background-color 0.3s, border-color 0.3s; }
 .gnb2__top-in {
   height: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--gutter);
   display: flex; align-items: center; justify-content: flex-end; gap: var(--space-16);
@@ -71,20 +86,22 @@ address { font-style: normal; }
 .gnb2__dd-btn, .gnb2__center {
   display: inline-flex; align-items: center; gap: 4px;
   font-family: var(--font-title); font-weight: 400; font-size: 13px; line-height: 16px; letter-spacing: 0;
-  color: var(--gnb-sub);
+  color: var(--gnb-sub); transition: color 0.3s;
 }
 .gnb2__chev {
   display: grid; place-items: center; width: 16px; height: 16px;
-  background: #fff; border: 1px solid #D8D8D8; border-radius: var(--r-4);
+  background: var(--gnb-chip-bg); border: 1px solid var(--gnb-chip-line); border-radius: var(--r-4);
+  transition: background-color 0.3s, border-color 0.3s;
 }
 .gnb2__chev svg { width: 16px; height: 16px; flex: none; transition: transform 0.2s; }
 .gnb2__dd.is-open .gnb2__chev svg { transform: rotate(180deg); }
 .gnb2__center {
   gap: 2px; height: 18px; padding: 0 4px; font-size: var(--fs-system-caption);
-  background: #fff; border: 1px solid #DDDDDD; border-radius: var(--r-4);
+  background: var(--gnb-chip-bg); border: 1px solid var(--gnb-chip-line); border-radius: var(--r-4);
+  transition: color 0.3s, background-color 0.3s, border-color 0.3s;
 }
 .gnb2__center svg { width: 10px; height: 12px; }
-.gnb2__dd-btn:hover, .gnb2__center:hover { color: var(--text-normal); }
+.gnb2__dd-btn:hover, .gnb2__center:hover { color: var(--gnb-ink); }
 .gnb2__drop {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 2;
   min-width: 132px; padding: 6px;
@@ -103,8 +120,8 @@ address { font-style: normal; }
 }
 .gnb2__drop a:hover, .gnb2__drop a:focus-visible { background: var(--bg-brand-normal); color: var(--text-normal); }
 .gnb2__drop a[aria-current] { color: var(--text-normal); font-weight: 700; }
-.gnb2__vr { width: 1px; height: 8px; background: #DDDDDD; }
-.gnb2__alert { position: relative; display: inline-flex; align-items: center; color: #555555; }
+.gnb2__vr { width: 1px; height: 8px; background: var(--gnb-chip-line); }
+.gnb2__alert { position: relative; display: inline-flex; align-items: center; color: var(--gnb-sub); transition: color 0.3s; }
 .gnb2__alert svg { width: 19px; height: 19px; }
 .gnb2__badge {
   display: grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px;
@@ -124,7 +141,7 @@ address { font-style: normal; }
 .gnb2__link {
   display: inline-flex; flex-direction: column; padding: 12px 0;
   font-family: var(--font-title); font-size: var(--fs-brand-body-2); font-weight: 400; line-height: 1.4; letter-spacing: -0.32px;
-  color: rgba(0, 0, 0, 0.78);
+  color: var(--gnb-ink); transition: color 0.3s;   /* 투명 GNB 위에서는 흰색(피그마 2depth main 변형), 흰 GNB에서는 검정 78% */
 }
 /* 굵어져도 옆 메뉴가 밀리지 않게 — 굵은 글자 폭을 보이지 않는 줄로 미리 잡아 둡니다 */
 .gnb2__link::after, .gnb2__sub a::after {
@@ -165,7 +182,7 @@ address { font-style: normal; }
     display: flex; flex-direction: column; justify-content: center; gap: 5px;
     width: 44px; height: 44px; margin-right: -10px; padding: 0 10px;
   }
-  .gnb2__burger span { display: block; height: 2px; border-radius: 2px; background: var(--text-normal); }
+  .gnb2__burger span { display: block; height: 2px; border-radius: 2px; background: var(--gnb-ink); transition: background-color 0.3s; }
 }
 
 /* ── 전체 메뉴 (모바일) ─────────────────────────────────────────── */

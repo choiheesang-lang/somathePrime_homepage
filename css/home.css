@@ -108,6 +108,21 @@ body.ptr-on .intro-skip { cursor: none; }
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 25.25%, rgba(0, 0, 0, 0) 50%);
 }
+/* 아래 그라디언트 — 피그마 Main visual의 Hero tint(Rectangle 325: 아래 절반 435~888, 브랜드색 1 → 0).
+   색은 사진 넘김과 상관없이 네 브랜드색을 24s 주기로 천천히 돕니다(--hero-tint, base.css @property) */
+.kv__slides::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 51%; pointer-events: none;
+  background: linear-gradient(0deg, var(--hero-tint) 0%, transparent 100%);
+}
+.kv__slides { animation: hero-tint 24s linear infinite; }
+@keyframes hero-tint {
+  0%   { --hero-tint: var(--pal-brand-coral); }
+  25%  { --hero-tint: var(--pal-brand-yellow); }
+  50%  { --hero-tint: var(--pal-brand-dusty-blue); }
+  75%  { --hero-tint: var(--pal-brand-sage-green); }
+  100% { --hero-tint: var(--pal-brand-coral); }
+}
+@media (prefers-reduced-motion: reduce) { .kv__slides { animation: none; } }   /* 노랑(피그마 Slide 1) 고정 */
 .kv__slide.is-on img { animation: kv-focus 7s var(--ease-out) both; }
 @keyframes kv-focus { from { transform: scale(1.06); } to { transform: scale(1); } }
 
@@ -228,13 +243,18 @@ body.ptr-on .intro-skip { cursor: none; }
 }
 .quad__face.is-on .quad__photo { opacity: 1; transition: none; animation: quad-focus 6s var(--ease-out) both; }
 @keyframes quad-focus { from { transform: scale(1.05); } to { transform: scale(1); } }
-/* 활성 덮개 — 브랜드 색 45% + 아래쪽 어둡게(글이 읽히게) */
+/* 활성 덮개 — 브랜드 색 45% + 아래쪽 어둡게(글이 읽히게).
+   활성 면을 클릭하면 클릭 지점(--cx --cy)에서 원(--cr, home.js)이 커지며 덮개만 걷혀 맑은 사진이 보입니다
+   (피그마 Quad overlay 세트 State=Clear, 18225-8275의 모습). 다시 클릭하거나 다른 면이 활성되면 원이 닫힙니다 */
 .quad__face::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, color-mix(in srgb, var(--c) 45%, transparent) 0%, color-mix(in srgb, var(--c) 25%, rgba(0, 0, 0, 0.45)) 100%);
+  -webkit-mask-image: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), transparent calc(var(--cr, 0%) - 1px), #000 var(--cr, 0%));
+          mask-image: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), transparent calc(var(--cr, 0%) - 1px), #000 var(--cr, 0%));
   opacity: 0; transition: opacity 0.6s var(--ease-in-out);
 }
 .quad__face.is-on::after { opacity: 1; }
+.quad__face:focus-visible { outline: 3px solid var(--primary-normal2); outline-offset: -3px; }
 .quad__face.is-on { color: #fff; }
 /* 글 — 바깥 모서리 쪽에 모아 가운데 슬라임 자리를 비웁니다 */
 .quad__body { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 48px; width: 62%; }
