@@ -85,7 +85,6 @@
     gsap.to(m, { r: r1, duration: MASK_OPEN, ease: 'power2.in', onUpdate: paint, onComplete: finishIntro });
   };
   if (body.classList.contains('intro-on')) {
-    store.set('stp-intro');
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
     body.classList.add('hero-on');      // 랜딩 scroll.js가 붙이던 「히어로가 화면의 주인」 — 커서 디스크가 이걸 봅니다
