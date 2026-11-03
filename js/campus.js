@@ -3,7 +3,7 @@
    1) 아치 카드: 스크롤 등장 때 아치 사진이 아래에서 올라오고, 동그란 아이콘이 위에서 떨어져 정점에
       착지하며 눌렸다 펴진 뒤 선 아이콘이 그려집니다. 평소엔 2px 숨 쉬고, 카드 호버면 곡면을 따라
       살짝 굴렀다 돌아옵니다. 동작 감소면 모두 정지 상태.
-   2) 커버플로우(elan Campus Introduction): 탭(입구 · 강의실 · 라운지) → 가운데 큰 사진 양옆으로 이전 ·
+   2) 커버플로우(elan Campus Introduction): 밑줄 탭(입구 · 강의실 · 라운지, 장수 표시) → 가운데 큰 사진 양옆으로 이전 ·
       다음이 작게 비침, 화살표 · 드래그 · 키보드, 4.5초 자동 넘김(호버 · 포커스 · 화면 밖이면 멈춤).
    섹션 글의 등장(data-step)은 brand.js의 reveal()이 맡습니다.
    ───────────────────────────────────────────────────────────── */
@@ -110,17 +110,29 @@
     setTimeout(() => { dragged = false; }, 0);
   });
 
-  // 탭 — 묶음 전환(첫 장으로), 좌우 키로 탭 이동
+  // 탭 — 묶음 전환(첫 장으로), 좌우 키로 탭 이동. 밑줄은 활성 탭 자리 · 폭으로 미끄러짐
+  const bar = document.querySelector('.cp-tabs__bar');
+  const moveBar = () => {
+    const t = tabs.find((x) => x.getAttribute('aria-selected') === 'true');
+    if (!bar || !t) return;
+    bar.style.setProperty('--x', t.offsetLeft + 'px'); bar.style.setProperty('--w', t.offsetWidth + 'px');
+  };
+  tabs.forEach((t) => { const n = t.querySelector('.cp-tab__n'); if (n) n.textContent = SETS[t.dataset.set].n; });
   tabs.forEach((t, i) => {
     t.addEventListener('click', () => select(i));
     t.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') select((i + 1) % tabs.length, true); if (e.key === 'ArrowLeft') select((i - 1 + tabs.length) % tabs.length, true); });
   });
   const select = (i, focus) => {
-    tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', on); t.classList.toggle('btn2--fill', on); t.classList.toggle('btn2--line', !on); t.tabIndex = on ? 0 : -1; });
-    set = tabs[i].dataset.set; build(); restart();
+    tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+    moveBar(); set = tabs[i].dataset.set; build(); restart();
     if (focus) tabs[i].focus();
   };
   tabs.forEach((t, k) => { t.tabIndex = k === 0 ? 0 : -1; });
+  // 첫 자리는 전환 없이 — 세방고딕이 늦게 로드되면 폭이 바뀌므로 그때 · 창 크기 바뀔 때도 다시
+  const settleBar = () => { if (!bar) return; bar.classList.add('no-anim'); moveBar(); bar.getBoundingClientRect(); requestAnimationFrame(() => bar.classList.remove('no-anim')); };
+  settleBar();
+  if (document.fonts) document.fonts.ready.then(settleBar);
+  window.addEventListener('resize', settleBar);
 
   build();
   window.addEventListener('resize', place);
