@@ -81,6 +81,8 @@ address { font-style: normal; }
   display: flex; align-items: center; justify-content: flex-end; gap: var(--space-16);
 }
 .gnb2__acct { display: flex; align-items: center; gap: var(--space-16); }
+/* 항목(li)도 flex — 글줄 높이 때문에 드롭다운 버튼이 4px 내려가 로그아웃 · 세로선과 어긋나던 것을 한 줄 가운데로 */
+.gnb2__acct > li { display: flex; align-items: center; }
 .gnb2__dd { position: relative; }
 .gnb2__dd-btn, .gnb2__logout {
   display: inline-flex; align-items: center; gap: 4px;
