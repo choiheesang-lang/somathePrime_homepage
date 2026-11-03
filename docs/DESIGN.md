@@ -58,6 +58,10 @@
 | 공간 아이콘 | 창의력 교실 · 독서 · 라운지 선 아이콘 | sprite `#ic-space-class/read/lounge` | Icon/space-class 18329:8820 · space-read 18329:8826 · space-lounge 18329:8831 (Icons 줄, 24 · 선 1.6 · Text/Normal) |
 | 오시는 길 아이콘 | 전화 · 길찾기 · 로드뷰 선 아이콘(주소 핀은 Icon/pin) | brand-location.html 인라인 svg · `.lc-tool svg` | Icon/phone 18338:9118 · route 18338:9122 · roadview 18338:9127 (Icons 줄, 24 · 선 1.6 · Text/Normal — 정보 띠는 18px Text/Alternative, 지도 도구는 20px) |
 | 그림 지도 | 목동서로 349 그림 지도(핀 · 라벨) — 홈 오시는 길과 공유 | `src/partials/map.html` (js/location.js 핀 낙하) | Location / Map 18338:9198 (1160×560, Components의 Visit card 옆. 지도 연동 자리라 바탕 · 블록은 그림 색 그대로, 길 노랑 · 흰색만 변수) |
+| 슬라임 점 | 브랜드 4색 슬라임 점(트랙 점 · CTA 장식) | sprite `#blob-1~4` · `--goo-*` | Slime / Blob 18348:9248 (`Shape=1~4`, 기본 색 Coral · Yellow · Sage Green · Dusty Blue = Slime/*) |
+| 성장 트랙 행 | 구간 막대 + 왼쪽 슬라임 점 | `.pg-track__bar` · `.pg-track__dot` | Program / Track bar 18348:9257 (`State=Off · On`, 폭 = 구간 길이, 색은 Bar · Dot 덮어쓰기) |
+| 관찰평가 레이더 | AFTER 카드 5각 레이더(격자 · 축 · 면 · 점 · 라벨) | `.pg-radar` (js/program.js) | Program / Radar 18348:9289 (340×320, 면 Primary/Lamp/Coral 55%, 라벨은 Noto Bold 13 — 코드는 세방고딕) |
+| 반 편성 아이콘 | RESULT 카드 아이콘 | sprite `#ic-diff-lesson` | Icon/diff-lesson 18348:9264 (Icons 줄, 카드에선 56 · 흰 · 선 2.1) |
 | 퀵메뉴 | 흰 카드(r16 · 16 · 24 · 16) | `.quick` | Quick menu 18126:6550 |
 | 캐러셀 컨트롤 | 흰 상자(r8) + 아이콘 버튼(r8) | `.kv__ctrl` | Carousel control 18212:8344 |
 | SKIP | 알약 | `.intro-skip` | — |
@@ -200,3 +204,4 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 - **가로 아코디언**(높이 560 · 간격 12 · r24): 패널 4개 `flex 1`, 활성 `flex 2.6`. 판은 쿼드 판 그라데이션(`color-mix(var(--c) 42%, #fff)` → `var(--c)`), 활성이면 교실 사진이 원으로 번지고(`clip-path: circle`) 브랜드 색 45% + 아래 어두운 덮개, 흰 글(로고 · 이름 세방고딕 28 · 한 줄 · 세부 2줄 · 연령 pill · 「자세히」 Ghost). 비활성은 아래쪽 로고 + 이름. 호버 · 클릭 · 키보드 ← →, 4.5초 자동 순환(화면 밖 · 호버 중 멈춤), 트랙 행과 동기화. 사진 배정은 홈 쿼드 판과 같음(class-02 · 06 · 09 · 10). 모바일은 세로(활성 420 · 비활성 72).
 - **관찰평가**: BEFORE/AFTER pill 토글 → 무대 1fr · 56 · 1.35fr · 56 · 1fr — BEFORE 카드(점수 막대 0→72 + 숫자 카운트) → 화살표 원 → AFTER 카드(5각 레이더: 격자 3겹 점선 · 축 5 · 코랄 55% 다각형 · 꼭짓점 점 · 라벨, 등장 시 축 → 격자 → 다각형 back.out → 점 튐) → 화살표 → RESULT 카드(아이에게 맞는 반 편성). BEFORE면 다각형이 「행동」 축만 남은 가시로 접히고 BEFORE 카드가 섬. 동작 감소면 완성 상태.
 - **CTA**: 「가르치는 것이 아니라, 성장시키는 것」 + 「상담 신청하기」 Fill 48 wide → `/news.html#qna`, 제목 양옆 슬라임 점 넷 장식.
+- **피그마 교육 프로그램(2026-11-03)**: 프레임 「교육프로그램」 18343:9023 = 오시는길 프레임을 복제한 GNB · TOP_1(브레드크럼 「교육 프로그램」 1단계, 세 번째 탭 숨김) · footer/web(y3343, 높이 3608) + 본문 `Body · 교육 프로그램` 18344:9236(코드 첫 화면: 소마 패널 열림 · AFTER). 색은 Semantic 변수(흰 반투명은 Static/White + 투명도), 반경 Radius, 열린 패널 · AFTER 카드 Shadow/md, 평가 카드 inset 링은 안쪽 흰 선 12% · 30%, Noto 글자 System 스타일. 패널 그라데이션은 캡처에서 정지점이 빠져 코드 값으로 다시 만듦(브랜드색 42% 흰 섞음 → Primary/Lamp/*, 끝 정지점만 변수) · 열린 패널 덮개(코랄 45% → 어둡게 62%)는 변수 없음. 로고는 Logo/* 인스턴스(열림 흰 · 닫힘 Text/Normal), 트랙 · 레이더 · 슬라임 점 · 반 편성 아이콘 · 화살표는 위 컴포넌트 인스턴스. 세방고딕 때문에 프레임은 web 섹션 자리(섹션 안 x12348)에, 본문은 y260 자리에 겹쳐 두었으므로 드래그로 넣을 것. 사용자 몫: TOP_1 제목 「교육 프로그램」 · 탭 「네 개의 프로그램 / 관찰평가 시스템」, 자세히 ×4(Button/Ghost 32) · BEFORE(Ghost 32) · AFTER(Fill 32) · 상담 신청하기(Fill 48 wide) 인스턴스 교체. 이전 캡처 18277:9125(페이지 루트 「교육프로그램」)는 구버전.
