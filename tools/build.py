@@ -66,10 +66,13 @@ def crumb(spec):
 
 def bphead(meta):
     """서브페이지 머리(src/partials/bphead.html) — 제목은 `menu:`의 1depth 라벨, 탭은 그 메뉴의 2depth.
-    2depth가 없는 메뉴(교육 프로그램 등)는 `head-tabs: 라벨=#앵커|라벨=#앵커`로 페이지 안 앵커 탭을 둡니다(현재 표시는 스크롤 스파이)."""
+    2depth가 없는 메뉴(교육 프로그램 등)는 `head-tabs: 라벨=#앵커|라벨=#앵커`로 페이지 안 앵커 탭을 둡니다(현재 표시는 스크롤 스파이).
+    `head-tabs: none`이면 2depth가 있어도 탭을 두지 않습니다(소식 — 2depth는 왼쪽 메뉴가 맡음)."""
     item = next(m for m in MENU if m[0] == meta.get("menu"))
     label, sub = item[1], item[3]
-    if sub:
+    if meta.get("head-tabs") == "none":
+        tabs = ""
+    elif sub:
         tabs = "".join(f'<li><a href="{h}"{" aria-current=\"page\"" if t == meta.get("menu-sub") else ""}>{t}</a></li>' for t, h in sub)
     elif meta.get("head-tabs"):
         tabs = "".join(f'<li><a href="{h.strip()}">{t.strip()}</a></li>' for t, h in (x.split("=", 1) for x in meta["head-tabs"].split("|")))

@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>소식 | 소마 더 프라임</title>
-  <meta name="description" content="시간표 · 공지사항 · 홍보자료 · FAQ · 1:1 문의는 기존 소마 홈페이지 기능과 연동됩니다." />
+  <title>공지사항 | 소식 | 소마 더 프라임</title>
+  <meta name="description" content="소마 더 프라임 목동 캠퍼스 공지사항 — 수강 · 휴원 · 설명회 · 시간표 안내." />
   <meta name="theme-color" content="#F1EEEC" />
   <link rel="icon" href="/svg/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/svg/favicon.png" sizes="16x16" type="image/png" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="소마 더 프라임" />
-  <meta property="og:title" content="소식 | 소마 더 프라임" />
-  <meta property="og:description" content="시간표 · 공지사항 · 홍보자료 · FAQ · 1:1 문의는 기존 소마 홈페이지 기능과 연동됩니다." />
+  <meta property="og:title" content="공지사항 | 소식 | 소마 더 프라임" />
+  <meta property="og:description" content="소마 더 프라임 목동 캠퍼스 공지사항 — 수강 · 휴원 · 설명회 · 시간표 안내." />
   <meta property="og:url" content="https://soma-the-prime.vercel.app/news.html" />
   <meta property="og:locale" content="ko_KR" />
   <link rel="preload" as="font" type="font/otf" href="/font/SEBANG%20Gothic%20OTF%20Bold.otf" crossorigin />
@@ -24,9 +24,11 @@
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/sections.css" />
   <link rel="stylesheet" href="/css/site.css" />
+  <link rel="stylesheet" href="/css/brand.css" />
+  <link rel="stylesheet" href="/css/news.css" />
   <script>document.documentElement.classList.remove('no-js');</script>
 </head>
-<body class="sub">
+<body class="sub brand-page">
   <svg class="sprite" aria-hidden="true" focusable="false"><defs>
 <!-- 24차 · 새 로고 「SOMA / THE PRIME」 (피그마 18019:6152의 Group 104, 432x160).
      색은 CSS가 칠합니다 — 글자(.lp-l)는 currentColor, O(.lp-o)·큐브(.lp-g · .lp-c)는
@@ -234,14 +236,61 @@
     <div class="mnav__util"><a href="/center.html">센터 바로가기</a><a href="/tuition.html">수강료 납부</a><a href="/mypage.html#logout">로그아웃</a></div>
   </div>
 
-  <main id="content" class="page">
-    <section class="stub">
-      <div class="stub__box">
-        <h1>소식</h1>
-        <p>시간표 · 공지사항 · 홍보자료 · FAQ · 1:1 문의는 기존 소마 홈페이지 기능과 연동됩니다.</p>
-        <div class="stub__tabs"><span id="timetable">시간표</span><span id="notice">공지사항</span><span id="press">홍보자료</span><span id="faq">FAQ</span><span id="qna">1:1 문의</span></div>
-        <span class="stub__note">기존 서비스 연동 예정</span>
-        <div><a class="btn2 btn2--line btn2--wide" href="/">홈으로</a></div>
+  <main id="content" class="page bp">
+    <nav class="crumb" aria-label="현재 위치">
+      <ol class="wrap"><li class="crumb__home"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 7.2 8 2.5l5.5 4.7V13a.5.5 0 0 1-.5.5H9.5V10h-3v3.5H3a.5.5 0 0 1-.5-.5V7.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span class="sr-only">홈</span></li><li>소식</li><li aria-current="page">공지사항</li></ol>
+    </nav>
+    <!-- 서브페이지 머리(8p ① ②) — 소마 프리미어 구성: 브레드크럼 아래 한 줄에 왼쪽 1depth 제목 · 오른쪽 하위 메뉴.
+     모든 서브페이지가 공유합니다. 제목 · 탭은 tools/build.py bphead()가 머리말 `menu:` `menu-sub:` `head-tabs:`로 채웁니다. -->
+    <div class="bp-head">
+      <div class="wrap bp-head__in">
+        <h1 class="bp-head__title">소식</h1>
+        
+      </div>
+    </div>
+
+    <!-- 소식 · 공지사항 — 피그마 「소식」 18353:9371(입시탐탐 게시판의 왼쪽 메뉴 + 컨텐츠 구성).
+         콘텐츠 1160 = 왼쪽 메뉴 200 + 간격 80 + 게시판 880. 2depth는 머리 탭 대신 왼쪽 메뉴가 맡습니다(head-tabs: none) -->
+    <section class="nb">
+      <div class="wrap nb__in">
+        <nav class="nb-lnb" aria-label="소식 메뉴">
+          <ul>
+            <li><a href="/news.html#timetable">시간표</a></li>
+            <li><a href="/news.html#notice" aria-current="page">공지사항</a></li>
+            <li><a href="/news.html#press">홍보자료</a></li>
+            <li><a href="/news.html#faq">FAQ</a></li>
+            <li><a href="/news.html#qna">1:1 문의</a></li>
+          </ul>
+        </nav>
+
+        <div class="nb-content" id="notice">
+          <div class="nb-head">
+            <h2 class="nb-title">공지사항</h2>
+            <p class="nb-count">전체 <b>128</b>건</p>
+          </div>
+          <!-- 목록은 피그마 예시 글 — 기존 소마 홈페이지 게시판 연동 시 교체(링크 · 페이지 번호 · 검색 포함) -->
+          <table class="nb-table">
+            <caption class="sr-only">공지사항 목록</caption>
+            <colgroup><col class="nb-c-no" /><col /><col class="nb-c-writer" /><col class="nb-c-date" /><col class="nb-c-views" /></colgroup>
+            <thead>
+              <tr><th scope="col" class="nb-no">번호</th><th scope="col">제목</th><th scope="col" class="nb-writer">작성자</th><th scope="col" class="nb-date">작성일</th><th scope="col" class="nb-views">조회</th></tr>
+            </thead>
+            <tbody>
+              <tr class="is-notice"><td class="nb-no"><span class="nb-badge">공지</span></td><td class="nb-subj"><a href="#">2026 겨울방학 특강 수강 신청 안내</a> <span class="nb-new" aria-label="새 글">N</span></td><td class="nb-writer">관리자</td><td class="nb-date">2026.11.03</td><td class="nb-views">412</td></tr>
+              <tr class="is-notice"><td class="nb-no"><span class="nb-badge">공지</span></td><td class="nb-subj"><a href="#">연말 휴원 안내 (12.24 ~ 12.26)</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.30</td><td class="nb-views">288</td></tr>
+              <tr><td class="nb-no">126</td><td class="nb-subj"><a href="#">11월 학부모 설명회 안내</a> <span class="nb-new" aria-label="새 글">N</span></td><td class="nb-writer">관리자</td><td class="nb-date">2026.11.02</td><td class="nb-views">233</td></tr>
+              <tr><td class="nb-no">125</td><td class="nb-subj"><a href="#">목동 캠퍼스 주차 안내 변경</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.28</td><td class="nb-views">187</td></tr>
+              <tr><td class="nb-no">124</td><td class="nb-subj"><a href="#">12월 시간표 변경 안내</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.24</td><td class="nb-views">301</td></tr>
+              <tr><td class="nb-no">123</td><td class="nb-subj"><a href="#">플레이팩토 신규반 개설 안내</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.20</td><td class="nb-views">156</td></tr>
+              <tr><td class="nb-no">122</td><td class="nb-subj"><a href="#">마이온 영어 독서 레벨 테스트 일정</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.15</td><td class="nb-views">198</td></tr>
+              <tr><td class="nb-no">121</td><td class="nb-subj"><a href="#">리딩오션 독서 발표회 사진 공유</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.10</td><td class="nb-views">245</td></tr>
+              <tr><td class="nb-no">120</td><td class="nb-subj"><a href="#">10월 관찰평가 결과 상담 주간 안내</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.10.02</td><td class="nb-views">176</td></tr>
+              <tr><td class="nb-no">119</td><td class="nb-subj"><a href="#">추석 연휴 휴원 안내</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.09.22</td><td class="nb-views">264</td></tr>
+              <tr><td class="nb-no">118</td><td class="nb-subj"><a href="#">가을학기 셔틀 운행 시간 안내</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.09.15</td><td class="nb-views">309</td></tr>
+              <tr><td class="nb-no">117</td><td class="nb-subj"><a href="#">소마 사고력 수학 경시대회 참가 안내</a></td><td class="nb-writer">관리자</td><td class="nb-date">2026.09.08</td><td class="nb-views">287</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>

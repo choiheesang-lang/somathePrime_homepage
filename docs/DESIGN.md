@@ -65,13 +65,13 @@
 | 관심고객 등록 배너 | 메인 비주얼 아래 꺾임에 걸친 1200×160 밝은 판(태그 · 제목 · 설명 · 슬라임 4색 · 채움 버튼 48) | `.kv-banner` (data-lead-open) | Home / Lead banner 18396:10552 (코드에서 캡처, 슬라임은 sprite blob 경로로 다시 그린 벡터 + Slime/* 변수. 본문엔 인스턴스 18396:10553을 검정 임시 판 Frame 3641 위에 겹쳐 둠 — 사용자가 드래그. Main visual의 예전 「관심고객 등록」 버튼 18177:13592는 숨김) |
 | 캠퍼스 공간 탭 | 캠퍼스 둘러보기 밑줄 탭(세방 18 · 장수 · 2px 밑줄) | `.cp-tabs` · `.cp-tab` · `.cp-tabs__bar` (js/campus.js) | Campus / Tabs 18390:10536 (`State=입구 · 강의실 · 라운지`, 1160×49, 코드에서 캡처. 본문엔 `State=입구` 인스턴스 18390:10537을 pill 탭 위에 겹쳐 둠 — 세방 인스턴스는 플러그인이 프레임에 못 넣어 사용자가 드래그) |
 | 프로그램 아코디언 | 네 프로그램 가로 아코디언(열린 패널 = 브랜드) | `.pg-acc` (js/program.js 4.5초 순환) | Program / Accordion 18373:10105 (`Brand=소마 · 플레이팩토 · 마이온 · 리딩오션`, 1160×560, 각 열림 상태를 코드에서 캡처. 나이 칩 숨김 → 코드도 삭제, 「자세히」 왼쪽) |
-| 게시판 왼쪽 메뉴 | 소식 2depth 세로 메뉴 한 항목 | 코드 미구현(news.html stub) | Board / Side menu item 18354:9591 (`State=Default · Active`, 텍스트 Label, 200×52 · Body 2, Active 밑줄 2px Primary/Normal) |
-| 게시판 배지 | 새 글 「N」 · 상단 고정 「공지」 | 코드 미구현 | Board / Badge 18354:9586 (`Type=New · Notice`) |
-| 게시판 열 머리 | 번호 80 · 제목 채움 · 작성자 100 · 작성일 120 · 조회 80 | 코드 미구현 | Board / Head 18356:9572 (880×56, 위 2px Text/Normal · 아래 1px Line/Normal/Normal) |
-| 게시판 행 | 목록 한 줄 | 코드 미구현 | Board / Row 18356:9612 (`Type=Default · Notice`, 텍스트 No · Title · Writer · Date · Views, 불리언 New) |
+| 게시판 왼쪽 메뉴 | 소식 2depth 세로 메뉴 한 항목 | `.nb-lnb a`(현재 `aria-current`) | Board / Side menu item 18354:9591 (`State=Default · Active`, 텍스트 Label, 200×52 · Body 2, Active 밑줄 2px Primary/Normal) |
+| 게시판 배지 | 새 글 「N」 · 상단 고정 「공지」 | `.nb-new` · `.nb-badge` | Board / Badge 18354:9586 (`Type=New · Notice`) |
+| 게시판 열 머리 | 번호 80 · 제목 채움 · 작성자 100 · 작성일 120 · 조회 80 | `.nb-table thead` | Board / Head 18356:9572 (880×56, 위 2px Text/Normal · 아래 1px Line/Normal/Normal) |
+| 게시판 행 | 목록 한 줄 | `.nb-table tbody tr`(공지 `.is-notice`) | Board / Row 18356:9612 (`Type=Default · Notice`, 텍스트 No · Title · Writer · Date · Views, 불리언 New) |
 | 페이지 번호 | 처음 · 이전 · 1~5 · 다음 · 마지막 | 코드 미구현 | Board / Page item 18354:9596 (`State=Default · Current`) · Board / Pagination 18356:9613 |
 | 게시판 아이콘 | 검색 · 처음 · 마지막 | 코드 미구현 | Icon/search 18354:9575 · Icon/chevrons-left 18354:9578 · Icon/chevrons-right 18354:9581 (Icons 줄) |
-| 퀵메뉴 | 판 하나(Brand Heavy · 1px Line/Solid/Neutral · r16 · Shadow/md, 로고 → 항목 다섯 → TOP) | `.quick` | Quick menu 18126:6550 (페이지마다 1920 기준 x1612 · y306) |
+| 퀵메뉴 | 판 하나(Brand Heavy · 1px Line/Solid/Neutral · r16 · Shadow/md, 로고 → 항목 다섯 → TOP) | `.quick` | Quick menu 18126:6550 (페이지마다 1920 기준 x1612 · y154) |
 | 캐러셀 컨트롤 | 흰 상자(r8) + 아이콘 버튼(r8) | `.kv__ctrl` | Carousel control 18212:8344 |
 | SKIP | 알약 | `.intro-skip` | — |
 | 인트로 카드 | 유리 카드(r8) · 커서 스포트라이트 테두리 | `.panel` | title 컴포넌트의 「폭팔전_모양」 |
@@ -106,7 +106,7 @@
 
 ### 퀵메뉴
 피그마 Quick menu(18126:6550, 2026-11-03 개편): 폭 84 **판 하나** — Background/Brand/Heavy(#F1EEEC) · 1px Line/Solid/Neutral(#EAEBEC) · r16 · Shadow/md, 안쪽 24 · 16, 간격 16. 위부터 SOMA THE PRIME 로고 59×22 → 선 50 → 항목 다섯(관심고객 등록 · 교육 프로그램 · 1:1 문의 · 오시는 길 · 수강료 납부, 폭 50, 아이콘 24 Text/Normal 선 + Noto Bold 12/1.5 Text/Neutral, 사이 1px Line/Normal/Neutral 선 · 간격 8) → TOP(세방 Bold 14). 관심고객 등록도 다른 항목과 같은 모양(검정 강조 없음). 호버면 글자가 진해지고 아이콘이 2px 올라감.
-- **자리**: 1920에서 오른쪽 224 · 위 306(콘텐츠 1160 오른쪽 끝 + 72) — `right: max(24px, 50vw − 736px)`, 좁은 화면은 오른쪽 24. 위는 `clamp(헤더 + 16, 100vh − 561, 306)`이라 낮은 화면에서는 아래가 잘리지 않게 올라감. 모든 페이지 공통(`src/partials/quick.html`).
+- **자리**: 1920에서 오른쪽 224 · 위 154(헤더 128 + 26, 2026-11-03 피그마 공통 수정 — 이전 306) · 콘텐츠 1160 오른쪽 끝 + 72 — `right: max(24px, 50vw − 736px)`, 좁은 화면은 오른쪽 24. 위는 `clamp(헤더 + 16, 100vh − 561, 헤더 + 26)`이라 낮은 화면에서는 아래가 잘리지 않게 올라감. 모든 페이지 공통(`src/partials/quick.html`).
 - 모바일은 그대로 오른쪽 아래 버튼 둘(관심고객 등록 알약 · TOP 원), 판 · 로고 · 선은 숨김.
 
 ## 5. 둥근 모서리 — 내용 상자에만
@@ -217,8 +217,9 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 - **관찰평가**: BEFORE/AFTER pill 토글 → 무대 1fr · 56 · 1.35fr · 56 · 1fr — BEFORE 카드(점수 막대 0→72 + 숫자 카운트) → 화살표 원 → AFTER 카드(5각 레이더: 격자 3겹 점선 · 축 5 · 코랄 55% 다각형 · 꼭짓점 점 · 라벨, 등장 시 축 → 격자 → 다각형 back.out → 점 튐) → 화살표 → RESULT 카드(아이에게 맞는 반 편성). BEFORE면 다각형이 「행동」 축만 남은 가시로 접히고 BEFORE 카드가 섬. 동작 감소면 완성 상태.
 - **CTA**: 「가르치는 것이 아니라, 성장시키는 것」 + 「상담 신청하기」 Fill 48 wide → `/news.html#qna`, 제목 양옆 슬라임 점 넷 장식.
 - **피그마 교육 프로그램(2026-11-03)**: 프레임 「교육프로그램」 18343:9023 = 오시는길 프레임을 복제한 GNB · TOP_1(브레드크럼 「교육 프로그램」 1단계, 세 번째 탭 숨김) · footer/web(y3343, 높이 3608) + 본문 `Body · 교육 프로그램` 18344:9236(코드 첫 화면: 소마 패널 열림 · AFTER). 색은 Semantic 변수(흰 반투명은 Static/White + 투명도), 반경 Radius, 열린 패널 · AFTER 카드 Shadow/md, 평가 카드 inset 링은 안쪽 흰 선 12% · 30%, Noto 글자 System 스타일. 패널 그라데이션은 캡처에서 정지점이 빠져 코드 값으로 다시 만듦(브랜드색 42% 흰 섞음 → Primary/Lamp/*, 끝 정지점만 변수) · 열린 패널 덮개(코랄 45% → 어둡게 62%)는 변수 없음. 로고는 Logo/* 인스턴스(열림 흰 · 닫힘 Text/Normal), 트랙 · 레이더 · 슬라임 점 · 반 편성 아이콘 · 화살표는 위 컴포넌트 인스턴스. 세방고딕 때문에 프레임은 web 섹션 자리(섹션 안 x12348)에, 본문은 y260 자리에 겹쳐 두었으므로 드래그로 넣을 것. 사용자 몫: TOP_1 제목 「교육 프로그램」 · 탭 「네 개의 프로그램 / 관찰평가 시스템」, 자세히 ×4(Button/Ghost 32) · BEFORE(Ghost 32) · AFTER(Fill 32) · 상담 신청하기(Fill 48 wide) 인스턴스 교체. 이전 캡처 18277:9125(페이지 루트 「교육프로그램」)는 구버전. **반투명 흰 면 · 글자(2026-11-03 수정)**: 변수에 묶은 칠의 paint opacity가 프레임 이동 뒤 1로 풀려 관찰평가 카드가 흰 판이 됐음 → 글자 · 단독 도형은 노드 opacity, 자식 있는 판(평가 카드 · 점수 막대 · 나이 칩)은 판 칠을 비우고 맨 아래 `BG`(Static/White + 노드 opacity) · `Ring`(안쪽 1px 흰 선 + 노드 opacity) 사각형으로. Program / Radar도 면(Shape fill 55%) · 선(Shape line)을 나누고 격자 · 축은 노드 opacity. 본문 아코디언 자리에는 Program / Accordion `Brand=소마` 인스턴스를 겹쳐 둠(세방고딕 인스턴스라 플러그인이 프레임 안에 못 넣음 → 데스크톱에서 넣고 원래 Accordion 삭제).
-### 소식(공지사항) — 피그마 먼저(코드 `/news.html`은 아직 stub, 기존 소마 홈페이지 게시판 연동 예정)
+### 소식(공지사항) — 코드 `/news.html`(src/pages/news.html · css/news.css, 2026-11-03), 목록은 예시 글 — 기존 소마 홈페이지 게시판 연동 예정
 - **참고**: 입시탐탐 「입시 秀다방」 게시판(https://www.ipsi-timetime.com/menu/213/board/board_list)의 **왼쪽 메뉴 + 컨텐츠 구성**만(그 사이트 GNB · 퀵메뉴 제외).
 - **구성**: GNB(sub) · TOP_1(브레드크럼 「소식 > 공지사항」, 탭 숨김 — 2depth는 왼쪽 메뉴가 맡음) → 본문 위 64 · 아래 140, 컨텐츠 1160 = **LNB 200 + 간격 80 + 컨텐츠 880**. LNB는 Side menu item 5개(시간표 · 공지사항 Active · 홍보자료 · FAQ · 1:1 문의). 컨텐츠는 제목 「공지사항」 + 오른쪽 「전체 128건」 → Board / Head + Row 12개(상단 고정 Notice 2 · 새 글 N) → 40 → Brand Normal r16 판(페이지 번호 + 검색: 기존 `Select` 40 「제목」 120 + 기존 `Input` 40 360, 아이콘 Icon/search · 라벨 · 도움말 숨김). 찾기 버튼 · 글쓰기는 없음(공지사항, 버튼은 세방고딕이라 플러그인으로 못 넣음).
+- **코드(2026-11-03)**: 머리말 `head-tabs: none`으로 머리 탭 숨김(build.py — 2depth가 있어도 비움), 브레드크럼 「소식 > 공지사항」. 왼쪽 메뉴 200 + 80 + 표 880(`table-layout: fixed`, colgroup 80 · 채움 · 100 · 120 · 80), 제목 「공지사항」 세방 Bold 28. 행 호버면 Brand Normal 바탕 + 제목 밑줄. 긴 제목은 글만 말줄임(「N」은 늘 보임). 페이지 번호 · 검색은 피그마에서 숨김이라 뺌. 1024 이하 왼쪽 메뉴 → 가로 스크롤 탭, 768 이하 작성자 · 조회 칸 숨김.
 - **피그마(2026-11-03)**: 프레임 「소식」 18353:9371(본문 `Body · 소식 공지사항` 18357:9584는 Noto 글자만이라 프레임 안에 바로 조립, 높이 1805). web 섹션 자리(섹션 안 x14713)에 겹쳐만 두었으므로 프레임을 섹션으로 드래그. 사용자 몫: TOP_1 제목 「브랜드」 → 「소식」, 컨텐츠 제목 「공지사항」(지금 Noto Bold 28)을 세방고딕 Brand 스타일로.
 

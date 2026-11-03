@@ -281,11 +281,11 @@ body.mnav-open { overflow: hidden; }
    피그마 Quick menu(18126:6550): 폭 84 판 하나 — Background/Brand/Heavy · 1px Line/Solid/Neutral · r16 · Shadow/md,
    안쪽 24 · 16, 간격 16. 로고 59 → 선 50 → 항목 다섯(폭 50, 사이 1px 선 · 간격 8) → TOP.
    항목은 아이콘 24(Text/Normal 선) + Noto Bold 12/1.5 Text/Neutral, TOP은 세방 Bold 14.
-   자리: 1920에서 오른쪽 224 · 위 306(콘텐츠 1160 오른쪽 끝 + 72). 좁은 화면은 오른쪽 24까지, 낮은 화면은 아래가 잘리지 않게 올라감 */
+   자리: 1920에서 오른쪽 224 · 위 154(헤더 + 26, 콘텐츠 1160 오른쪽 끝 + 72). 좁은 화면은 오른쪽 24까지, 낮은 화면은 아래가 잘리지 않게 올라감 */
 .quick {
   position: fixed; z-index: 45;
   right: max(24px, 50vw - 580px - 156px);
-  top: clamp(calc(var(--header-h) + 16px), 100vh - 561px, 306px);
+  top: clamp(calc(var(--header-h) + 16px), 100vh - 561px, calc(var(--header-h) + 26px));
   display: flex; flex-direction: column; align-items: center; gap: 16px;
   width: 84px; padding: 24px 16px;
   background: var(--bg-brand-heavy); border: 1px solid var(--line-solid-neutral); border-radius: var(--r-16); box-shadow: var(--shadow-md);
