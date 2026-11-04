@@ -90,8 +90,11 @@
     /* SKIP은 아래 가운데 — 단 아래 블롭(myON)과 겹치지 않게, 유리 카드와 그 블롭 사이 틈의
        가운데에 둡니다. 틈이 좁으면(세로 태블릿) 블롭 아래, 그것도 안 되면 화면 맨 아래. */
     const skipBtn = document.getElementById('intro-skip');
+    const finePtr = window.matchMedia('(hover: hover) and (pointer: fine)');
     const placeSkip = () => {
       if (leaving || !body.classList.contains('is-armed')) return;
+      // 터치 화면은 CSS가 좌하단 96 동그라미로 고정합니다(START와 대칭) — 계산값을 지워 둡니다
+      if (!finePtr.matches) { skipBtn.style.removeProperty('top'); skipBtn.style.removeProperty('bottom'); skipBtn.style.removeProperty('--dk'); return; }
       skipBtn.style.setProperty('--dk', (hero.discPx() / 96).toFixed(3));   // 글자 · 아이콘을 START 디스크 배율로
       const panel = document.querySelector('#stage .panel');
       const sats = [...document.querySelectorAll('#hero .b-sat')].map((e) => e.getBoundingClientRect());

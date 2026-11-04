@@ -78,6 +78,23 @@ body.ptr-on .intro-skip { cursor: none; }
   pointer-events: none;
 }
 @media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
+/* 터치 화면(커서 디스크가 없는 곳 — .hero-ctl이 보이는 조건과 같음): SKIP은 좌하단, START(.hero-ctl)는 우하단.
+   둘 다 96 동그라미 · 14 Bold · 아이콘 20 · 간격 4 · 같은 그림자 · 투명도 0.88로 맞추고 색만 반대(SKIP 흰 판 · 어두운 글자).
+   위치는 home.js placeSkip이 터치에서는 계산하지 않습니다(2026-11-04) */
+@media not all and (hover: hover) and (pointer: fine) {
+  .intro-skip {
+    left: 16px; right: auto; top: auto; bottom: 32px; transform: none;
+    width: 96px; height: 96px; padding: 0; justify-content: center; gap: 4px;
+    font-family: var(--font-title); font-size: 14px; letter-spacing: -0.3px; line-height: 1; color: var(--primary-normal);
+    background: #fff; border-radius: 50%; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  body.is-armed .intro-skip { opacity: 0.88; }
+  .intro-skip svg { width: 20px; height: 20px; }
+  .intro-skip:hover { background: #fff; }
+  .intro-skip:active { opacity: 1; transform: scale(0.94); }
+  body.intro-light .intro-skip { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--line-neutral); }
+}
 /* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
 
 /* 메인 비주얼 사진은 흰 GNB 뒤 페이지 맨 위부터 깔립니다 */
