@@ -1,8 +1,10 @@
 /* ─────────────────────────────────────────────────────────────
-   home.js — 홈: 오프닝 인트로 · 메인 비주얼 · 섹션 모션
-   장면 10·12의 모션은 랜딩 js/scroll.js에서 그대로 옮겨 왔습니다(주석 포함). 빠진 것은
-   장면 9→10 핸드오프 · 히어로 창(#s-spacer) · 장면 11 — 홈페이지에서는 인트로가
-   페이지 위에 덮이는 오프닝이고, 장면 11은 기획서 5p에서 삭제됐기 때문입니다.
+   home.js — 홈: 오프닝 인트로 · 메인 비주얼 캐러셀 · 배너 토글 · 섹션 등장(reveal) · 장면 10 카드 ticker · 장면 12 스크럽 · 교육 프로그램 4면 판
+   쓰는 곳: 홈(index.html, 머리말 `js: hero home goo`)  ·  의존: gsap + ScrollTrigger · js/hero.js(window.STP.hero) · js/lead.js(data-lead-open) · partial stage / scene10 / scene12 · css/home.css
+   인트로 게이트는 index.html의 인라인 <script>가 첫 페인트 전에 정합니다 — `?intro=1`이면 항상, `?intro=0`이면 끔,
+   그 밖에는 동작 줄이기가 아니고 (새로고침이거나 referrer가 같은 origin이 아닐 때)만 body.intro-on.
+   인트로가 걷히면 finishIntro()가 intro-* 클래스를 떼고 `stp:intro-done` 이벤트를 보냅니다(캐러셀이 그때부터 5초를 셉니다).
+   gsap.matchMedia 블록 안의 ticker · IntersectionObserver · resize 핸들러는 cleanup으로 직접 거둡니다 — matchMedia는 자기 트윈만 정리합니다.
    ───────────────────────────────────────────────────────────── */
 (function () {
   if (!window.gsap) { document.body.classList.remove('intro-on'); return; }
@@ -10,12 +12,12 @@
   const body = document.body;
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* 관심고객 등록 팝업은 자동으로 열지 않습니다(2026-11-04) — 배너 옆 버튼 · 퀵메뉴 · 장면 12 버튼을 누를 때만(js/lead.js) */
+  /* 관심고객 등록 팝업은 자동으로 열지 않습니다 — 배너 옆 버튼 · 퀵메뉴 · 장면 12 버튼을 누를 때만(js/lead.js) */
 
   /* ── 인트로 (기획서 3p) ───────────────────────────────────────────
-     랜딩의 START 대기 화면 그대로 — 슬라임 마스크가 커서(모바일은 손가락)를 따라다니며
-     저절로 넘어가지 않습니다. 화면 아래 가운데 SKIP을 누르면 곧바로 홈, 마스크를 누르면
-     오프닝을 1.6배속으로 재생하고 장면 9의 로고를 잠깐 보여 준 뒤 막을 걷습니다. */
+     START 대기 화면 — 슬라임 마스크가 커서(모바일은 손가락)를 따라다니며 저절로 넘어가지
+     않습니다. 화면 아래 가운데 SKIP을 누르면 곧바로 홈, 마스크를 누르면 오프닝을
+     1.6배속으로 재생하고 장면 9의 로고를 잠깐 보여 준 뒤 막을 걷습니다. */
   const SPEED = 1.6, HOLD = 900, FADE = 900, MASK_OPEN = 1.1;
   let leaving = false;
   /* 막이 걷힌 뒤: 인트로 클래스를 떼면 CSS가 GNB(위) · 메인 비주얼 글 패널(왼쪽) ·
@@ -72,7 +74,7 @@
   if (body.classList.contains('intro-on')) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
-    body.classList.add('hero-on');      // 랜딩 scroll.js가 붙이던 「히어로가 화면의 주인」 — 커서 디스크가 이걸 봅니다
+    body.classList.add('hero-on');      // 「히어로가 화면의 주인」 — 커서 디스크의 표시 조건(hero.css)
     const hero = STP.hero.init({
       reduce: reduceMQ.matches,
       speed: SPEED,
@@ -143,13 +145,13 @@
     document.getElementById('stage').addEventListener('click', () => { if (!leaving) resetNear(); });   // 재생 시작
     let skipT;
     window.addEventListener('resize', () => { clearTimeout(skipT); skipT = setTimeout(placeSkip, 300); });
-    // 히어로 사진이 디코드된 뒤 시작합니다(최대 0.9초 대기) — 랜딩 main.js와 같은 이유
+    // 히어로 사진이 디코드된 뒤 시작합니다(최대 0.9초 대기) — 슬라임 창에 사진이 바로 보이게
     const photo = new Image(); photo.src = '/img/hero-campus.webp';
     let started = false;
     const start = () => { if (!started) { started = true; go(); } };
     (photo.decode ? photo.decode() : Promise.resolve()).then(start, start);
     setTimeout(start, 900);
-    // 휠·터치·키는 빨리 감기(랜딩과 같음), 건너뛰기는 곧바로 끝
+    // 휠·터치는 빨리 감기, 건너뛰기는 곧바로 끝
     const ff = () => hero.fastForward();
     window.addEventListener('wheel', ff, { passive: true });
     window.addEventListener('touchstart', ff, { passive: true });
@@ -243,7 +245,7 @@
     });
   });
 
-  /* ── 섹션 등장 · 장면 10 · 장면 12 (랜딩 js/scroll.js에서) ─────────── */
+  /* ── 섹션 등장 · 장면 10 · 장면 12 ─────────── */
   const REVEAL = { y: 40, dur: 0.85, ease: 'power3.out', gap: 0.14, sub: 0.07, start: 'top 85%' };
   function reveal(contentSel, reduce) {
     const box = document.querySelector(contentSel);
@@ -259,7 +261,7 @@
     const order = [...steps.keys()].sort((a, b) => a - b);
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: steps.get(order[0])[0],          // the first line, not the section
+        trigger: steps.get(order[0])[0],          // 섹션이 아니라 첫 줄이 트리거
         start: REVEAL.start, toggleActions: 'play none none reverse',
       },
     });
@@ -279,7 +281,7 @@
   mm.add({ reduce: '(prefers-reduced-motion: reduce)', motion: '(prefers-reduced-motion: no-preference)' }, (ctx) => {
     const { reduce } = ctx.conditions;
     let cleanup = () => {};
-    const parked = false;          // 랜딩에서는 장면 11이 덮으면 섰습니다. 홈에는 장면 11이 없습니다
+    const parked = false;          // 홈에는 장면 10을 덮는 장면이 없어 ticker를 세울 조건이 없습니다
 
     reveal('#s-intro .intro', reduce);
     reveal('#s-program', reduce);
@@ -500,7 +502,7 @@
           .to({}, { duration: rowTl && i ? 0.15 : 0 })                 // 카드 사이 짧은 숨
           .fromTo(slot.querySelectorAll('.ic-line path'), { strokeDashoffset: 100 },
             { strokeDashoffset: 0, duration: reduce ? 0.2 : 1, ease: 'none', stagger: reduce ? 0 : 0.14 })
-          /* transformOrigin은 **from에도** 있어야 합니다(17차). to에만 두면 GSAP이 트윈
+          /* transformOrigin은 **from에도** 있어야 합니다. to에만 두면 GSAP이 트윈
              도중 원점이 바뀐 것으로 보고 smoothOrigin 보정 이동을 끼워 넣는데, 그게 배율이
              1로 돌아온 뒤에도 남습니다 — 실측 insight의 point가 최종 matrix(1,0,0,1,-4.2,-3.9)
              로 끝나 피그마보다 왼쪽 4.2 · 위 3.9만큼 어긋나 있었습니다. 정적 SVG 좌표는
@@ -515,41 +517,37 @@
               transformOrigin: '50% 50%', smoothOrigin: false });
       });
 
-      /* ── perpetual motion, written from the ticker rather than CSS keyframes ──────────
-         A declarative transform animation (CSS @keyframes / Web Animations) makes Chrome
-         promote the element to a compositor layer, rasterise it ONCE in its un-rotated space
-         and then rotate that texture — every stroke and glyph inside becomes a resampled
-         bitmap. Measured at -30 % detail, and `backdrop-filter` or `will-change` each do the
-         same on their own. Writing the transform from JS keeps the card on the main thread,
-         so it is re-rasterised sharp at whatever angle it is currently at. */
-      /* 18차: 모바일에서는 배경 워드마크가 화면에 붙박입니다(CSS sticky) — 그 위에 가로
-         마퀴나 세로 패럴랙스를 얹으면 「고정」이 성립하지 않습니다. 카드 흔들림과 아이콘
-         호흡은 그대로 둡니다(요청 범위 밖이고 8.1차에 확정한 것). */
+      /* ── 끝없는 움직임 — CSS 키프레임이 아니라 ticker가 씁니다 ──────────
+         선언적 transform 애니메이션(CSS @keyframes / Web Animations)은 Chrome이 요소를
+         컴포지터 레이어로 승격시켜 회전 전 상태로 **한 번만** 래스터하고 그 텍스처를
+         돌립니다 — 안의 선과 글자가 전부 리샘플링된 비트맵이 됩니다. 실측 디테일 −30 %이고,
+         `backdrop-filter`나 `will-change`도 각각 같은 일을 합니다. JS에서 transform을 쓰면
+         카드가 메인 스레드에 남아, 지금 각도 그대로 또렷하게 다시 래스터됩니다. */
+      /* 모바일에서는 배경 워드마크의 가로 마퀴 · 세로 패럴랙스를 끕니다(wideBg). 카드
+         흔들림과 아이콘 호흡은 모바일에서도 그대로입니다. */
       const wideBg = window.matchMedia('(min-width: 641px)').matches;
       if (!reduce) {
         const cards = gsap.utils.toArray('.kw-card');
-        const glass = gsap.utils.toArray('.kw-glass');   // same angle, written in the same pass
+        const glass = gsap.utils.toArray('.kw-glass');   // 같은 각도를 같은 패스에서 씁니다
         const tilt  = cards.map(c => parseFloat(getComputedStyle(c).getPropertyValue('--tilt')) || 0);
         const blobs = gsap.utils.toArray('.ic-breathe');
-        const SWAY = [0.967, 0.849, 1.065];              // rad/s — the 6.5 / 7.4 / 5.9 s periods
+        const SWAY = [0.967, 0.849, 1.065];              // rad/s — 주기 6.5 / 7.4 / 5.9 s
         const BR   = [1.745, 1.496, 1.963];              // 3.6 / 4.2 / 3.2 s
         const PH   = [0, 2.1, 4.3];
-        /* 16차: 카드는 −15°~+15°를 오갑니다(지금까지는 정지 기울기 ±1.2°). 시작 각도는
-           피그마의 −5 / 15 / 5를 그대로 지켜야 하므로, 진폭을 키우는 대신 **위상**으로
-           풉니다 — asin(각도/15)면 t=0에 정확히 그 각도에서 출발하고, 주기(SWAY)가 서로
-           달라 셋이 같이 움직이지 않습니다. 슬롯은 키우지 않고 .keywords의 gap을 8px
-           넓혀(16 → 24) 최대 기울기에서 옆 카드와 스치지 않게 했습니다. */
+        /* 카드는 −15°~+15°를 오갑니다. 시작 각도는 피그마의 −5 / 15 / 5를 그대로 지켜야
+           하므로 **위상**으로 풉니다 — asin(각도/15)면 t=0에 정확히 그 각도에서 출발하고,
+           주기(SWAY)가 서로 달라 셋이 같이 움직이지 않습니다. 최대 기울기에서 옆 카드와
+           스치지 않도록 .keywords의 gap이 24입니다(sections.css). */
         const AMP = 15;
         const TPH = tilt.map((d) => Math.asin(gsap.utils.clamp(-1, 1, d / AMP)));
 
-        /* ── the background wordmark, drifting sideways for ever ──────────────────────
-           Same reason as the cards for driving it from here instead of a CSS marquee: a
-           declarative transform would promote this layer, and .kw-glass sits on top of it
-           sampling it through backdrop-filter — a resampled texture would show up in the
-           frosted pane. The track is centre-justified, so one copy is already in the Figma
-           position at t=0 and the offset only ever runs from 0 to one copy's width. */
+        /* ── 배경 워드마크 — 옆으로 끝없이 흐릅니다 ──────────────────────
+           CSS 마퀴 대신 여기서 모는 이유는 카드와 같습니다: 선언적 transform은 이 레이어를
+           승격시키는데, 그 위의 .kw-glass가 backdrop-filter로 이 레이어를 샘플링하므로
+           리샘플링된 텍스처가 유리판에 그대로 드러납니다. 트랙은 가운데 정렬이라 t=0에
+           한 벌이 이미 피그마 자리에 있고, 오프셋은 0에서 한 벌의 폭까지만 돕니다. */
         const track = document.querySelector('.intro__bg__track');
-        const MARQ = 40;                                 // px/s — one copy every ~37 s at 1920
+        const MARQ = 40;                                 // px/s — 1920에서 한 벌에 약 37 s
         let unitW = 0;
         const layout = () => {
           if (!track) return;
@@ -564,13 +562,13 @@
           const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
           unitW = word.getBoundingClientRect().width + gap;
           if (!unitW) return;
-          // +2 so the row still spans the box at the far end of a cycle, and after a clone
+          // +2: 한 주기의 끝에서도, 복제 뒤에도 행이 상자를 다 덮도록
           const want = Math.ceil(track.parentElement.getBoundingClientRect().width / unitW) + 2;
           while (track.children.length > want) track.lastElementChild.remove();
           while (track.children.length < want) track.appendChild(word.cloneNode(true));
         };
         layout();
-        // Pretendard usually lands after this runs, and the word is ~1400px wide in it
+        // 웹폰트는 보통 이 코드 뒤에 도착하고, 그 서체에서 단어 폭이 달라집니다 — 다시 잽니다
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
         let rz;
         const onResize = () => { clearTimeout(rz); rz = setTimeout(layout, 150); };
@@ -580,8 +578,8 @@
         const tick = (t) => {
           if (!onScreen || parked) return;
           if (track && unitW && wideBg) {
-            // translateX, not translate3d: a 3D transform forces compositor promotion, which is
-            // the very thing this ticker exists to avoid — .kw-glass samples this layer.
+            // translate3d가 아니라 translateX: 3D transform은 컴포지터 승격을 강제하는데,
+            // 그게 바로 이 ticker가 피하려는 것입니다 — .kw-glass가 이 레이어를 샘플링합니다.
             track.style.transform = 'translateX(' + (-((t * MARQ) % unitW)).toFixed(2) + 'px)';
           }
           for (let i = 0; i < cards.length; i++) {
@@ -596,18 +594,18 @@
           }
         };
         gsap.ticker.add(tick);
-        // repainting three cards every frame is only worth doing while they are on screen
+        // 카드 셋을 매 프레임 다시 그리는 일은 화면에 보일 때만 할 가치가 있습니다
         const io = new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; }, { threshold: 0 });
         io.observe(document.getElementById('s-intro'));
-        // matchMedia only cleans up the tweens it created — a ticker callback and an observer
-        // are ours to undo, or they keep running if the user turns reduced motion on live
+        // matchMedia는 자기가 만든 트윈만 정리합니다 — ticker 콜백과 옵저버는 우리가 거둬야
+        // 합니다. 안 그러면 사용자가 동작 줄이기를 켜도 계속 돕니다
         cleanup = () => {
           gsap.ticker.remove(tick);
           io.disconnect();
           window.removeEventListener('resize', onResize);
           clearTimeout(rz);
           cards.concat(glass, blobs).forEach((el) => { el.style.transform = ''; });
-          // hand the marquee back to CSS: one copy, centred, exactly as a no-JS page shows it
+          // 마퀴를 CSS에 돌려줍니다: 한 벌, 가운데 — JS 없는 페이지와 똑같이
           if (track) {
             track.style.transform = '';
             while (track.children.length > 1) track.lastElementChild.remove();
@@ -615,7 +613,7 @@
         };
       }
 
-      /* the pale wordmark drifts slower than the cards (넓은 화면에서만 — 18차) */
+      /* 옅은 워드마크는 카드보다 느리게 흐릅니다(세로 패럴랙스 — 넓은 화면에서만) */
       if (!reduce && wideBg) {
         gsap.fromTo('.intro__bg', { yPercent: -7 }, {
           yPercent: 7, ease: 'none',
@@ -623,8 +621,8 @@
         });
       }
 
-      /* ── 장면 12 시퀀스 (Figma box_scroll 17918:5667) ──────────────────
-         .s12-wrap의 남는 높이(350vh − 100vh = 250vh)가 곧 스크럽 구간입니다. 배지 하나가
+      /* ── 장면 12 시퀀스 (피그마 box_scroll 17918:5667) ──────────────────
+         .s12-wrap의 남는 높이(450vh − 100vh = 350vh)가 곧 스크럽 구간입니다. 배지 하나가
          바 안에서 왼쪽 → 가운데 → 오른쪽으로 미끄러지고, 그동안 삼각형 색과 가운데 로고가
          서서히 바뀌며 배경도 따라 넘어갑니다. 이동은 배지 자신의 폭이 아니라 **바 기준
          퍼센트**로 겁니다 — 모바일에서 배지 폭에 64px 바닥값이 걸려 xPercent가 어긋납니다. */
@@ -634,17 +632,14 @@
       const logos = gsap.utils.toArray('#copy-bar .s12-badge__logo');
       const shots = gsap.utils.toArray('#s-copy-2 .s12-photo img');
       if (s12wrap && badge && logos.length === 3 && shots.length === 3) {
-        /* 16차: 마디가 넷이 됐습니다 — 무배경 → 1 → 2 → 3 → **다시 무배경**.
-           래퍼를 350vh → 450vh로 늘려(스크럽 250 → 350vh) 마디당 속도를 지킵니다:
-           .28 × 350vh ≈ 98vh로, 예전 .38 × 250vh ≈ 95vh와 거의 같습니다. */
+        /* 마디는 넷 — 무배경 → 1 → 2 → 3 → **다시 무배경**. 래퍼 450vh(스크럽 350vh)라
+           마디당 .28 × 350vh ≈ 98vh씩 지나갑니다. */
         const IN = 0.10, MID = 0.38, OUT = 0.66, END = 0.88;
         const SCRUB = 350;                               // .s12-wrap(450vh) − 100vh, % 단위
-        /* 16.2차 · 첫 마디(무배경 → 배경 1)의 타이밍. 예전에는 셋이 겹쳐 있었습니다 —
-           배지가 **떠오르면서 동시에 움직이기 시작**했고(p .12에 opacity .33인데 이미
-           38px 이동), 배경 1은 배지보다 **먼저** 나타났으며(p .09에 이미 .3), 다 차오른
-           순간 곧바로 다음 배경으로 넘어가 온전히 보이는 구간이 없었습니다.
-           이제 순서가 하나씩 떨어집니다: 배지가 왼쪽 끝에 서서 다 드러나고 → 그때부터
-           움직이기 시작하며 → 배경 1이 천천히 차오르고 → 잠시 머문 뒤 → 교대. */
+        /* 첫 마디(무배경 → 배경 1)의 타이밍. 세 일이 겹치지 않고 하나씩 떨어져야 합니다:
+           배지가 왼쪽 끝에 서서 다 드러나고 → 그때부터 움직이기 시작하며 → 배경 1이
+           천천히 차오르고 → 잠시 머문 뒤 → 교대. 겹치면 배지가 떠오르면서 동시에
+           움직이고, 배경 1이 배지보다 먼저 나타나며, 온전히 보이는 구간이 없어집니다. */
         const LEAD    = 0.06;   // 배지가 left 0%에 선 채로 0 → 100%가 되는 구간
         const BG_IN   = 0.50;   // 배경이 천천히 차오르는 길이 (마디 대비)
         const SWAP_AT = 0.65;   // 색·로고·배경 교대가 시작되는 지점 (마디 대비)
@@ -654,11 +649,11 @@
           .map((v) => css.getPropertyValue(v).trim());   // 토큰에서 읽어 하드코딩을 피함
         const tri = badge.querySelector('.s12-badge__tri');
 
-        /* 20차: 배지 이동을 left(%) → translateX(px)로 바꿉니다. left는 컴포지터 속성이
-           아니라 레이아웃 속성이라, 450vh 스크럽 구간 내내 스크롤 프레임마다 레이아웃 +
-           페인트 + drop-shadow 재계산이 일어났습니다. 퍼센트는 부모(#copy-bar) 폭 기준인데
-           xPercent는 **자기 폭** 기준이라 바로 못 바꿉니다 — 함수형 값으로 부모 폭을 읽고,
-           invalidateOnRefresh로 리사이즈 때 다시 계산합니다. 픽셀 위치는 동일합니다. */
+        /* 배지 이동은 left(%)가 아니라 translateX(px)입니다. left는 컴포지터 속성이 아니라
+           레이아웃 속성이라, 450vh 스크럽 구간 내내 스크롤 프레임마다 레이아웃 + 페인트 +
+           drop-shadow 재계산이 일어납니다. 퍼센트는 부모(#copy-bar) 폭 기준인데 xPercent는
+           **자기 폭** 기준이라 바로 못 바꿉니다 — 함수형 값으로 부모 폭을 읽고,
+           invalidateOnRefresh로 리사이즈 때 다시 계산합니다. */
         const barW = () => (badge.offsetParent || badge.parentElement).clientWidth;
         const tl = gsap.timeline({
           scrollTrigger: { trigger: s12wrap, start: 'top top', end: 'bottom bottom', scrub: 0.5,
@@ -687,7 +682,7 @@
         tl.to({}, { duration: 1 - END });                // 무배경 상태를 끝까지 유지
 
         /* 흰 카피 전환은 클래스로 따로 겁니다 — scrub 타임라인 안에서 콜백을 쓰면 되감을
-           때 어긋납니다. 오프셋은 위 IN을 스크럽 구간(250vh)에 얹은 값입니다. */
+           때 어긋납니다. 오프셋은 위 IN을 스크럽 구간(350vh)에 얹은 값입니다. */
         ScrollTrigger.create({
           trigger: s12wrap,
           /* 배경이 충분히 깔린 뒤에 카피를 흰색으로 넘깁니다 — IN에 맞춰 두면 배경 1이
@@ -695,7 +690,6 @@
           start: 'top top-=' + ((IN + S1 * BG_IN * 0.6) * SCRUB) + '%',
           // 마지막 마디에서 배경이 없어지므로 흰 카피도 그때 어두워져야 합니다
           end: 'top top-=' + (END * SCRUB) + '%',
-          // 22차: 같은 자리에 있던 장면 12 Scroll Down 큐의 밝은 색 토글은 큐를 빼면서 함께 지웠습니다
           onToggle: (self) => { s12.classList.toggle('has-bg', self.isActive); },
         });
       }

@@ -1,6 +1,8 @@
 /* ─────────────────────────────────────────────────────────────
-   lead.js — 관심고객 등록 팝업 (23차 · 피그마 17956:6855)
-   여는 문·닫는 문·포커스 처리는 「전경 더보기」 모달(js/open.js)과 같은 방식입니다.
+   lead.js — 관심고객 등록 팝업 (window.STP.lead · 피그마 17956:6855)
+   쓰는 곳: 모든 페이지(scripts.html)  ·  의존: partial lead(#lead) · css/sections.css(.lead*)
+   `data-lead-open`이 붙은 요소는 문서 위임 하나로 모두 엽니다(퀵메뉴 · 메인 비주얼 · 장면 12 · 배너).
+   열면 닫기 버튼에 포커스, Tab은 카드 안에 가두고, Esc · 스크림 · [data-lead-close]로 닫습니다.
    등록 자체는 시각 전용이라 보내는 코드가 없습니다 — 버튼도 <span aria-disabled>입니다.
    ───────────────────────────────────────────────────────────── */
 window.STP = window.STP || {};
@@ -16,7 +18,7 @@ STP.lead = (function () {
     modal.hidden = false;
     document.body.classList.add('lead-open');
     // 첫 입력이 아니라 닫기 버튼에 포커스를 둡니다 — 모바일에서 첫 입력을 잡으면
-    // 키보드가 즉시 올라와 팝업의 절반을 덮습니다(전경 더보기 모달과 같은 판단).
+    // 키보드가 즉시 올라와 팝업의 절반을 덮습니다.
     const close = modal.querySelector('.lead__close');
     close && close.focus();
   }
@@ -29,7 +31,7 @@ STP.lead = (function () {
     if (back && back.focus) back.focus();
   }
 
-  /* 열려 있는 동안 Tab이 팝업 밖으로 못 나가게 — open.js의 trap()과 같은 구현 */
+  /* 열려 있는 동안 Tab이 팝업 밖으로 못 나가게 */
   function trap(e) {
     if (e.key !== 'Tab' || !isOpen()) return;
     const f = card.querySelectorAll(
@@ -60,7 +62,7 @@ STP.lead = (function () {
       else trap(e);
     });
 
-    /* 약관 펼치기. 23.2차부터 문구와 화살표가 한 버튼이라 어느 쪽을 눌러도 같습니다 —
+    /* 약관 펼치기. 문구와 화살표가 한 버튼이라 어느 쪽을 눌러도 같습니다 —
        체크박스는 이 버튼 밖에 있으므로 동의는 따로 켜고 끕니다. */
     modal.querySelectorAll('.lead-a__toggle').forEach((btn) => {
       btn.addEventListener('click', () => {

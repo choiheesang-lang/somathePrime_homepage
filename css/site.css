@@ -1,7 +1,9 @@
 /* ─────────────────────────────────────────────────────────────
-   site.css — 홈페이지 공통 (서체 · GNB · 전체 메뉴 · 퀵메뉴 · 푸터 · 버튼)
-   색·간격·로고는 랜딩의 tokens.css / base.css를 그대로 쓰고, 여기서는 홈페이지에서
-   새로 생긴 것과 서체만 다룹니다.
+   site.css — 모든 페이지 공통: 서체 @font-face · GNB(.gnb2) · 모바일 전체 메뉴(.mnav) · 퀵메뉴 · 버튼(.btn2) · 섹션 머리 · 푸터 보강
+   쓰는 곳: 모든 페이지(head.html)  ·  의존: tokens.css(색 · 간격 · --gnb-*) · base.css(로고 @property) · js/site.js · partial gnb / quick / footer
+   GNB는 두 벌입니다 — .gnb2--sub(흰 바탕) · .gnb2--main(메인, 사진 위 투명). main 벌은 호버 · 포커스 ·
+   .is-solid(js/site.js가 사진 칸을 지나면 붙임)에서 sub 벌로 바뀝니다.
+   .btn2는 종류(fill · line · ghost)와 크기(56 · 48 · 40 · 32)를 커스텀 속성으로 받습니다.
    ───────────────────────────────────────────────────────────── */
 
 /* ── 서체 — 사고력소마(new.somai.co.kr)와 같은 두 벌 ─────────────────
@@ -19,7 +21,7 @@
   src: url("/font/SEBANG%20Gothic%20OTF%20Bold.woff2") format("woff2"), url("/font/SEBANG%20Gothic%20OTF%20Bold.otf") format("opentype");
   font-weight: 700; font-display: swap;
 }
-/* 글꼴 · 헤더 높이 · 강조색 토큰은 tokens.css (Figma Typography · Spacing · Text/Accent) */
+/* 글꼴 · 헤더 높이 · 강조색 토큰은 tokens.css (피그마 Typography · Spacing · Text/Accent) */
 
 body { background: var(--bg-normal); font-size: var(--fs-system-body-2); line-height: var(--lh-system-body); letter-spacing: -0.01em; }
 h1, h2, h3, h4, .t-title, button, .btn2 { font-family: var(--font-title); letter-spacing: -0.02em; }
@@ -58,7 +60,7 @@ address { font-style: normal; }
               --lp-ink 0.3s, --lp-o 0.3s, --lp-g 0.3s, --lp-c 0.3s;
 }
 .gnb2.is-hidden { transform: translateY(-100%); }
-/* sub 벌 — 서브페이지, 그리고 메인의 호버 · 히어로 아래. 로고는 랜딩과 같은 컬러 벌(base.css의 @property 등록) */
+/* sub 벌 — 서브페이지, 그리고 메인의 호버 · 히어로 아래. 로고는 컬러 벌(base.css의 @property 등록) */
 .gnb2, .mnav {
   --gnb-bg: var(--gnb-bg-sub); --gnb-ink: var(--gnb-ink-sub); --gnb-line: var(--gnb-line-sub);
   --gnb-sub: var(--gnb-util-sub);       /* 유틸 바 글자 · 화살표 */

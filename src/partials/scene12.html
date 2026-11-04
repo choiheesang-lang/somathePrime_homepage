@@ -1,8 +1,7 @@
 <div class="s12-wrap">
         <section id="s-copy-2" class="section is-link" data-href="/brand/campus.html">
           <div class="s12-photo" aria-hidden="true">
-            <!-- lazy so they cost nothing at first paint; js/scroll.js flips them to eager two
-                 screens early, at scene 11, because the sequence needs them on arrival. -->
+            <!-- lazy — 첫 페인트에 비용이 들지 않습니다. 스크럽 시퀀스가 js/home.js에서 opacity로 넘깁니다. -->
             <img src="/img/campus/class-05.webp" alt="" loading="lazy" fetchpriority="low" decoding="async" />
             <img src="/img/campus/class-09.webp" alt="" loading="lazy" fetchpriority="low" decoding="async" />
             <img src="/img/campus/class-10.webp" alt="" loading="lazy" fetchpriority="low" decoding="async" />
@@ -14,9 +13,9 @@
                 <span class="copy-bar__row" aria-label="넓어진">
                   <b>넓</b><i class="copy-bar__rule"></i><b>어</b><i class="copy-bar__rule"></i><b>진</b>
                 </span>
-              <!-- 14차: one badge that slides, not three that blink in place. Inline SVG because
-                   the triangle's fill is tweened; the logos reuse the symbols already in this
-                   document (their boxes are lifted from the Figma badge, 17918:4900). -->
+              <!-- 배지 하나가 미끄러집니다(제자리에서 깜박이는 셋이 아니라). 인라인 SVG인 이유:
+                   삼각형의 fill을 트윈합니다. 로고는 이 문서의 심볼을 재사용합니다
+                   (상자 크기는 피그마 배지 17918:4900에서). -->
               <i class="s12-badge" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none">
                 <path class="s12-badge__tri" d="M49.6077 18C54.2265 9.99999 65.7735 10 70.3923 18L101.569 72C106.188 80 100.415 90 91.1769 90H28.8231C19.5855 90 13.812 80 18.4308 72L49.6077 18Z" />
                 <use class="s12-badge__logo" data-logo="0" href="#lg-playfacto" x="43.89" y="46.92" width="36.45" height="24.52" />

@@ -1,16 +1,18 @@
 /* ─────────────────────────────────────────────────────────────
-   home.css — 홈 (기획서 3~7p)
-   인트로·장면 10·장면 12는 랜딩의 hero.css / sections.css를 그대로 쓰고, 여기서는
-   홈페이지에 맞게 바뀐 것(오프닝 오버레이, 고정 해제)과 새 섹션만 다룹니다.
+   home.css — 홈 전용 (기획서 3~7p): 인트로 오버레이 · 메인 비주얼 · 배너 · 장면 10 고정 해제 · 교육 프로그램 4면 판 · 방문 카드
+   쓰는 곳: 홈(index.html, 머리말 `css: hero home`)  ·  의존: tokens.css · base.css · sections.css · hero.css · site.css · js/home.js · js/hero.js
+   hero.css / sections.css 뒤에 로드되어 그쪽 규칙을 홈에 맞게 덮습니다(#stage z-index, #s-intro 고정 해제, main 클릭).
+   인트로 상태는 body 클래스로 흐릅니다: intro-on(덮임) → intro-leaving / intro-revealing(걷히는 중) → intro-entering(메인 등장).
+   메인 비주얼(.kv)은 피그마 1920×888 비율이며 V 꺾임(--fold-depth)만 여기서 248까지 키웁니다.
    ───────────────────────────────────────────────────────────── */
 
-/* 랜딩은 main이 고정 스테이지를 들여다보는 창이라 클릭을 통과시켰습니다. 홈페이지의
-   스테이지는 오프닝 동안만 위에 덮이는 막이므로 main은 평범한 흐름입니다. */
+/* 홈의 스테이지는 오프닝 동안만 위에 덮이는 막이므로 main은 평범한 흐름이고 클릭을 받습니다
+   (sections.css의 main { pointer-events: none }을 되돌림). */
 main { pointer-events: auto; }
 
 /* ── 인트로 오버레이 ──────────────────────────────────────────────
-   랜딩에서는 스테이지가 main 뒤(z 0)에 고정돼 있었습니다. 여기서는 오프닝 동안 GNB(50)
-   바로 아래(40)로 올라와 화면을 덮고, 끝나면 페이드아웃 후 visibility로 꺼집니다. */
+   스테이지는 오프닝 동안 GNB(50) 바로 아래(40)에서 화면을 덮고, 끝나면 페이드아웃 후
+   visibility로 꺼집니다. */
 #stage { z-index: 40; }
 body:not(.intro-on) #stage { visibility: hidden; }
 body.intro-on { overflow: hidden; }
@@ -36,7 +38,7 @@ body.intro-entering .kv__ctrls { transition-delay: 0.55s; }
 body.intro-on .kv-banner { opacity: 0; translate: 0 16px; }
 body.intro-entering .kv-banner { transition: opacity 0.6s var(--ease-out) 0.65s, translate 0.8s var(--ease-out) 0.65s; }
 body.intro-entering .quick { transition: opacity 0.5s 0.35s, transform 0.8s var(--ease-out) 0.35s; }
-/* 랜딩의 START 대기 화면을 그대로 씁니다 — 커서 디스크(START/SKIP)와 터치용 고정 디스크.
+/* START 대기 화면 — 커서 디스크(START/SKIP)와 터치용 고정 디스크(hero.css).
    손가락 드래그가 스크롤로 끊기지 않도록 인트로 동안 스테이지의 터치 동작을 막습니다. */
 body.intro-on #stage { touch-action: none; }
 
@@ -80,7 +82,7 @@ body.ptr-on .intro-skip { cursor: none; }
 @media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
 /* 터치 화면(커서 디스크가 없는 곳 — .hero-ctl이 보이는 조건과 같음): SKIP은 좌하단, START(.hero-ctl)는 우하단.
    둘 다 96 동그라미 · 14 Bold · 아이콘 20 · 간격 4 · 같은 그림자 · 투명도 0.88로 맞추고 색만 반대(SKIP 흰 판 · 어두운 글자).
-   위치는 home.js placeSkip이 터치에서는 계산하지 않습니다(2026-11-04) */
+   위치는 home.js placeSkip이 터치에서는 계산하지 않습니다 */
 @media not all and (hover: hover) and (pointer: fine) {
   .intro-skip {
     left: 16px; right: auto; top: auto; bottom: 32px; transform: none;
@@ -95,7 +97,7 @@ body.ptr-on .intro-skip { cursor: none; }
   .intro-skip:active { opacity: 1; transform: scale(0.94); }
   body.intro-light .intro-skip { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--line-neutral); }
 }
-/* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
+/* 마우스 화면의 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
 
 /* 메인 비주얼 사진은 흰 GNB 뒤 페이지 맨 위부터 깔립니다 */
 .home-main { position: relative; padding-top: 0; }
@@ -292,9 +294,8 @@ body.ptr-on .intro-skip { cursor: none; }
 }
 @media (max-width: 640px) { .kv-banner { margin: 0 16px 40px; } }
 
-/* ── 장면 10 (5p) — 랜딩 그대로, 고정만 풉니다 ──────────────────────
-   랜딩에서는 장면 11이 위로 덮으며 밀려나는 연출 때문에 sticky였습니다. 장면 11이 빠졌으므로
-   평범한 흐름의 섹션입니다. */
+/* ── 장면 10 (5p) — sections.css의 고정(sticky)만 풉니다 ──────────────────────
+   홈에는 장면 10을 위로 덮는 장면이 없으므로 평범한 흐름의 섹션입니다. */
 #s-intro { position: relative !important; height: auto !important; min-height: 100svh; padding-top: 120px; padding-bottom: 200px; }
 /* 슬라임이 위쪽(히어로 꺾임 옆 흰 삼각형)으로 넘어갈 수 있게 세로는 열고, 가로 마퀴만 자릅니다 */
 #s-intro { z-index: 1; overflow-x: clip; overflow-y: visible; }
@@ -402,7 +403,7 @@ body.ptr-on .intro-skip { cursor: none; }
   .prog__more { margin-top: 36px; }
 }
 
-/* ── 장면 12 (7p) — 랜딩 그대로 + 관심고객 등록 버튼 ─────────────── */
+/* ── 장면 12 (7p) — sections.css 그대로 + 관심고객 등록 버튼 ─────────────── */
 .copy-big { font-family: var(--font-title); }
 .s12-cta { margin-top: clamp(32px, 3.4vw, 56px); position: relative; z-index: 2; }
 
@@ -430,4 +431,4 @@ body.ptr-on .intro-skip { cursor: none; }
   .visit__map { min-height: 240px; aspect-ratio: 16 / 9; }
 }
 
-/* 홈의 등장 모션은 랜딩 장면 10~13과 같은 규칙(js/home.js의 reveal)입니다 */
+/* 홈 섹션의 등장 모션([data-step])은 모두 js/home.js의 reveal()이 맡습니다 */

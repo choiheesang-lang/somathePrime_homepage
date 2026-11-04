@@ -6,65 +6,60 @@
           <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
           <feGaussianBlur in="goo" stdDeviation="0.6" />
         </filter>
-        <!-- 20차: 여백 400 → 240. 최대 σ=70이라 3σ=210이면 충분한데 두 배를 잡고 있었습니다.
-             래스터 면적이 4.79M → 3.46M 유저유닛(1.39배)으로 줄고 그림은 같습니다. -->
+        <!-- 여백 240 — 최대 σ=70이라 3σ=210이면 충분합니다. 더 넓히면 래스터 면적만 늘고 그림은 같습니다. -->
         <filter id="glow" filterUnits="userSpaceOnUse" x="-240" y="-240" width="2400" height="1440" color-interpolation-filters="sRGB">
           <feGaussianBlur id="glow-blur" stdDeviation="28" />
         </filter>
-        <!-- The burst plate is scene 9's background. Its old stops spanned only 9 luminance
-             levels over 1000 units, so the field read as flat ivory and gave the colour lobes
-             nothing to sit against. A deeper warm rim turns it into light coming FROM the centre. -->
+        <!-- 버스트 판은 장면 9의 배경입니다. 가장자리를 따뜻한 색으로 깊게 내려야 평평한 아이보리가
+             아니라 가운데**에서** 나오는 빛으로 읽히고, 색 덩어리가 기댈 바닥이 생깁니다. -->
         <radialGradient id="burst-grad" cx="50%" cy="50%" r="50%">
           <stop offset="0"    stop-color="#FFFFFF" />
           <stop offset="0.42" stop-color="#FFFCF6" />
           <stop offset="1"    stop-color="#F8E8D6" />
         </radialGradient>
-        <!-- scene 9 colour lobes : peaks sampled from the Figma render of circle_animation -->
+        <!-- 장면 9 색 덩어리 : 피그마 circle_animation 렌더에서 샘플링한 봉우리들 -->
         <clipPath id="s9-clip"><ellipse cx="959" cy="480" rx="651" ry="548" /></clipPath>
-        <!-- The Figma video turns out to be four CRISP brand-coloured discs; the soft look comes
-             from the blur(64) laid over them. Same construction here, so the colour actually
-             flows when the discs move. Region = the circle_animation box; sRGB or the filter
-             would composite in linearRGB and shift the hues. -->
+        <!-- 피그마 영상은 **또렷한** 브랜드색 원판 넷이고, 부드러운 느낌은 그 위에 얹은 blur(64)에서
+             옵니다. 여기도 같은 구성이라 원판이 움직이면 색이 실제로 흐릅니다. 영역 = circle_animation
+             상자. sRGB가 아니면 필터가 linearRGB로 합성해 색조가 틀어집니다. -->
         <filter id="s9-blur" filterUnits="userSpaceOnUse" x="308" y="-68" width="1302" height="1096" color-interpolation-filters="sRGB">
           <feGaussianBlur stdDeviation="64" />
         </filter>
-        <!-- scene 9 : soft white glow behind the wordmark (Figma bg_light).
-             Solid white out to HALF the radius (the old offset 0.5) made a 700-unit flat plate:
-             the colour lobes all sit inside it, so they were painted onto dead-level white. A
-             continuous falloff keeps a bright core and lets the warm plate read through the
-             mid-field, which is what makes the lobes legible and the centre look lit. -->
+        <!-- 장면 9 : 로고 뒤의 부드러운 흰 빛(피그마 bg_light).
+             연속적으로 떨어지는 그라디언트라야 가운데는 밝게 남고 중간 영역에서는 따뜻한 판이
+             비칩니다 — 반지름 절반까지 순백으로 채우면 700 유닛짜리 평판이 되어 색 덩어리가
+             죽은 흰색 위에 칠해집니다. 이 떨어짐이 덩어리를 읽히게 하고 가운데를 빛나 보이게 합니다. -->
         <radialGradient id="bg-light-grad" cx="50%" cy="50%" r="50%">
           <stop offset="0"    stop-color="#FFFFFF" />
           <stop offset="0.22" stop-color="#FFFFFF" stop-opacity="0.92" />
           <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.45" />
           <stop offset="1"    stop-color="#FFFFFF" stop-opacity="0" />
         </radialGradient>
-        <!-- scene 1 : the living slime punches a hole in the veil (luminance mask: white = veil, black = photo) -->
-        <!-- background photo blur (scene 9 → 16) -->
+        <!-- 배경 사진 블러 (장면 9 이후) -->
         <filter id="photo-blur" filterUnits="userSpaceOnUse" x="-100" y="-100" width="2120" height="1160" color-interpolation-filters="sRGB">
           <feGaussianBlur id="photo-blur-sd" stdDeviation="0.5" />
         </filter>
-        <!-- the slime is a blob filled with the very same photo, so it fuses with the coloured blobs inside the goo filter -->
+        <!-- 슬라임은 바로 그 사진으로 채운 블롭이라, goo 필터 안에서 색 블롭들과 녹아 붙습니다 -->
         <pattern id="photo-fill" patternUnits="userSpaceOnUse" x="-40" y="-40" width="2000" height="1040">
           <image href="img/hero-campus.webp" x="0" y="0" width="2000" height="1040" preserveAspectRatio="xMidYMid slice" />
-          <!-- the window carries the same two veils as the screen behind it, so nothing changes
-               brightness when the slime hands over to #hero-photo at 1.12s -->
+          <!-- 창은 뒤 화면과 같은 두 겹의 덮개를 지니므로, 1.12s에 슬라임이 #hero-photo로
+               넘어갈 때 밝기가 변하지 않습니다 -->
           <rect class="tint-veil"  x="0" y="0" width="2000" height="1040" />
           <rect class="tint-solid" x="0" y="0" width="2000" height="1040" opacity="0.07" />
         </pattern>
 
       </defs>
 
-      <!-- background photo (overscanned so the blur never shows a rim) + light tint -->
+      <!-- 배경 사진(블러 가장자리가 보이지 않게 오버스캔) + 옅은 틴트 -->
       <image id="hero-photo" href="img/hero-campus.webp" x="-40" y="-40" width="2000" height="1040" preserveAspectRatio="xMidYMid slice" filter="url(#photo-blur)" />
       <rect id="veil-tint" x="0" y="0" width="1920" height="960" />
-      <!-- scene 1 veil : solid stone cover; the photo-filled slime sits above it as a living window -->
+      <!-- 장면 1 덮개 : 불투명한 스톤 색 — 사진으로 채운 슬라임이 그 위에서 살아 있는 창이 됩니다 -->
       <rect id="veil-solid" x="0" y="0" width="1920" height="960" />
 
-      <!-- soft bloom around the light (blurred twin of #burst) -->
+      <!-- 빛 둘레의 부드러운 번짐 (#burst의 블러 쌍둥이) -->
       <g id="burst-glow" filter="url(#glow)"><path id="burst-halo" fill="#FFFFFF" d="" /></g>
 
-      <!-- goo layer: 4 living blobs + the expanding light -->
+      <!-- goo 층: 살아 있는 블롭 4개 + 퍼지는 빛 -->
       <g id="goo-layer" filter="url(#goo)">
         <path id="slime" fill="url(#photo-fill)" d="" />
         <path class="b-sat" data-i="0" fill="#F2A48C" d="" />
@@ -74,7 +69,7 @@
         <path id="burst" fill="url(#burst-grad)" d="" />
       </g>
 
-      <!-- crisp twins on top of the goo: sharp interiors, only the joints stay melted -->
+      <!-- goo 위의 또렷한 쌍둥이: 안쪽은 선명하고 관절만 녹아 있습니다 -->
       <g id="crisp-layer">
         <path id="slime-crisp" fill="url(#photo-fill)" d="" />
         <path class="c-sat" data-i="0" fill="#F2A48C" d="" />
@@ -83,7 +78,7 @@
         <path class="c-sat" data-i="3" fill="#B7CFA3" d="" />
       </g>
 
-      <!-- white logos riding on the blobs -->
+      <!-- 블롭 위에 올라탄 흰 로고 -->
       <g id="logo-layer">
         <g class="lg" data-i="0"><use href="#lg-soma"      width="109" height="25" x="-54.5" y="-12.5" /></g>
         <g class="lg" data-i="1"><use href="#lg-playfacto" width="65"  height="43" x="-32.5" y="-21.5" /></g>
@@ -91,28 +86,26 @@
         <g class="lg" data-i="3"><use href="#lg-reading"   width="106" height="35.33" x="-49" y="-14" /></g>
       </g>
 
-      <!-- scene 9 : glow + colour lobes + stroke wordmark -->
+      <!-- 장면 9 : 빛 + 색 덩어리 + 로고 -->
       <circle id="bg-light" cx="960" cy="480" r="696" fill="url(#bg-light-grad)" opacity="0" />
-      <!-- filter inside, clip outside: filters are applied BEFORE clip/mask, so a clip on the
-           same element would trim the discs before they are blurred. -->
+      <!-- 필터는 안쪽, clip은 바깥쪽: 필터가 clip/mask보다 **먼저** 적용되므로, 같은 요소에 clip을
+           두면 블러 전에 원판이 잘립니다. -->
       <g id="s9-glow" opacity="0" clip-path="url(#s9-clip)">
         <g filter="url(#s9-blur)">
-          <!-- Poster-frame geometry carried through Figma's nesting: the video (1280 wide) fills
-               Frame 2610026 (1384x624 @ x -288) inside Frame 2610027 (808x624 @ 232,241) inside
-               circle_animation (1302x1096 @ 308,-68) — so scale 1.081 about (944, 485). -->
+          <!-- 피그마 중첩을 따라 옮긴 포스터 프레임 좌표: 영상(폭 1280)이 Frame 2610026(1384x624 @ x -288)을
+               채우고, 그것이 Frame 2610027(808x624 @ 232,241) 안에, 그것이 circle_animation
+               (1302x1096 @ 308,-68) 안에 있습니다 — 따라서 (944, 485) 기준 배율 1.081. -->
           <circle class="s9-lobe s9-lobe--sage"   cx="906"  cy="629" r="28"  />
           <circle class="s9-lobe s9-lobe--coral"  cx="865"  cy="484" r="119" />
           <circle class="s9-lobe s9-lobe--blue"   cx="1014" cy="382" r="50"  />
           <circle class="s9-lobe s9-lobe--yellow" cx="1006" cy="506" r="90"  />
         </g>
       </g>
-      <!-- 24차 · 장면 9 로고 (피그마 17683:3280 · 애니메이션 18009:5379). 그룹 #hero-mark는
-           그대로입니다 — scroll.js의 장면 9→10 핸드오프가 이 그룹의 opacity·y를, suspend()가
-           opacity를 잡고 있어서, 새 연출은 전부 **안쪽**에 겁니다(그룹 opacity에 걸면 스크롤을
-           되돌릴 때 핸드오프의 fromTo가 1로 덮어씁니다).
+      <!-- 장면 9 로고 (피그마 17683:3280). 그룹 #hero-mark의 opacity · y는 hero.js가 잡고 있으므로
+           연출은 전부 **안쪽** 요소에 겁니다.
            <use> 대신 **중첩 <svg>**인 이유: pathLength가 <use> 너머로 상속되지 않아 선을 그릴 수
-           없습니다. 중첩 svg도 x·y·width·height 속성을 받으므로 18차의 모바일 layout()이
-           속성을 다시 쓰는 방식이 그대로 삽니다.
+           없습니다. 중첩 svg도 x·y·width·height 속성을 받으므로 hero.js의 모바일 layout()이
+           속성을 다시 쓰는 방식이 그대로 통합니다.
            세 겹 — 외곽선(그려짐) · 채움(왼쪽부터 드러남) · 빛(로고 모양 안에서만 한 번 훑음). -->
       <g id="hero-mark" opacity="0">
         <svg class="mark-art" x="744" y="408" width="432" height="160" viewBox="0 0 432 160" overflow="visible">
@@ -182,14 +175,13 @@
 
     </svg>
 
-    <!-- glass panel (폭팔전_모양) -->
+    <!-- 유리 카드 (피그마 폭팔전_모양) -->
     <div class="panel" id="panel">
       <div class="panel__content" id="panel-content">
-        <div class="panel__soma-wrap panel__item"><!-- 24차 · 새 한 줄 로고 「SOMA+큐브」 (피그마 17674:650 · 단계 18019:6577).
-             옛 23.8KB mask SVG를 대체합니다. 외곽선과 채움을 **같은 path**로 만듭니다 — 피그마는
-             둘을 따로(296x61.5 / 293x58.5) 내보내 0.5~1px 어긋나는데, 한 path에 선과 채움을
-             나눠 걸면 정렬이 보장됩니다. 채움 투명도는 hero.js가 위성이 부딪힐 때마다 올립니다
-             (0 → 0.1 → 0.2 → 0.3 → 0.4). --><svg class="panel__soma" viewBox="0 0 293.001 58.4757" fill="none" role="img" aria-label="SOMA"><g class="panel__soma-fill" fill="#fff" fill-opacity="0"><path d="M115.389 58.4632L68.8233 58.4346C67.206 58.4346 65.3364 57.1153 65.3364 55.4325L65.3281 12.4298C65.3281 10.9307 67.0199 9.3418 68.5585 9.3418L115.985 9.35405C118.156 9.35405 119.29 11.4331 119.29 13.312L119.306 54.2969C119.306 56.666 118.061 58.4632 115.389 58.4632ZM101.913 47.4226L101.901 20.4478L82.7376 20.456V47.492L101.913 47.4266V47.4226Z" />
+        <div class="panel__soma-wrap panel__item"><!-- 한 줄 로고 「SOMA+큐브」 (피그마 17674:650).
+             외곽선과 채움을 **같은 path**로 만듭니다 — 피그마는 둘을 따로(296x61.5 / 293x58.5)
+             내보내 0.5~1px 어긋나는데, 한 path에 선과 채움을 나눠 걸면 정렬이 보장됩니다.
+             채움 투명도는 hero.js가 위성이 부딪힐 때마다 올립니다 (0 → 0.1 → 0.2 → 0.3 → 0.4). --><svg class="panel__soma" viewBox="0 0 293.001 58.4757" fill="none" role="img" aria-label="SOMA"><g class="panel__soma-fill" fill="#fff" fill-opacity="0"><path d="M115.389 58.4632L68.8233 58.4346C67.206 58.4346 65.3364 57.1153 65.3364 55.4325L65.3281 12.4298C65.3281 10.9307 67.0199 9.3418 68.5585 9.3418L115.985 9.35405C118.156 9.35405 119.29 11.4331 119.29 13.312L119.306 54.2969C119.306 56.666 118.061 58.4632 115.389 58.4632ZM101.913 47.4226L101.901 20.4478L82.7376 20.456V47.492L101.913 47.4266V47.4226Z" />
 <path d="M179.165 58.4757L179.099 33.7108L161.619 51.2133L144.639 33.7394L144.507 58.443L127.912 58.4676L127.908 9.3747L142.993 9.32568L161.61 28.8256L181.46 9.34202L195.83 9.35019V58.4635L179.165 58.4757Z" />
 <path d="M255.289 42.8391L240.597 9.3208L230.099 9.33714L219.601 9.3208L204.909 42.8391L197.973 58.4627H262.225L255.289 42.8391ZM220.623 47.4751L230.099 26.5006L239.575 47.4751H220.619H220.623Z" />
 <path d="M56.1911 41.9976L40.2086 31.247L28.5113 23.3923H57.1342V9.3208H18.7952V9.33714H7.75136L1.45183 15.4355V22.416C1.45183 24.1193 2.31631 25.7327 3.79295 26.758L15.2876 34.6331L29.4833 44.3953H0V58.4667H41.8631V58.4504H52.4933L58.5943 52.6053V46.3763C58.5943 44.6363 57.6884 43.0229 56.1911 41.9976Z" />
@@ -216,21 +208,20 @@
       </span>
     </button>
 
-    <!-- armed state: the play control rides the real pointer (the slime lags behind it).
-         A second SVG over the glass panel — same viewBox as #hero, so the satellite paths
-         mirrored into the clipPaths below line up exactly and the overlap can be re-coloured.
-         Figma 17832:4948 — a 20 glyph, gap 4, 14 Bold label, the row centred in the 96 disc.
-         15차: one control, three states (START / SKIP / RESTART). hero.js swaps the <use> href
-         and the label on all five copies and re-centres the row from the measured label width,
-         so the base and the four clipped clones can never drift apart. -->
+    <!-- 대기(armed) 상태: 재생 컨트롤이 실제 포인터를 탑니다(슬라임은 뒤따라옵니다).
+         유리 카드 위의 두 번째 SVG — #hero와 같은 viewBox라, 아래 clipPath에 복사한 위성 경로가
+         정확히 겹쳐 겹친 부분을 다시 칠할 수 있습니다.
+         피그마 17832:4948 — 20 글리프, 간격 4, 14 Bold 라벨, 그 행을 96 디스크 가운데에.
+         컨트롤 하나에 세 상태(START / SKIP / RESTART). hero.js가 다섯 사본 모두의 <use> href와
+         라벨을 바꾸고 잰 라벨 폭으로 행을 다시 가운데 맞추므로, 바탕과 잘린 사본 넷이 어긋날 수 없습니다. -->
     <svg id="hero-top" viewBox="0 0 1920 960" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
         <clipPath id="sat-clip-0"><path class="k-sat" data-i="0" d="" /></clipPath>
         <clipPath id="sat-clip-1"><path class="k-sat" data-i="1" d="" /></clipPath>
         <clipPath id="sat-clip-2"><path class="k-sat" data-i="2" d="" /></clipPath>
         <clipPath id="sat-clip-3"><path class="k-sat" data-i="3" d="" /></clipPath>
-      <!-- the base disc is knocked out where a blob shows through, so the two never
-           stack: two antialiased copies of the same circle left a dark fringe -->
+      <!-- 블롭이 비치는 자리는 바탕 디스크를 파냅니다 — 둘이 겹쳐 쌓이면 안티앨리어싱된
+           같은 원 두 장이 어두운 테두리를 남깁니다 -->
       <mask id="pb-knock">
         <rect x="-200" y="-200" width="2320" height="1360" fill="#fff" />
         <path class="m-sat" data-i="0" fill="#000" d="" />
@@ -248,8 +239,9 @@
       </g>
     </svg>
 
-    <!-- 홈페이지 인트로: 클릭 없이 자동 재생되는 오프닝(기획서 3p). START 대기 화면이 없으므로
-         랜딩의 커서 디스크·고정 컨트롤 대신 건너뛰기 버튼 하나만 둡니다. -->
+    <!-- SKIP — 오프닝을 건너뛰고 바로 홈으로(home.js maskOpen). START 대기 화면(is-armed)에서만 보이고,
+         마우스 화면은 home.js placeSkip이 카드와 아래 블롭 사이에, 터치 화면은 CSS가 좌하단 96 동그라미로 둡니다.
+         안의 .intro-skip__inv는 커서 디스크와 겹친 부분만 반전해 보이는 복제입니다(home.js nearSkip). -->
     <button type="button" class="intro-skip" id="intro-skip" aria-label="인트로 건너뛰고 홈으로">SKIP<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><use href="#ico-skip" /></svg><span class="intro-skip__inv" aria-hidden="true">SKIP<svg viewBox="0 0 20 20" fill="currentColor"><use href="#ico-skip" /></svg></span></button>
 
   </div>

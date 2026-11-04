@@ -1,12 +1,17 @@
 /* ─────────────────────────────────────────────
-   Reset & base
+   base.css — 리셋 · @property 등록 · 푸터 · 로고 스프라이트 참조 규칙 · reduced-motion
+   쓰는 곳: 모든 페이지(head.html, tokens.css 다음)  ·  의존: tokens.css · partial sprite(#logo-prime) / footer
+   로고 색은 --lp-ink/--lp-o/--lp-g/--lp-c 넷으로 받습니다 — @property로 등록돼 있어
+   `var(--x, 폴백)`의 폴백은 쓰이지 않으므로, 로고를 쓰는 자리마다 넷을 모두 명시해야 합니다.
+   html에 scroll-behavior: smooth를 두지 않습니다(ScrollTrigger.refresh()가 스크롤 위치를
+   저장 · 복원할 때 전환 중간값을 읽게 됩니다). 부드러운 이동은 js/site.js가 scrollTo로 요청합니다.
    ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
-/* no scroll-behavior: smooth here — ScrollTrigger.refresh() saves and restores the scroll
-   position by writing to the scroller, and CSS smooth scrolling animates that write so it
-   reads back a transitional value. The one place that wants a smooth jump (the nav brand
-   link) asks for it explicitly with scrollTo({ behavior: 'smooth' }). */
+/* scroll-behavior: smooth 없음 — ScrollTrigger.refresh()는 스크롤러에 값을 써서 스크롤
+   위치를 저장 · 복원하는데, CSS 부드러운 스크롤이 그 쓰기를 애니메이션으로 바꿔 전환
+   중간값을 읽어 버립니다. 부드러운 이동이 필요한 곳(퀵메뉴 TOP)은
+   scrollTo({ behavior: 'smooth' })로 직접 요청합니다. */
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -20,7 +25,7 @@ body {
   overflow-x: hidden;
 }
 
-/* 글자를 긁었을 때 — 소마 primary 주황(#F19A2F) 바탕 · 흰 글자, 모든 페이지 공통(2026-11-04) */
+/* 글자를 긁었을 때 — 소마 primary 주황(#F19A2F) 바탕 · 흰 글자, 모든 페이지 공통 */
 ::selection { background: var(--primary-normal2); color: #fff; }
 
 img, svg { display: block; max-width: 100%; }
@@ -36,29 +41,29 @@ ul { margin: 0; padding: 0; list-style: none; }
 .en { letter-spacing: -0.01em; }
 
 /* ─────────────────────────────────────────────
-   GNB (Figma GNB_menu)
+   GNB (피그마 GNB_menu)
    ───────────────────────────────────────────── */
 .gnb {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
   padding: 8px var(--gutter);
-  /* Figma GNB_menu (17674:740): a frosted bar so content passing underneath stays readable */
+  /* 피그마 GNB_menu(17674:740): 반투명 블러 바 — 아래를 지나는 내용이 계속 읽힙니다 */
   background: rgba(241, 238, 236, 0.72);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--line-normal);
   color: #000;
-  /* 24차: 로고는 밝은 바닥에서 컬러(피그마 GNB light) */
+  /* 로고는 밝은 바닥에서 컬러(피그마 GNB light) */
   --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
-  /* transform is in the list for the hide-on-scroll-down in js/main.js; without it the bar
-     would jump. 0.32s is short enough that scrolling back up feels immediate. */
+  /* transform이 목록에 있는 것은 내릴 때 GNB를 숨기는 js/site.js 때문입니다 — 없으면 바가
+     툭 사라집니다. 0.32s는 다시 올릴 때 즉각 나타나는 느낌을 지킬 만큼 짧습니다. */
   transition: color 0.45s var(--ease-out), border-color 0.45s var(--ease-out),
               background-color 0.45s var(--ease-out), transform 0.32s var(--ease-out),
               --lp-ink 0.45s var(--ease-out), --lp-o 0.45s var(--ease-out),
               --lp-g 0.45s var(--ease-out), --lp-c 0.45s var(--ease-out);
 }
-/* ── 24차 · 새 로고 「SOMA / THE PRIME」 (index.html의 #logo-prime) ─────────────
+/* ── 로고 「SOMA / THE PRIME」 (sprite.html의 #logo-prime) ─────────────
    부분별 색을 커스텀 속성으로 받습니다(<use> 안쪽은 바깥 셀렉터가 못 닿는 그림자 트리).
    @property로 **등록**하는 이유는 트랜지션 — 미등록 커스텀 속성은 보간되지 않아 GNB가
    어두운 바닥으로 넘어갈 때 글자는 0.45s에 걸쳐 바래는데 O·큐브만 툭 바뀝니다.
@@ -76,7 +81,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 
 /* ─────────────────────────────────────────────
-   Footer
+   푸터
    ───────────────────────────────────────────── */
 .site-footer {
   position: relative;
@@ -97,24 +102,22 @@ ul { margin: 0; padding: 0; list-style: none; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 /* 피그마 17701:3883 : 워드마크 · 1px 구분선 · 브랜드 로고 4개.
-   로고는 인라인 심볼을 <use>로 쓰므로 색이 color 한 줄로 정해집니다 — 예전 <img> +
-   grayscale/brightness 필터는 피그마에 없는 처리였고 색을 맞출 수도 없었습니다. */
+   로고는 인라인 심볼을 <use>로 쓰므로 색이 color 한 줄로 정해집니다. */
 .footer-top {
   display: flex; flex-wrap: wrap; align-items: center;
   gap: 32px;
   color: var(--primary-heavy);
 }
 .footer-mark {
-  /* 24차: 텍스트 → 로고 108x40 (피그마 17701:3883), 어두운 단색. 로고 0 · 구분선 140 ·
-     형제 로고 173 이라 기존 gap 32가 그대로 맞습니다(108 + 32 = 140). */
+  /* 로고 108x40 (피그마 17701:3883), 어두운 단색. 피그마에서 로고 0 · 구분선 140 ·
+     형제 로고 173 이라 gap 32가 그대로 맞습니다(108 + 32 = 140). */
   margin: 0; line-height: 0;
   --lp-ink: var(--text-normal); --lp-o: var(--text-normal); --lp-g: var(--text-normal); --lp-c: var(--text-normal);
 }
 .footer-mark .logo-prime { width: 108px; height: 40px; }
 .footer-div { width: 1px; height: 32px; background: var(--line-normal); }
 /* 피그마는 네 로고 사이가 **모두 정확히 56**입니다(x 0→151.26→255.84→418.98).
-   간격을 vw에 연동해 뒀던 게 1440에서 49로 좁아진 원인 — 이 행은 max-width 1200으로
-   고정이고 그게 곧 피그마 프레임 폭이라, 뷰포트를 따라갈 이유가 없었습니다. */
+   이 행은 max-width 1200(피그마 프레임 폭)으로 고정이라 좁은 화면에서만 줄어들면 됩니다. */
 .footer-brands { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px, 4vw, 56px); }
 /* 높이는 피그마 값 그대로 — 넷이 저마다 다릅니다. 폭은 viewBox 비율이 정합니다. */
 .footer-brands .fb { display: block; width: auto; }
@@ -122,14 +125,14 @@ ul { margin: 0; padding: 0; list-style: none; }
 .fb--play { height: 32.5px; }
 .fb--myon { height: 30px; }
 .fb--read { height: 28px; }
-.footer-brands .fb--read { width: 86px; }   /* 25차: 에듀 배지가 붙은 새 로고(151×50), 피그마 86×28. 위 `.footer-brands .fb`의 width:auto를 이기려면 같은 특이도가 필요합니다 */
+.footer-brands .fb--read { width: 86px; }   /* 에듀 배지가 붙은 로고(151×50), 피그마 86×28. 위 `.footer-brands .fb`의 width:auto를 이기려면 같은 특이도가 필요합니다 */
 .site-footer__meta {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
   color: var(--text-alternative); font-size: var(--fs-system-caption); letter-spacing: 0.02em;
 }
 
 @media (max-width: 640px) {
-  /* 모바일 푸터 (18차 · 피그마 17934:4798). 구분선이 세로에서 **가로 32x1**로 바뀌고
+  /* 모바일 푸터 (피그마 17934:4798). 구분선이 세로에서 **가로 32x1**로 바뀌고
      워드마크 아래로 내려옵니다. 세로 간격은 워드마크→선 25 · 선→로고 47 · 로고→메타 64. */
   .footer-top { flex-direction: column; align-items: flex-start; gap: 25px; }
   .footer-div { width: 32px; height: 1px; }

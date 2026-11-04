@@ -1,36 +1,33 @@
-/* ─────────────────────────────────────────────────────────────
-   hero.js — Figma hero_section_motion
-   armed  : Start screen. A living slime follows the pointer and is a
-            mask that reveals the interior photo through the stone veil.
-            Idle → it grows, moving → it shrinks. Start → play().
-   1-2    : the slime swells to the whole screen, the veil lifts
-   3-6    : four blobs dock onto the glass panel (squash + glow)
-   7-8    : light bursts out of the panel and absorbs the blobs
-   9      : light fills the screen, bg_light glow + stroke wordmark
-   Architecture: GSAP tweens plain state objects; render() on gsap.ticker
-   writes wiggly <path d> + transform every frame. viewBox = 1920×960.
-   ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   hero.js — 인트로 오프닝 모션 (피그마 hero_section_motion, viewBox 1920×960)
+   쓰는 곳: src/pages/index.html(홈)  ·  의존: gsap, #stage 마크업(src/partials/stage.html)
+   공개 API: window.STP.hero = { init, arm, play, autoplay, finish, fastForward, replay,
+             render, setActive, setDiscScale, discPx } — 호출은 js/home.js
+   단계: armed(대기, 커서를 따라다니는 슬라임 마스크) → 1-2 슬라임 확대·막 걷힘 → 3-6 블롭 넷이
+         유리 패널에 결합 → 7-8 빛 폭발·흡수 → 9 로고 등장. GSAP이 상태 객체를 트윈하고
+         gsap.ticker의 render()가 매 프레임 <path d>와 transform을 씁니다.
+   ───────────────────────────────────────────── */
 window.STP = window.STP || {};
 
 STP.hero = (function () {
   const VB = { w: 1920, h: 960 };
   const C = { x: 960, y: 480 };
-  // hMobile: the Figma mobile card is a taller box (234×257 on a 375 frame → 464×510 in panel units)
+  // hMobile: 피그마 모바일 카드는 더 긴 상자입니다(375 프레임에서 234×257 → 패널 단위 464×510)
   const PANEL = { w: 464, h: 342, hMobile: 510 };
   const R_BASE = 80;
-  const R_SLIME = 208;                 // the slime's one size — it only breathes around this
-  const R_FULL = 1150;                 // covers the 1920×960 diagonal (≈1073)
-  const R_BURST_END = 1000;            // scene 9: light stops short so the corners keep the blurred photo
+  const R_SLIME = 208;                 // 슬라임의 기준 크기 — 이 값 주위로 숨만 쉽니다
+  const R_FULL = 1150;                 // 1920×960 대각선(≈1073)을 덮습니다
+  const R_BURST_END = 1000;            // 장면 9: 빛이 모서리까지 닿지 않아 구석에는 흐린 사진이 남습니다
 
-  /* colors come from css/tokens.css so the palette has a single source of truth */
+  /* 색은 css/tokens.css에서 읽습니다 — 팔레트의 단일 출처 */
   const token = (name, fallback) => {
     const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     return v || fallback;
   };
   let WHITE = '#FFFFFF';
-  let STRONG = '#4F4D4C';              // logo colour on the Start screen; turns WHITE when the blob docks
+  let STRONG = '#4F4D4C';              // 대기 화면의 로고 색. 블롭이 결합하면 WHITE로 바뀝니다
 
-  // order = DOM order of .b-sat / .lg : 0 soma(top) 1 playfacto(right) 2 myON(bottom) 3 reading ocean(left)
+  // 순서 = .b-sat / .lg의 DOM 순서: 0 소마(위) 1 플레이팩토(오른쪽) 2 myON(아래) 3 리딩오션(왼쪽)
   const SATS = [
     { i: 0, side: 'top',    token: '--primary-lamp-coral',      color: '#F2A48C' },
     { i: 1, side: 'right',  token: '--primary-lamp-yellow',     color: '#F6D98A' },
@@ -42,14 +39,14 @@ STP.hero = (function () {
 
   let els, tl, armTl = null, rect, k = 1, R = R_BASE, P = null, hooks = {}, hdrVB = 76, panelH = PANEL.h, sPx = 1;
   let reduce = false, active = false, mobile = false, armed = false;
-  let pRect = null;                                   // the card's screen box, for the rim spotlight
-  const SPOT_FADE = 320;                              // px over which that spotlight fades out
-  /* 장면 9 로고의 데스크톱 기본 치수 (24차 · 피그마 17683:3280 — 432x160, 1920 중앙 정렬 x 744,
-     윗변 y 408). index.html의 중첩 <svg class="mark-art"> 속성과 같아야 합니다. */
+  let pRect = null;                                   // 카드의 화면 박스 — 테두리 스포트라이트용
+  const SPOT_FADE = 320;                              // 그 스포트라이트가 사라지는 거리(px)
+  /* 장면 9 로고의 데스크톱 기본 치수 (피그마 로고(17683:3280) — 432x160, 1920 중앙 정렬 x 744,
+     윗변 y 408). src/partials/stage.html의 중첩 <svg class="mark-art"> 속성과 같아야 합니다. */
   const MARK_W = 432, MARK_H = 160, MARK_X = 744, MARK_Y = 408;
-  /* 모바일 로고 폭(뷰포트 대비). 옛 가로로 긴 워드마크는 93.3%였는데(18차 피그마), 새 로고는
-     세로로 두툼해 같은 비율이면 390에서 364x135로 너무 큽니다. 모바일 사양이 아직 없어
-     정한 값입니다(24차 가정) — 이 한 줄만 바꾸면 됩니다. */
+  /* 모바일 로고 폭(뷰포트 대비). 로고가 세로로 두툼해 비율을 더 키우면 390 폭에서 너무
+     큽니다. 모바일 사양이 아직 없어 임의로 정한 값입니다 — 바꿀 일이 있으면 이 한 줄만
+     고치면 됩니다. */
   const MARK_MOBILE_VW = 0.62;
 
   const finePointer = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -58,7 +55,7 @@ STP.hero = (function () {
   let sats = [], burst, slime;
   const wiggle = { amp: 1 };
 
-  /* ── geometry ───────────────────────────────────────────── */
+  /* ── 기하 ─────────────────────────────────────────────── */
   function visibleRect() {
     let vw = 0, vh = 0;
     if (els && els.stage) { const b = els.stage.getBoundingClientRect(); vw = b.width; vh = b.height; }
@@ -73,17 +70,17 @@ STP.hero = (function () {
 
   function measure() {
     rect = visibleRect();
-    sPx = rect.vw / rect.w;                             // px per viewBox unit
+    sPx = rect.vw / rect.w;                             // viewBox 단위당 px
     hdrVB = (els && els.header ? els.header.getBoundingClientRect().height : 76) / sPx;
     mobile = rect.w < 800;
-    // the mobile card CSS keys off this class, not a media query — a viewport-px breakpoint
-    // would disagree with `mobile`, which is measured in viewBox units
+    // 모바일 카드 CSS는 미디어 쿼리가 아니라 이 클래스를 봅니다 — 뷰포트 px 기준 분기점은
+    // viewBox 단위로 재는 `mobile`과 어긋납니다
     if (els && els.body) els.body.classList.toggle('hero-narrow', mobile);
     k = gsap.utils.clamp(0.5, 1, rect.w / 1100);
     R = R_BASE * k;
     N = mobile ? 20 : 28;
     HARM = mobile ? 2 : 3;
-    // Figma mobile: card = 62 % of the viewport width, blob diameter = 28 %
+    // 피그마 모바일: 카드 = 뷰포트 폭의 62 %, 블롭 지름 = 28 %
     const pw = mobile ? rect.w * 0.62 : Math.min(PANEL.w, rect.w * 0.86);
     if (mobile) R = rect.w * 0.14;
     panelH = mobile ? PANEL.hMobile : PANEL.h;
@@ -91,9 +88,9 @@ STP.hero = (function () {
     P.x = C.x - P.w / 2; P.y = C.y - P.h / 2;
   }
 
-  /* place HTML layers on the SVG coordinate system; the panel is centered on its current (tweened) height */
+  /* HTML 레이어를 SVG 좌표계에 맞춥니다. 패널은 현재(트윈 중인) 높이 기준으로 가운데 맞춤 */
   function layout() {
-    const s = rect.vw / rect.w;                         // px per viewBox unit
+    const s = rect.vw / rect.w;                         // viewBox 단위당 px
     const ox = -rect.x * s, oy = -rect.y * s;
     const ph = panelH * P.k;
     els.stage.style.setProperty('--s', s);
@@ -104,15 +101,15 @@ STP.hero = (function () {
     els.panel.style.setProperty('--ph', panelH);
     els.panel.style.left = (ox + P.x * s) + 'px';
     els.panel.style.top = (oy + (C.y - ph / 2) * s) + 'px';
-    // 18차: 컨트롤은 CSS가 우하단(right 16 · bottom 32)에 고정합니다 — 피그마 장면 9
-    // 모바일의 playbutton 자리. 예전 카드 아래 배치용 인라인 좌표는 남아 있으면 이깁니다.
+    // 컨트롤은 CSS가 우하단(right 16 · bottom 32)에 고정합니다 — 피그마 장면 9 모바일의
+    // playbutton 자리. 인라인 left/top이 남아 있으면 CSS를 이기므로 비워 둡니다.
     if (els.ctl) { els.ctl.style.left = ''; els.ctl.style.top = ''; }
 
-    /* 장면 9 로고(18차 → 24차). 1920x960 viewBox가 `slice`라 좁은 화면에서는 높이 기준으로
-       확대되어 좌우가 잘려 나갑니다. 좁을 때만 치수를 다시 씁니다.
-       **transform이 아니라 속성**입니다 — scroll.js가 #hero-mark의 y/opacity를 GSAP으로
-       잡고 있어 transform을 얹으면 17차의 잔여 이동값 함정을 그대로 밟습니다. 24차에 <use>가
-       중첩 <svg>로 바뀌었지만 둘 다 x·y·width·height 속성을 받아 이 코드는 그대로입니다. */
+    /* 장면 9 로고. 1920x960 viewBox가 `slice`라 좁은 화면에서는 높이 기준으로 확대되어
+       좌우가 잘려 나갑니다. 좁을 때만 치수를 다시 씁니다.
+       **transform이 아니라 속성**으로 씁니다 — #hero-mark의 y/opacity는 GSAP(reset()과
+       타임라인)이 잡고 있어 transform을 얹으면 GSAP이 쓰는 이동값과 겹쳐 어긋납니다.
+       중첩 <svg>는 x·y·width·height 속성을 받으므로 이 방식이면 충분합니다. */
     const markUse = els.mark && els.mark.firstElementChild;
     if (markUse) {
       if (mobile) {
@@ -130,7 +127,7 @@ STP.hero = (function () {
         markUse.setAttribute('y', MARK_Y);
       }
     }
-    pRect = null;                                       // the spotlight re-reads it on the next move
+    pRect = null;                                       // 스포트라이트가 다음 이동 때 다시 읽습니다
   }
 
   function clientToVB(cx, cy) {
@@ -138,29 +135,29 @@ STP.hero = (function () {
     return { x: rect.x + (cx - b.left) * rect.w / b.width, y: rect.y + (cy - b.top) * rect.h / b.height };
   }
 
-  const inset = () => (mobile ? 0.08 : 0.28);   // how far the side blobs hang off the visible edge
+  const inset = () => (mobile ? 0.08 : 0.28);   // 좌우 블롭이 화면 가장자리 밖으로 얼마나 걸치는지
 
-  /* radius that covers the visible area from wherever the slime currently sits. R_FULL is a
-     centre-only figure; starting from a corner needs the full diagonal. The 1.15 margin is
-     because power2.in is only at 89.7 % of the radius when the veil lifts at t = 1.05. */
+  /* 슬라임이 지금 어디 있든 보이는 영역을 덮는 반지름. R_FULL은 가운데 기준 값이라
+     구석에서 시작하면 대각선 전체가 필요합니다. 1.15 여유는 막이 걷히는 t = 1.05 시점에
+     power2.in이 반지름의 89.7 %밖에 못 가 있기 때문입니다. */
   function coverR() {
     const x0 = rect.x, y0 = rect.y, x1 = rect.x + rect.w, y1 = rect.y + rect.h;
     const d = Math.max(Math.hypot(slime.x - x0, slime.y - y0), Math.hypot(slime.x - x1, slime.y - y0),
                        Math.hypot(slime.x - x0, slime.y - y1), Math.hypot(slime.x - x1, slime.y - y1));
     return Math.max(R_FULL, d * 1.15);
   }
-  // play disc diameter in viewBox units — Figma 17811:4078 draws it at 96 of a 160 blob,
-  // clamped in screen px so it stays legible in very small or very large windows
+  // 재생 디스크 지름(viewBox 단위) — 피그마 playbutton(17811:4078)은 160 블롭에 96으로 그립니다.
+  // 아주 작거나 큰 창에서도 읽히도록 화면 px로 clamp합니다
   const discVB = () => gsap.utils.clamp(52, 120, 96 * k * sPx) / sPx;
   const hideCuts = () => { els.pbCuts.forEach(g => { g.style.display = 'none'; }); els.pbHoles.forEach(g => { g.style.display = 'none'; }); };
-  // logos ride the blob, not the global scale: on mobile R is set from the viewport width,
-  // so scaling them by k would leave the marks too small inside their circles.
+  // 로고는 전역 배율이 아니라 블롭을 따릅니다: 모바일에서는 R이 뷰포트 폭으로 정해지므로
+  // k로 키우면 원 안의 로고가 너무 작아집니다.
   const lgK = () => R / R_BASE;
 
   function startPos(side) {
     switch (side) {
-      // desktop: the top blob rides 40 css px up so it just laps over the frosted GNB.
-      // mobile keeps Figma 17811:4081, which deliberately clears the bar.
+      // 데스크톱: 위 블롭을 CSS 40px 올려 반투명 GNB에 살짝 겹칩니다.
+      // 모바일은 피그마 모바일(17811:4081)대로 — 일부러 바를 피해 둡니다.
       // topFlush(홈): GNB가 없는 인트로라 아래 블롭과 거울처럼 — 화면 위 끝에 살짝 걸쳐 붙습니다.
       case 'top':    if (hooks.topFlush) return { x: C.x, y: mobile ? rect.y + rect.h * (1 - 0.817) : rect.y + R * 0.69 };
                      return { x: C.x, y: mobile ? rect.y + rect.h * 0.224 : rect.y + hdrVB + R * 1.2 - 40 / sPx };
@@ -170,7 +167,7 @@ STP.hero = (function () {
     }
   }
   function dockPos(side) {
-    const ov = 24 * k;                                  // how far the blob presses into the glass
+    const ov = 24 * k;                                  // 블롭이 유리 안으로 파고드는 깊이
     switch (side) {
       case 'top':    return { x: C.x, y: P.y - R + ov };
       case 'bottom': return { x: C.x, y: P.y + P.h + R - ov };
@@ -193,7 +190,7 @@ STP.hero = (function () {
       slimeEl: q('#slime'),
       photoBlur: q('#photo-blur-sd'),
       photo: q('#hero-photo'),
-      playCursor: q('#play-btn'),      // the disc that rides the pointer (SVG, in #hero-top)
+      playCursor: q('#play-btn'),      // 커서를 따라다니는 디스크(SVG, #hero-top 안)
       pbBodies: Array.from(document.querySelectorAll('.pb-body')),
       pbCuts: SATS.map(sa => q(`.pb-cut[data-i="${sa.i}"]`)),
       pbHoles: SATS.map(sa => q(`#pb-knock .m-sat[data-i="${sa.i}"]`)),
@@ -204,9 +201,9 @@ STP.hero = (function () {
       halo: q('#burst-halo'),
       burstGlow: q('#burst-glow'),
       bgLight: q('#bg-light'),
-      s9Glow: q('#s9-glow'),          // 장면 9 색 덩어리 (Figma circle_animation)
+      s9Glow: q('#s9-glow'),          // 장면 9 색 덩어리 (피그마 circle_animation)
       mark: q('#hero-mark'),
-      // 24차 · 장면 9 로고의 세 겹과 카드 로고 채움
+      // 장면 9 로고의 세 겹(선 · 채움 · 빛)과 카드 로고 채움
       markLines: Array.from(document.querySelectorAll('#hero-mark .mark-line path')),
       markLineG: q('#hero-mark .mark-line'),
       markReveal: q('#hero-mark .mark-reveal'),
@@ -225,7 +222,7 @@ STP.hero = (function () {
     };
   }
 
-  /* ── blob state & path generation ───────────────────────── */
+  /* ── 블롭 상태 · 패스 생성 ─────────────────────────────── */
   function makeBlob(vis, twin, seed, kind) {
     const rnd = (n) => { const x = Math.sin(seed * 12.9898 + n * 78.233) * 43758.5453; return x - Math.floor(x); };
     return {
@@ -236,21 +233,21 @@ STP.hero = (function () {
     };
   }
 
-  /* polar radius of the panel rectangle (used to morph the light out of the glass) */
+  /* 패널 사각형의 극좌표 반지름 (유리에서 빛이 번져 나오는 모핑에 씁니다) */
   function rectR(th) {
     const hw = P.w / 2, hh = P.h / 2;
     const c = Math.abs(Math.cos(th)), s = Math.abs(Math.sin(th));
     return Math.min(c > 1e-4 ? hw / c : 1e9, s > 1e-4 ? hh / s : 1e9);
   }
 
-  /* closed wiggly path centered at (0,0): Catmull-Rom → cubic Bézier */
+  /* (0,0) 중심의 닫힌 구불구불한 패스: Catmull-Rom → 큐빅 베지어 */
   function blobPath(b, t, ampScale, ox, oy) {
     const A = ampScale === undefined ? 1 : ampScale;
     ox = ox || 0; oy = oy || 0;
     const n = b.kind === 'burst' ? 48 : N;
     let px = new Array(n), py = new Array(n);
     if (b.kind === 'burst') {
-      // flame-like lobes near the panel (22%), smoother as it expands (7%)
+      // 패널 근처에서는 불꽃 같은 돌기(22%), 커질수록 매끈하게(7%)
       const grow = gsap.utils.clamp(0, 1, (b.r - 240 * P.k) / (900 * P.k));
       const ampF = A * wiggle.amp * (0.22 - 0.15 * grow);
       const drift = t * 0.25;
@@ -265,10 +262,10 @@ STP.hero = (function () {
         px[i] = rr * Math.cos(th); py[i] = rr * Math.sin(th);
       }
     } else {
-      // satellites 4 % · slime 7 % (a livelier creature), capped for large radii.
-      // b.ampK / b.spdK rise while the cursor is close, so a nudged blob gets visibly restless.
+      // 위성 4 % · 슬라임 7 %(더 살아 있는 생물), 큰 반지름에서는 상한을 둡니다.
+      // 커서가 가까우면 b.ampK / b.spdK가 올라가 건드린 블롭이 눈에 띄게 들썩입니다.
       const rel = b.kind === 'slime' ? 0.07 : 0.04 * (b.ampK || 1);
-      const tt = b.tt;                                // accumulated in render(), never t * spdK
+      const tt = b.tt;                                // render()에서 누적합니다 — 절대 t * spdK가 아닙니다
       const amp = A * wiggle.amp * rel * Math.min(b.r, 260 * k);
       for (let i = 0; i < n; i++) {
         const th = i / n * 6.283185307;
@@ -293,7 +290,7 @@ STP.hero = (function () {
     if (d !== b.lastD) {
       b.vis.setAttribute('d', d);
       if (b.twin) b.twin.setAttribute('d', d);
-      if (b.clips) for (const c of b.clips) c.setAttribute('d', d);   // #hero-top clip + knockout mask
+      if (b.clips) for (const c of b.clips) c.setAttribute('d', d);   // #hero-top 클립 + 녹아웃 마스크
       b.lastD = d;
     }
     if (tr !== b.lastT) {
@@ -304,12 +301,12 @@ STP.hero = (function () {
     }
   }
 
-  /* Wiggle phase is ACCUMULATED per blob, never `t * spdK`. Multiplying the absolute ticker clock
-     by a factor that attract() rewrites every frame injects a phase jump proportional to t — the
-     longer the tab has been open, the bigger the lurch the first time the cursor nears a blob, and
-     a cold load (where attract's dt sits at its 0.1s clamp) makes the jump ~5x worse again.
-     Accumulating means spdK changes the rate from here on and nothing else.
-     The dt clamp also keeps a janky 400ms frame from stepping the shape in one go. */
+  /* 흔들림 위상은 블롭마다 **누적**합니다 — 절대 `t * spdK`가 아닙니다. 절대 틱커 시각에
+     attract()가 매 프레임 바꾸는 계수를 곱하면 t에 비례한 위상 점프가 생깁니다 — 탭을 오래
+     열어 둘수록 커서가 블롭에 처음 다가갈 때 더 크게 튀고, 콜드 로드(attract의 dt가 0.1s
+     상한에 걸린 상태)에서는 그 점프가 다시 약 5배 커집니다.
+     누적하면 spdK는 그 시점부터의 속도만 바꾸고 다른 영향이 없습니다.
+     dt 상한은 400ms짜리 끊긴 프레임이 모양을 한 번에 건너뛰는 것도 막습니다. */
   function render(time, dtMs) {
     const t = time === undefined ? gsap.ticker.time : time;
     const dt = Math.min(0.05, (dtMs || 0) / 1000);
@@ -319,16 +316,16 @@ STP.hero = (function () {
       if (b.r < 0.5) { if (!b.hidden) { write(b, '', ''); b.hidden = true; } continue; }
       b.hidden = false;
       const tr = `translate(${b.x.toFixed(1)} ${b.y.toFixed(1)}) rotate(${b.rot.toFixed(1)}) scale(${b.sx.toFixed(3)} ${b.sy.toFixed(3)})`;
-      if (b.freeze) {                                   // last write without wiggle, then stop touching it
+      if (b.freeze) {                                   // 흔들림 없이 마지막으로 한 번 쓰고 더는 건드리지 않습니다
         write(b, blobPath(b, t, 0), tr);
         b.frozen = true;
         continue;
       }
       if (b.kind === 'slime') {
-        // A userSpaceOnUse pattern follows the element's own transform, so the slime keeps
-        // transform="" and bakes its position into the path — the photo stays pinned to #hero-photo.
-        if (b.r >= R_FULL) {                            // this big, drop the wiggle: a plain circle
-          const y = b.y.toFixed(1);                     // written every frame — it may still be growing
+        // userSpaceOnUse 패턴은 요소 자신의 transform을 따라가므로 슬라임은 transform=""을
+        // 유지하고 위치를 패스에 직접 굽습니다 — 사진이 #hero-photo에 고정된 채로 남습니다.
+        if (b.r >= R_FULL) {                            // 이만큼 크면 흔들림을 버리고 그냥 원으로
+          const y = b.y.toFixed(1);                     // 매 프레임 씁니다 — 아직 커지는 중일 수 있습니다
           write(b, `M${(b.x - b.r).toFixed(1)} ${y}a${b.r} ${b.r} 0 1 0 ${2 * b.r} 0a${b.r} ${b.r} 0 1 0 ${-2 * b.r} 0Z`, '');
           b.staticFull = true;
           continue;
@@ -343,11 +340,11 @@ STP.hero = (function () {
     syncPhotoFilter();
   }
 
-  /* 20차: #photo-blur는 σ가 16으로 오르는 마지막 0.8초(T9)에만 실제로 무언가를 합니다.
+  /* #photo-blur는 σ가 16으로 오르는 마지막 0.8초(T9)에만 실제로 무언가를 합니다.
      그 전 — 대기 화면과 인트로의 거의 전부 — 동안 σ는 0.5로, 390 폭에서 0.44 CSS px입니다.
      화면에는 한 픽셀도 차이가 없는데(대조 결과 0/1,316,640), 1758x914 CSS px = dpr 3에서
-     1450만 픽셀짜리 전면 필터 패스를 매 프레임 물게 합니다. 자동재생을 걷어낸 뒤로는
-     사람들이 그 대기 화면에 머무는 시간이 길어졌으니 더 아깝습니다. σ가 의미를 가질 때만
+     1450만 픽셀짜리 전면 필터 패스를 매 프레임 물게 합니다. START를 기다리는 대기 화면에
+     사람들이 오래 머무를수록 그만큼 더 아깝습니다. σ가 의미를 가질 때만
      붙입니다. */
   function syncPhotoFilter() {
     if (!els.photo || !els.photoBlur) return;
@@ -357,9 +354,9 @@ STP.hero = (function () {
     else els.photo.removeAttribute('filter');
   }
 
-  /* 20차: breathe도 여기서 함께 거둡니다. 예전에는 arm()에서 한 번 붙이고 제거하는
-     코드가 어디에도 없어, 인트로가 끝나고 장면 13까지 내려가도 틱커에 남아 있었습니다.
-     !armed면 즉시 리턴하니 비용은 작지만 페이지가 유휴 상태에 못 들어가는 원인 중 하나입니다. */
+  /* render와 breathe를 함께 붙이고 함께 거둡니다. breathe를 틱커에 남겨 두면 !armed라
+     즉시 리턴하더라도 인트로가 끝난 뒤 페이지가 유휴 상태에 못 들어가는 원인이 됩니다
+     (home.js의 finishIntro가 setActive(false)로 거둡니다). */
   function setActive(on) {
     if (on === active) return;
     active = on;
@@ -374,8 +371,7 @@ STP.hero = (function () {
      `body[data-ctl]`이 CSS의 표시 조건이자 커서 숨김 조건입니다. */
   /* box = 글리프 박스 한 변. 피그마는 행을 잉크가 아니라 **박스**로 가운데 맞춥니다 —
      SKIP 변형이 x 19 / width 58로 (96−58)/2 에 정확히 앉고, RESTART는 16 박스라
-     x 6 / width 84입니다(17937:4996 · 17937:5005). 15차에 "원래 잉크 기준이었다"고 본 것은
-     우연의 일치였습니다: 옛 START의 -36은 박스 기준에 라벨 48을 가정한 값입니다. */
+     x 6 / width 84입니다(피그마 playbutton 변형(17937:4996)). */
   const CTL = {
     start:   { ico: '#ico-start',   label: 'START',   aria: '인트로 재생',      box: 20 },
     skip:    { ico: '#ico-skip',    label: 'SKIP',    aria: '인트로 건너뛰기',  box: 20 },
@@ -430,14 +426,14 @@ STP.hero = (function () {
     else if (ctlState === 'restart') hooks.onRestart && hooks.onRestart();
   }
 
-  /* ── pointer → slime (armed state only) ───────────────────── */
+  /* ── 포인터 → 슬라임 (대기 상태 전용) ─────────────────── */
   const ptr = { has: false };
-  let lastClient = null;               // 22차: ctlState 이전에 본 마지막 포인터 좌표
-  const slimeSize = { base: 0 };       // popSlime() takes this 0 → R_SLIME*k; breathe() renders slime.r from it
+  let lastClient = null;               // ctlState가 붙기 전에 본 마지막 포인터 좌표
+  const slimeSize = { base: 0 };       // popSlime()이 0 → R_SLIME*k로 키우고, breathe()가 이 값에서 slime.r을 만듭니다
   let slimeX, slimeY, slimePop = null, slimePopT = 0, slimePopped = false;
 
-  /* The slime appears where the cursor is, so the entrance waits for the first pointer move.
-     If the mouse never moves we fall back to the centre after 1.5 s. */
+  /* 슬라임은 커서 자리에 나타나므로 등장은 첫 포인터 이동을 기다립니다.
+     마우스가 끝내 움직이지 않으면 1.5초 뒤 가운데로 폴백합니다. */
   function popSlime() {
     clearTimeout(slimePopT); slimePopT = 0;
     if (slimePopped || !armed || reduce) return;
@@ -475,10 +471,9 @@ STP.hero = (function () {
       }
       return;
     }
-    /* 22차: 좌표는 **ctlState 이전에도** 기억합니다. 21차에 arm이 「로드 직후」에서
-       「히어로에 닿았을 때」로 옮겨가면서, 장면 13에서 움직인 마우스가 전부 여기서
-       버려졌습니다 — 그래서 히어로에 도착했을 때 디스크가 원점에 opacity 0으로 남아
-       START가 화면 어디에도 없었습니다. */
+    /* 좌표는 **ctlState 이전에도** 기억합니다. arm 전에 움직인 마우스를 여기서 버리면
+       arm 시점에 showDisc()가 커서 위치를 몰라 디스크가 원점에 opacity 0으로 남고,
+       START가 화면 어디에도 없게 됩니다. */
     lastClient = { x: e.clientX, y: e.clientY };
     if (!ctlState) return;                                  // 디스크는 세 상태 모두 커서를 따라갑니다
     const v = clientToVB(e.clientX, e.clientY);
@@ -486,26 +481,26 @@ STP.hero = (function () {
     if (!ptr.has) {
       ptr.has = true;
       els.body.classList.add('ptr-on');                     // 커서 위치를 아는 동안만 OS 커서를 숨깁니다
-      if (armed && !slimePopped) { slime.x = v.x; slime.y = v.y; }   // still hidden: appear right under the cursor
-      gsap.set(els.playCursor, { opacity: 1 });             // otherwise quickTo eases it over, no jump
+      if (armed && !slimePopped) { slime.x = v.x; slime.y = v.y; }   // 아직 숨어 있으니 커서 바로 아래에서 나타납니다
+      gsap.set(els.playCursor, { opacity: 1 });             // 처음은 set으로 즉시 켭니다 — 미끄러져 들어오지 않게
       popSlime();
     }
-    // the base and the four clipped copies share one transform; the clip itself stays in
-    // viewBox space (on the untransformed .pb-cut parent) so it lines up with the blobs
+    // 베이스와 클립 사본 넷이 transform 하나를 나눠 씁니다. 클립 자체는 transform 없는
+    // .pb-cut 부모에 있어 viewBox 좌표에 머물고, 그래서 블롭과 정확히 맞습니다
     placeDisc(v);
     if (!armed) return;                                     // 슬라임과 카드 스포트라이트는 대기 상태에만 있습니다
     slimeX(v.x); slimeY(v.y);
     spotlight(e.clientX, e.clientY);
   }
-  /* ── cursor spotlight on the card rim ────────────────────
-     Writes two custom properties on .panel; the ring lives in css/hero.css (.panel::before).
-     pRect caches the card's box — this runs on every pointermove, and layout() clears it. */
+  /* ── 카드 테두리의 커서 스포트라이트 ───────────────────
+     .panel에 커스텀 프로퍼티 둘을 씁니다. 링 자체는 css/hero.css(.panel::before)에 있습니다.
+     pRect는 카드 박스 캐시 — pointermove마다 돌므로 캐시하고, layout()이 비웁니다. */
   function spotlight(cx, cy) {
     if (!pRect) pRect = els.panel.getBoundingClientRect();
     const r = pRect;
     els.panel.style.setProperty('--spot-x', (cx - r.left).toFixed(1) + 'px');
     els.panel.style.setProperty('--spot-y', (cy - r.top).toFixed(1) + 'px');
-    // distance to the card rectangle: 0 anywhere on the card, then fading out over SPOT_FADE
+    // 카드 사각형까지의 거리: 카드 위면 0, 밖에서는 SPOT_FADE에 걸쳐 사라집니다
     const dx = Math.max(r.left - cx, 0, cx - r.right);
     const dy = Math.max(r.top - cy, 0, cy - r.bottom);
     const a = 1 - Math.hypot(dx, dy) / SPOT_FADE;
@@ -518,7 +513,7 @@ STP.hero = (function () {
   function onPointerLeave(e) {
     if (!ctlState) return;
     if (hooks.touchMask && e && e.pointerType === 'touch') return;   // 손가락을 떼도 마스크는 그 자리에
-    ptr.has = false;                                    // re-entry goes through the "first move" branch again
+    ptr.has = false;                                    // 다시 들어오면 「첫 이동」 분기를 다시 탑니다
     ptr.v = null;
     lastClient = null;                                  // 창을 벗어났으니 「거기 있다」는 보장이 끝납니다
     els.body.classList.remove('ptr-on');                // OS 커서를 돌려줍니다
@@ -530,18 +525,18 @@ STP.hero = (function () {
     spotOff();
   }
 
-  /* one size, always breathing — the slime never grows or shrinks with the pointer */
+  /* 크기는 하나, 늘 숨 쉽니다 — 슬라임은 포인터에 따라 커지거나 작아지지 않습니다 */
   function breathe(time, dtMs) {
     if (!armed || reduce) return;
-    slime.r = slimeSize.base * (1 + 0.05 * Math.sin(time * 1.8));   // a creature always breathes
+    slime.r = slimeSize.base * (1 + 0.05 * Math.sin(time * 1.8));   // 생물은 늘 숨을 쉽니다
     attract(Math.min(0.1, dtMs / 1000));
   }
 
-  /* Cursor gravity (fine pointer only): a satellite the cursor approaches swells to 1.2×,
-     drifts toward the big slime and wiggles harder. Everything eases back on its own. */
-  const PULL_RANGE = 420, PULL_MAX = 0.28, GROW_MAX = 0.20;   // GROW_MAX 0.20 = the 1.2× cap
+  /* 커서 중력(정밀 포인터 전용): 커서가 다가간 위성은 1.2×로 부풀고 큰 슬라임 쪽으로
+     끌려가며 더 세게 흔들립니다. 멀어지면 전부 스스로 제자리로 돌아갑니다. */
+  const PULL_RANGE = 420, PULL_MAX = 0.28, GROW_MAX = 0.20;   // GROW_MAX 0.20 = 1.2× 상한
   function attract(dt) {
-    if (armTl && armTl.isActive()) return;              // let the entrance pop finish first
+    if (armTl && armTl.isActive()) return;              // 등장 팝이 먼저 끝나게 둡니다
     const ease = 1 - Math.exp(-dt * 6);
     const v = ptr.has ? ptr.v : null;
     for (let i = 0; i < sats.length; i++) {
@@ -555,7 +550,7 @@ STP.hero = (function () {
       const was = b.f;
       b.f += (target - b.f) * ease;
       if (b.f < 0.002 && target === 0) b.f = 0;
-      if (b.f === 0 && was === 0) continue;             // resting: nothing to write
+      if (b.f === 0 && was === 0) continue;             // 쉬는 중: 쓸 게 없습니다
       const pull = PULL_MAX * b.f;
       b.x = b.home.x + ((v ? v.x : b.home.x) - b.home.x) * pull;
       b.y = b.home.y + ((v ? v.y : b.home.y) - b.home.y) * pull;
@@ -567,18 +562,18 @@ STP.hero = (function () {
   }
 
   /* 디스크가 어느 위성 블롭과 겹치는지. 겹치는 사본만 켜고 나머지는 끕니다.
-     16차: attract() 안(대기 상태 전용)에 있던 판정을 빼내 render()에서 부릅니다 — 그래야
-     SKIP 상태(인트로 재생 중)에도 반전이 살아 있습니다. 클립 지오메트리는 write()가 이미
+     판정은 render()에서 부릅니다 — attract()(대기 상태 전용) 안에 두면 SKIP 상태
+     (인트로 재생 중)에 반전이 죽습니다. 클립 지오메트리는 write()가 이미
      매 프레임 vis·twin과 함께 미러링하므로 따로 할 일이 없고, 블롭 좌표는 인트로 중에는
      타임라인이 쓰므로 그대로 따라갑니다. 폭발(T8)에서 r → 0이 되면 저절로 꺼집니다. */
   function syncCuts() {
     if (!sats.length || !els.pbCuts) return;
     const v = (ctlState && ptr.has) ? ptr.v : null;
-    const dr = discVB() / 2;                            // play disc radius, for the overlap test
+    const dr = discVB() / 2;                            // 재생 디스크 반지름, 겹침 판정용
     for (let i = 0; i < sats.length; i++) {
       const b = sats[i], cut = els.pbCuts[i], hole = els.pbHoles[i];
       if (!cut) continue;
-      // '' would drop the inline value and fall back to the `.pb-cut { display: none }` rule
+      // ''로 두면 인라인 값이 빠져 `.pb-cut { display: none }` 규칙으로 떨어집니다
       const want = (v && b.r > 0.5 && Math.hypot(v.x - b.x, v.y - b.y) < b.r + dr) ? 'inline' : 'none';
       if (cut.style.display !== want) { cut.style.display = want; hole.style.display = want; }
       // 장면 8에서 블롭이 흰색으로 바랬다가 사라집니다 — 사본이 브랜드 색으로 남으면 어긋납니다
@@ -589,19 +584,19 @@ STP.hero = (function () {
     }
   }
 
-  /* ── reset to the armed look (scene 1) ─────────────────── */
+  /* ── 대기 화면(장면 1) 모습으로 되돌리기 ───────────────── */
   function reset() {
     measure();
     layout();
     if (!blobs.length) {
       sats = SATS.map((s, i) => {
         const b = makeBlob(document.querySelector(`.b-sat[data-i="${s.i}"]`), document.querySelector(`.c-sat[data-i="${s.i}"]`), 10 + i, 'sat');
-        // attached now, so write()'s diff cache matches from the first frame.
-        // 20차: 이 클립·마스크는 커서 디스크(#hero-top)가 위성 위를 지날 때 잉크를 뒤집는
+        // 여기서 붙여야 write()의 diff 캐시가 첫 프레임부터 맞습니다.
+        // 이 클립·마스크는 커서 디스크(#hero-top)가 위성 위를 지날 때 잉크를 뒤집는
         // 용도뿐인데, 터치에서는 #hero-top이 display:none입니다(hero.css의 (pointer:coarse)).
-        // 그런데도 write()가 프레임마다 위성 4개 × 2요소 × 2속성 = 16회를 그리지도 않는
-        // 노드에 쓰고 있었고, 그 쓰기가 전부 #goo 필터 서브트리를 더럽혀 전면 가우시안을
-        // 다시 돌게 만들었습니다. 커서가 있을 때만 붙입니다.
+        // 그런데도 붙여 두면 write()가 프레임마다 위성 4개 × 2요소 × 2속성 = 16회를 그리지도
+        // 않는 노드에 쓰고, 그 쓰기가 전부 #goo 필터 서브트리를 더럽혀 전면 가우시안을
+        // 다시 돌게 합니다. 커서가 있을 때만 붙입니다.
         if (finePointer()) {
           b.clips = [document.querySelector(`#sat-clip-${s.i} .k-sat`), document.querySelector(`#pb-knock .m-sat[data-i="${s.i}"]`)];
         }
@@ -612,8 +607,8 @@ STP.hero = (function () {
       slime = makeBlob(els.slimeEl, document.getElementById('slime-crisp'), 5, 'slime');
       blobs.push(burst, slime);
     }
-    // play() kills these tweens, and a killed quickTo setter is dead for good —
-    // so they are re-created on every reset(), not once (replay used to lose pointer-follow).
+    // play()가 이 트윈들을 죽이는데, 죽은 quickTo 세터는 되살아나지 않습니다 —
+    // 그래서 한 번이 아니라 reset()마다 다시 만듭니다(아니면 replay 뒤 포인터 추적이 끊깁니다).
     slimeX = gsap.quickTo(slime, 'x', { duration: 0.45, ease: 'power3' });
     slimeY = gsap.quickTo(slime, 'y', { duration: 0.45, ease: 'power3' });
     if (armTl) { armTl.kill(); armTl = null; }
@@ -621,12 +616,12 @@ STP.hero = (function () {
 
     gsap.set(els.photoBlur, { attr: { stdDeviation: 0.5 } });
     gsap.set(els.veilSolid, { opacity: 1 });
-    gsap.set(els.blur, { attr: { stdDeviation: 9 * k } });        // armed: strong goo so the slime melts into the blobs
+    gsap.set(els.blur, { attr: { stdDeviation: 9 * k } });        // 대기: 슬라임이 블롭에 녹아들도록 goo를 세게
     gsap.set(els.glowBlur, { attr: { stdDeviation: 28 } });
     gsap.set(els.burstEl, { opacity: 0 });
     gsap.set(els.burstGlow, { opacity: 0 });
     gsap.set([els.bgLight, els.mark, els.s9Glow], { opacity: 0, y: 0 });
-    // 24차: 장면 9 로고 — 선 안 그려짐 · 채움 0 · 빛 왼쪽 밖 / 카드 로고 채움 0단계.
+    // 장면 9 로고 — 선 안 그려짐 · 채움 0 · 빛 왼쪽 밖 / 카드 로고 채움 0단계.
     // replay()가 build() → reset()으로 여기를 지나 처음 상태로 돌아옵니다.
     gsap.set(els.markLines, { strokeDashoffset: 100 });
     gsap.set(els.markLineG, { opacity: 1 });
@@ -646,13 +641,13 @@ STP.hero = (function () {
     slimeSize.base = R_SLIME * k;
     gsap.set(els.playCursor, { opacity: 0 });
     hideCuts();
-    spotOff();                                          // a replay must not keep the old rim lit
+    spotOff();                                          // 다시 재생할 때 이전 테두리 불빛이 남으면 안 됩니다
     placeSats();
     render();
   }
 
-  /* park the four blobs (and their logos) on the current visible edges.
-     keepR leaves the radius alone — armTl may still be tweening the entrance pop. */
+  /* 블롭 넷(과 로고)을 현재 보이는 가장자리에 세웁니다.
+     keepR이면 반지름은 건드리지 않습니다 — armTl이 아직 등장 팝을 트윈 중일 수 있습니다. */
   function placeSats(keepR) {
     SATS.forEach((s, idx) => {
       const p = startPos(s.side);
@@ -660,30 +655,30 @@ STP.hero = (function () {
       Object.assign(sats[idx], { x: p.x, y: p.y, r, rot: 0, sx: 1, sy: 1, lastD: '', lastT: '', home: p, f: 0, ampK: 1, spdK: 1 });
       sats[idx].vis.setAttribute('fill', s.color);
       sats[idx].twin.setAttribute('fill', s.color);
-      els.pbCutFills[idx].style.fill = s.color;      // inline: a presentation attribute would lose to .pb-body circle
+      els.pbCutFills[idx].style.fill = s.color;      // 인라인으로: 프레젠테이션 속성은 .pb-body circle 규칙에 집니다
       gsap.set(els.logos[idx], { x: p.x, y: p.y, opacity: 1, scale: lgK(), color: STRONG, transformOrigin: '50% 50%' });
     });
   }
 
-  /* ── intro timeline (runs from Start) ───────────────────── */
+  /* ── 인트로 타임라인 (START에서 재생) ──────────────────── */
   function build() {
     reset();
     buildTimeline();
   }
 
-  /* the intro timeline bakes dockPos()/R in, so it has to be re-made whenever geometry changes */
+  /* 인트로 타임라인은 dockPos()/R을 값으로 굽기 때문에 기하가 바뀔 때마다 다시 만들어야 합니다 */
   function buildTimeline() {
     if (tl) tl.kill();
     tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
 
-    /* scene 1 → 2 : the slime swells over the whole screen and the veil lifts */
+    /* 장면 1 → 2 : 슬라임이 화면 전체로 부풀고 막이 걷힙니다 */
     tl.add(() => hooks.onToDark && hooks.onToDark(), 0)
       .to(els.blur, { attr: { stdDeviation: 3 * k }, duration: 0.8, ease: 'power1.inOut' }, 0.3)
       .to(slime, { r: () => coverR(), duration: 0.95, ease: 'power2.in' }, 0.15)
       .set(els.veilSolid, { opacity: 0.07 }, 1.05)
       .set(slime, { r: 0 }, 1.12);
 
-    /* scenes 3 → 6 : blobs dock onto the panel, one edge at a time */
+    /* 장면 3 → 6 : 블롭이 한 변씩 패널에 결합합니다 */
     DOCK_ORDER.forEach((idx, n) => {
       const s = SATS[idx], b = sats[idx], t = DOCK_T[n];
       const d = dockPos(s.side), sq = squash(s.side);
@@ -698,13 +693,13 @@ STP.hero = (function () {
           backgroundColor: `rgba(255,255,255,${(0.01 + 0.035 * (n + 1)).toFixed(3)})`,
           duration: 0.5, ease: 'power1.out',
         }, t + 0.62)
-        /* 24차 · 카드 로고가 부딪힐 때마다 한 단계씩 차오릅니다(피그마 18019:6577, 0 → 0.4).
+        /* 카드 로고가 부딪힐 때마다 한 단계씩 차오릅니다(피그마 카드 로고(18019:6577), 0 → 0.4).
            바로 위 테두리·배경과 같은 시점·같은 `n + 1` 규칙 — 카드 전체가 한 박자로 밝아집니다.
            4단계(3.92s) 직후 4.1s에 카드가 빛으로 바뀌지만 power3.in이라 약 0.4초는 보입니다. */
         .to(els.cardFill, { attr: { 'fill-opacity': (0.1 * (n + 1)).toFixed(2) }, duration: 0.5, ease: 'power1.out' }, t + 0.62);
     });
 
-    /* scene 7 : the panel gives way to light */
+    /* 장면 7 : 패널이 빛에 자리를 내줍니다 */
     const T7 = 4.1;
     tl.to(els.panelContent, { scale: 0.25, opacity: 0, duration: 0.6, ease: 'power3.in', transformOrigin: '50% 50%' }, T7)
       .to(els.panel, { scale: 0.25, opacity: 0, duration: 0.85, ease: 'power3.in' }, T7 + 0.1)
@@ -715,7 +710,7 @@ STP.hero = (function () {
       .to(burst, { r: 310 * P.k, duration: 0.85, ease: 'power2.out' }, T7 + 0.1)
       .to(els.blur, { attr: { stdDeviation: 14 * k }, duration: 0.5, ease: 'power1.inOut' }, T7 + 0.3);
 
-    /* scene 8 : the light grows, the blobs are pulled in and absorbed */
+    /* 장면 8 : 빛이 커지고 블롭이 끌려 들어가 흡수됩니다 */
     const T8 = T7 + 0.95;
     tl.to(burst, { r: 480 * P.k, duration: 1.1, ease: 'power1.inOut' }, T8)
       .to(els.glowBlur, { attr: { stdDeviation: 48 }, duration: 1.1, ease: 'none' }, T8);
@@ -730,7 +725,7 @@ STP.hero = (function () {
         .to(b, { r: 0, duration: 0.5, ease: 'power3.in' }, t + 0.65);
     });
 
-    /* scene 9 : light nearly fills the screen (corners keep the blurred photo), glow + stroke wordmark */
+    /* 장면 9 : 빛이 화면을 거의 채우고(구석엔 흐린 사진이 남음), 글로우 + 외곽선 로고 */
     const T9 = T8 + 1.15;
     tl.to(burst, { r: R_BURST_END * P.k, duration: 1.05, ease: 'power2.in' }, T9)
       .to(els.glowBlur, { attr: { stdDeviation: 70 }, duration: 0.8, ease: 'none' }, T9)
@@ -740,10 +735,10 @@ STP.hero = (function () {
       .add(() => hooks.onToLight && hooks.onToLight(), T9 + 0.85)
       .add(() => { burst.freeze = true; }, T9 + 1.15);
 
-    /* 24차 · 장면 9 로고 (피그마 18009:5379) — 옛 워드마크가 페이드로 나타나던 자리(T9+1.0)에서
-       시작해 약 2.5초. 외곽선 1.0 → 채움 0.8 → 빛 0.7. 전부 **그룹 안쪽**에 겁니다(그룹
-       opacity·y는 scroll.js 핸드오프의 몫). 끝값이 곧 최종 화면이라 ?intro=0의 progress(1)
-       점프도 같은 그림에 떨어집니다 — 콜백에서 CSS 애니메이션을 켜지 않는 이유입니다. */
+    /* 장면 9 로고 (피그마 로고(18009:5379)) — T9+1.0에서 시작해 약 2.5초.
+       외곽선 1.0 → 채움 0.8 → 빛 0.7. 전부 **그룹 안쪽** 요소에 겁니다(그룹 자체의
+       opacity·y는 reset()과 타임라인이 GSAP으로 씁니다). 끝값이 곧 최종 화면이라 finish()의
+       progress(1) 점프도 같은 그림에 떨어집니다 — 콜백에서 CSS 애니메이션을 켜지 않는 이유입니다. */
     const TM = T9 + 1.0;
     tl.set(els.mark, { opacity: 1 }, TM)                // 선이 dashoffset 100이라 켜도 아직 안 보입니다
       .fromTo(els.markLines, { strokeDashoffset: 100 },
@@ -754,7 +749,7 @@ STP.hero = (function () {
       .fromTo(els.markShine, { attr: { x: -200 } },
         { attr: { x: MARK_W + 200 }, duration: 0.7, ease: 'power1.inOut' }, TM + 1.8);
 
-    // 로고가 다 그려진 뒤에 RESTART 전환 · 스크롤 핸드오프 재개 · Scroll Down 큐 (예전 T9+1.75)
+    // 로고가 다 그려진 뒤에 마무리 — RESTART 전환(noRestart면 컨트롤 제거) · onComplete 훅
     tl.add(() => finishState(), TM + 2.5);
     return tl;
   }
@@ -770,7 +765,7 @@ STP.hero = (function () {
     hooks.onComplete && hooks.onComplete();
   }
 
-  /* ── public API ─────────────────────────────────────────── */
+  /* ── 공개 API ───────────────────────────────────────────── */
   function init(options) {
     hooks = options || {};
     reduce = !!hooks.reduce;
@@ -780,7 +775,7 @@ STP.hero = (function () {
     SATS.forEach(s => { s.color = token(s.token, s.color); });
     query();
     build();
-    setActive(true);                                   // render + breathe 둘 다 (20차)
+    setActive(true);                                   // render + breathe 둘 다
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     document.addEventListener('pointerleave', onPointerLeave);
     // 디스크가 커서 위에 있으므로 히어로 전체가 그 버튼입니다. 단 RESTART는 포인터에
@@ -805,15 +800,15 @@ STP.hero = (function () {
       }, 120);
     });
 
-    /* measure() runs at parse time, so hdrVB is read off the header BEFORE Pretendard swaps in.
-       arm() only re-measures when the stage box changes, and a font swap never moves a fixed
-       full-viewport stage — so on a cold load the top blob stayed parked at the wrong y. */
+    /* measure()는 파싱 시점에 돌아 hdrVB를 Pretendard가 적용되기 **전**의 헤더에서 읽습니다.
+       arm()은 스테이지 박스가 바뀔 때만 다시 재는데, 폰트 교체는 고정 전체 화면 스테이지를
+       움직이지 않습니다 — 여기서 다시 재지 않으면 콜드 로드에서 위 블롭이 엉뚱한 y에 섭니다. */
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(() => {
         if (!rect) return;
-        measure();                                     // only hdrVB actually moves; the stage box is unchanged
+        measure();                                     // 실제로 바뀌는 건 hdrVB뿐, 스테이지 박스는 그대로
         layout();
-        if (armed) placeSats(midArm());                // mid-intro the timeline owns the blobs
+        if (armed) placeSats(midArm());                // 인트로 중에는 타임라인이 블롭의 주인
       });
     }
     return api;
@@ -821,7 +816,7 @@ STP.hero = (function () {
 
   const midArm = () => !!(armTl && armTl.isActive());
 
-  /* Start screen: blobs & slime pop in, the pointer takes over */
+  /* 대기 화면: 블롭과 슬라임이 튀어나오고 포인터가 넘겨받습니다 */
   function arm() {
     const r0 = visibleRect();
     if (!rect || Math.abs(r0.w - rect.w) > 1 || Math.abs(r0.h - rect.h) > 1) build();
@@ -830,7 +825,7 @@ STP.hero = (function () {
     els.body.classList.remove('is-intro');
     ctlState = null; setCtl('start');
     hooks.onToDark && hooks.onToDark();
-    hooks.onArm && hooks.onArm();                       // → scroll.js suspends the scene 9→10 handoff
+    hooks.onArm && hooks.onArm();                       // init() hooks — 대기 화면에 들어갔음을 알립니다(홈은 쓰지 않음)
     if (reduce) return;
     if (armTl) armTl.kill();
     armTl = gsap.timeline();
@@ -840,16 +835,15 @@ STP.hero = (function () {
     });
     slime.r = 0; slimeSize.base = 0;
     clearPop();
-    if (ptr.has || !finePointer()) popSlime();          // pointer known, or no cursor at all (touch)
-    else slimePopT = setTimeout(popSlime, 1500);        // cursor exists but hasn't moved → centre fallback
+    if (ptr.has || !finePointer()) popSlime();          // 포인터를 알거나 커서가 아예 없으면(터치)
+    else slimePopT = setTimeout(popSlime, 1500);        // 커서는 있는데 안 움직임 → 가운데 폴백
     showDisc();
   }
 
-  /* 22차: 디스크에도 슬라임과 같은 폴백. 여태 디스크의 가시성은 오직 onPointerMove의
-     첫 진입 한 줄에 매달려 있었고(CSS 기본이 opacity 0), arm 이후에 마우스를 한 번도
-     움직이지 않으면 START가 화면에 아예 존재하지 않았습니다 — 휠로만 히어로에 내려온
-     아주 흔한 경우가 여기 걸립니다. 슬라임은 이미 1.5초 중앙 폴백을 갖고 있었는데
-     디스크만 빠져 있었습니다.
+  /* 디스크에도 슬라임과 같은 폴백을 둡니다. 디스크의 가시성이 onPointerMove의 첫 진입
+     한 줄에만 매달려 있으면(CSS 기본이 opacity 0) arm 이후 마우스를 한 번도 움직이지
+     않을 때 START가 화면에 아예 존재하지 않습니다 — 마우스를 두고 기다리는 흔한 경우가
+     여기 걸립니다. 슬라임의 1.5초 중앙 폴백과 짝을 이룹니다.
      아는 좌표가 있으면 거기에, 없으면 스테이지 가운데에 놓고 띄웁니다. */
   function showDisc() {
     if (reduce || !finePointer() || ptr.has) return;
@@ -858,7 +852,7 @@ STP.hero = (function () {
     ptr.v = v;
     placeDisc(v);
     gsap.set(els.playCursor, { opacity: 1 });
-    /* 좌표를 실제로 아는 경우(장면 13에서 움직였다)에만 OS 커서를 숨깁니다 — 디스크가
+    /* 좌표를 실제로 아는 경우(arm 전에 움직였다)에만 OS 커서를 숨깁니다 — 디스크가
        커서 위에 정확히 놓였으니까요. 가운데 폴백일 때는 커서가 어디 있는지 모르므로
        보통 커서를 남겨 둡니다. */
     if (lastClient) els.body.classList.add('ptr-on');
@@ -869,26 +863,26 @@ STP.hero = (function () {
   function play() {
     if (!armed) return;
     armed = false;
-    if (armTl) { armTl.kill(); armTl = null; }        // only the entrance tweens; the intro timeline keeps its own
+    if (armTl) { armTl.kill(); armTl = null; }        // 등장 트윈만. 인트로 타임라인은 따로 있습니다
     clearPop();
     setCtl('skip');                                   // 디스크는 사라지지 않고 역할만 바꿉니다
-    sats.forEach((b, i) => {                            // drop the cursor pull; the intro owns x/y now
+    sats.forEach((b, i) => {                            // 커서 끌림을 버립니다. 이제 x/y는 인트로의 것
       if (!b.home) return;
       Object.assign(b, { f: 0, ampK: 1, spdK: 1, x: b.home.x, y: b.home.y, r: R });
       gsap.set(els.logos[i], { x: b.home.x, y: b.home.y, scale: lgK() });
     });
-    if (slimeX && slimeX.tween) slimeX.tween.kill();   // stop pointer-follow tweens so the centering tween owns x/y
+    if (slimeX && slimeX.tween) slimeX.tween.kill();   // 포인터 추적 트윈을 멈춰 타임라인이 x/y를 갖게 합니다
     if (slimeY && slimeY.tween) slimeY.tween.kill();
     els.body.classList.remove('is-armed');
     els.body.classList.add('is-intro');
-    tl.invalidate();                                  // re-evaluate coverR() for this start position
-    tl.timeScale(hooks.speed || 1).play(0);          // 홈은 1.6배속(init의 speed), 랜딩은 1
+    tl.invalidate();                                  // 이 시작 위치로 coverR()을 다시 계산합니다
+    tl.timeScale(hooks.speed || 1).play(0);          // 배속은 init() hooks의 speed(홈은 1.6), 없으면 1
   }
 
-  /* 홈페이지 · 클릭 없이 자동 재생 (기획서 3p 「애니메이션 속도를 높여 오프닝으로」).
-     랜딩의 START 대기 화면(arm)을 그대로 거치되 커서를 기다리지 않습니다 — 블롭이 튀어나오고
-     가운데에 슬라임이 생기는 짧은 등장만 보여 준 뒤 같은 play() 경로로 들어가, 타임라인을
-     speed배로 돌립니다. 커서 디스크·고정 컨트롤은 홈페이지 CSS가 감춥니다. */
+  /* 클릭 없이 자동 재생. START 대기 화면(arm)을 그대로 거치되 커서를 기다리지 않습니다 —
+     블롭이 튀어나오고 가운데에 슬라임이 생기는 짧은 등장만 보여 준 뒤 같은 play() 경로로
+     들어가, 타임라인을 speed배로 돌립니다. (홈은 현재 arm() 뒤 START 클릭을 기다리므로
+     이 경로를 쓰지 않습니다.) */
   function autoplay(speed, delay) {
     arm();
     if (reduce) { finish(); return; }
@@ -906,11 +900,9 @@ STP.hero = (function () {
 
   function replay() {
     tl.pause(0);
-    /* 21차: visibility·opacity를 여기서 직접 쓰지 않습니다. scroll.js의 syncStage()가
-       유일한 주인이고, main.js의 restart()가 히어로로 스크롤한 뒤 resync()를 부릅니다.
-       예전에는 restart()의 scrollTo(0,0)이 onEnterBack을 유발해 우연히 정리됐는데,
-       장면 13이 맨 위로 오면서 그 우연이 사라졌습니다 — 그대로 두면 RESTART 뒤에도
-       body.stage-parked가 남아 장면 9 색 덩어리가 paused로 얼어붙습니다. */
+    /* #stage의 visibility·opacity는 여기서 직접 쓰지 않습니다 — home.js가 body 클래스
+       (intro-on · intro-leaving)로 관리하고 css/home.css가 그립니다. 홈은 noRestart라
+       이 함수를 부르지 않습니다. */
     setActive(true);
     build();
     arm();

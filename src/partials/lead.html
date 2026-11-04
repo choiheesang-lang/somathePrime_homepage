@@ -39,10 +39,9 @@
         <div class="lead__agree">
           <div class="lead-a">
             <div class="lead-a__row">
-              <!-- 23.2차: 체크와 펼침을 갈랐습니다. 예전에는 문구가 <label for>라서
-                   누르면 약관이 아니라 **체크가 꺼졌습니다**. 이제 문구와 화살표는
-                   버튼 하나로 묶어 약관만 여닫고, 체크는 체크박스만 바꿉니다.
-                   보이는 문구가 더는 라벨이 아니므로 체크박스에 이름을 따로 줍니다. -->
+              <!-- 체크와 펼침은 따로입니다. 문구와 화살표는 버튼 하나로 묶어 약관만 여닫고,
+                   체크는 체크박스만 바꿉니다(문구를 <label for>로 두면 누를 때 약관이 아니라
+                   **체크가 꺼집니다**). 보이는 문구가 라벨이 아니므로 체크박스에 이름을 따로 줍니다. -->
               <input class="lead-a__check" type="checkbox" id="lead-agree-1" checked
                      aria-label="[필수] 개인정보 수집 · 이용에 동의합니다" />
               <button type="button" class="lead-a__toggle" aria-expanded="false" aria-controls="lead-terms-1">
@@ -61,10 +60,7 @@
           </div>
           <div class="lead-a">
             <div class="lead-a__row">
-              <!-- 23.2차: 체크와 펼침을 갈랐습니다. 예전에는 문구가 <label for>라서
-                   누르면 약관이 아니라 **체크가 꺼졌습니다**. 이제 문구와 화살표는
-                   버튼 하나로 묶어 약관만 여닫고, 체크는 체크박스만 바꿉니다.
-                   보이는 문구가 더는 라벨이 아니므로 체크박스에 이름을 따로 줍니다. -->
+              <!-- 위와 같은 구성 — 문구 · 화살표 버튼은 약관만 여닫고, 체크는 체크박스만 바꿉니다. -->
               <input class="lead-a__check" type="checkbox" id="lead-agree-2" checked
                      aria-label="[선택] 마케팅정보 활용에 동의합니다" />
               <button type="button" class="lead-a__toggle" aria-expanded="false" aria-controls="lead-terms-2">
@@ -86,8 +82,7 @@
 ※ 광고성 정보 수신동의는 이후 발송되는 문자에 안내된 방법으로 언제든지 철회하실 수 있습니다.</p></div>
           </div>
         </div>
-        <!-- 티저 단계라 보낼 곳이 없습니다. 장면 13의 예전 CTA와 같은 처리 — 모양만 두고
-             보조기기에도 누를 수 있는 것으로 알리지 않습니다. -->
+        <!-- 아직 보낼 곳이 없습니다 — 모양만 두고 보조기기에도 누를 수 있는 것으로 알리지 않습니다. -->
         <span class="lead__submit btn2 btn2--fill btn2--block" aria-disabled="true">등록하기</span>
       </div>
     </div>

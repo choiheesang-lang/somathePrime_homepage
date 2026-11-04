@@ -1,5 +1,8 @@
 /* ─────────────────────────────────────────────────────────────
-   site.js — 모든 페이지 공통: 전체 메뉴(모바일) · GNB 숨김 · 퀵메뉴 TOP
+   site.js — 모든 페이지 공통: 모바일 전체 메뉴 + 1depth 아코디언 · GNB 숨김/투명 전환 · 유틸 바 드롭다운 · 퀵메뉴 TOP
+   쓰는 곳: 모든 페이지(scripts.html)  ·  의존: partial gnb(#site-header · #mnav · #mnav-open) / quick(#quick-top) · css/site.css
+   gsap 없이 동작합니다. 내리면 .is-hidden, 올리면 해제 — 인트로(body.intro-on)가 덮고 있는 동안은 건드리지 않습니다.
+   메인 GNB(.gnb2--main)는 [data-gnb-solid-after] 요소의 꺾임 위 가장자리가 헤더 아래선에 닿으면 .is-solid.
    ───────────────────────────────────────────────────────────── */
 (function () {
   const header = document.getElementById('site-header');
@@ -34,7 +37,7 @@
     });
   });
 
-  /* 내리면 GNB를 숨기고 올리면 다시 — 랜딩과 같은 규칙(6px 이하 흔들림은 무시).
+  /* 내리면 GNB를 숨기고 올리면 다시 — 6px 이하 흔들림은 무시합니다.
      인트로가 화면을 덮고 있는 동안에는 건드리지 않습니다. */
   let lastY = window.scrollY;
   const DEAD = 6;
