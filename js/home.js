@@ -9,22 +9,8 @@
   gsap.registerPlugin(ScrollTrigger);
   const body = document.body;
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const store = {
-    get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
-    set: (k) => { try { sessionStorage.setItem(k, '1'); } catch (e) {} },
-  };
 
-  /* ── 관심고객 등록 팝업: 메인에 들어오면 한 번 (기획서 4p ④) ─────────────
-     인트로가 있으면 인트로가 끝난 뒤, 없으면 첫 페인트 조금 뒤. 같은 탭에서는 한 번만. */
-  const autoLead = (delay) => {
-    if (store.get('stp-lead')) return;
-    store.set('stp-lead');
-    setTimeout(() => {
-      const m = document.getElementById('mnav');
-      if (m && !m.hidden) return;                       // 전체 메뉴를 보고 있으면 덮지 않습니다
-      if (window.STP && STP.lead) STP.lead.open();
-    }, delay);
-  };
+  /* 관심고객 등록 팝업은 자동으로 열지 않습니다(2026-11-04) — 배너 옆 버튼 · 퀵메뉴 · 장면 12 버튼을 누를 때만(js/lead.js) */
 
   /* ── 인트로 (기획서 3p) ───────────────────────────────────────────
      랜딩의 START 대기 화면 그대로 — 슬라임 마스크가 커서(모바일은 손가락)를 따라다니며
@@ -51,7 +37,6 @@
     ScrollTrigger.refresh();
     setTimeout(() => body.classList.remove('intro-entering'), 1600);
     window.dispatchEvent(new Event('stp:intro-done'));
-    autoLead(1400);                                            // 등장이 끝난 뒤에
   };
   // 오프닝을 끝까지 본 경우: 장면 9의 밝은 화면을 페이드로 걷습니다
   const leave = () => {
@@ -171,8 +156,6 @@
       window.removeEventListener('touchstart', ff);
       maskOpen();                  // 재생 중이던 타임라인은 마스크 뒤에서 그대로 끝나고, leave는 leaving으로 막힙니다
     });
-  } else {
-    autoLead(800);
   }
 
   /* ── 상단 배너 닫기 (세션 동안) ────────────────────────────────── */
