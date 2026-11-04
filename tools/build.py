@@ -136,9 +136,12 @@ def copy_assets():
     import subprocess
     tracked = subprocess.run(["git", "ls-files", "--", *ASSETS], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split("\n")
     for rel in filter(None, tracked):
+        src = ROOT / rel
+        if not src.exists():          # 지웠지만 아직 커밋 전인 파일은 건너뜁니다
+            continue
         dest = DIST / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / rel, dest)
+        shutil.copy2(src, dest)
 
 
 if __name__ == "__main__":

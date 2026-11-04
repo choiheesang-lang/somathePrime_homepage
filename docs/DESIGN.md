@@ -185,7 +185,7 @@ V 꺾임을 쓰지 않는 모든 요소는 둥근 모서리입니다. 버튼과 
 | `img/hero-campus.webp` | 인트로 배경 — entrance-01을 85%로 줄여 아래로, 둘레는 흐린 사진 | entrance-01 합성 |
 | `img/campus/class-02 · 06 · 09 · 10.webp` | 네 개의 브랜드 판 활성 면 | 인테리어 시안(campus) |
 
-보정본(`entrance-hero` · `kv-lounge-01` · `kv-lounge-03` · `hero.webp`)은 비교용으로 남겨 두었고 지금은 쓰지 않습니다(2026-11-02 campus 원본으로 확정). 피그마에는 webp가 표시되지 않아 같은 사진을 JPEG로 올렸습니다.
+캠퍼스 사진은 `img/campus/` 원본을 씁니다(2026-11-02 확정). 피그마에는 webp가 표시되지 않아 같은 사진을 JPEG로 올렸습니다.
 
 ### 홈 장면 10(「Premium Integrated Education」 섹션) 규칙
 - 슬로건 「배움의 영역을 넓히고 / 성장의 깊이를 더하다.」는 brand/display/bold(`--fs-brand-display` 56, 좁은 화면 비례 축소 · 모바일 28).

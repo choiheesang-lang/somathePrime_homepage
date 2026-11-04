@@ -409,12 +409,6 @@ body.stage-parked #bg-light { animation-play-state: paused; }
 
 
 /* outline text (fill transparent, thin stroke) */
-.outline-text {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.62);
-  paint-order: stroke fill;
-}
-
 /* ── contact glows: 382×42 light bars on the panel edges, additive */
 .glow {
   position: absolute;
@@ -445,23 +439,3 @@ body.stage-parked #bg-light { animation-play-state: paused; }
 html.no-js #stage { background: var(--bg-brand-heavy); }
 html.no-js #hero, html.no-js .panel { display: none; }
 
-/* ── scene 9 scroll cue (Figma 17879:5257). The line/label visual is the shared .scroll-cue
-      in base.css; only the placement is here. Inside #stage so it can use the viewBox units
-      that layout() already exports, the same way .panel and #play-btn do — hence --cue-s. */
-.scroll-hint {
-  --cue-s: var(--s);
-  position: absolute;
-  left: calc(var(--ox) + 960px * var(--s));
-  top:  calc(var(--oy) + 696px * var(--s));        /* 24차: 655 → 696 (새 로고가 160 높이라 피그마에서 내려옴) */
-  transform: translateX(-50%);
-  z-index: 3;
-  opacity: 0;
-  transition: opacity 0.6s var(--ease-out);
-}
-.scroll-hint.is-visible { opacity: 1; }
-/* Mobile (Figma 17811:4081) drops it out of the viewBox grid entirely: 32px off the bottom
-   edge, centred. #stage is position:fixed inset:0, so `bottom` resolves against the viewport. */
-/* 18차: 모바일 큐는 축소하지 않습니다 — --s(0.879)를 물리면 68x110 컴포넌트가 59x97,
-   글자가 10.55px이 되어 작아 보였습니다. 피그마 장면 9 모바일은 1:1(68x110 · 12px)이고
-   세로는 516/814 = 63.4 % 지점입니다. */
-body.hero-narrow .scroll-hint { --cue-s: 1; top: 63.4%; bottom: auto; }
