@@ -1,11 +1,13 @@
 /* ─────────────────────────────────────────────
-   Main content scrolls over the fixed stage
+   sections.css — 홈 장면 10(키워드 카드) · 장면 12 · 관심고객 등록 팝업(.lead*)
+   쓰는 곳: 모든 페이지(head.html에서 공통 로드)  ·  의존: tokens.css · base.css · js/home.js(장면 10 ticker · reveal · 장면 12 스크럽) · js/lead.js · partial scene10 / scene12 / lead
+   장면 10의 키워드 카드(.keywords · .kw-*)는 브랜드 소개 상단도 같이 씁니다.
+   카드 안 치수는 모두 `--card`의 분수(피그마 px / 320)로 적습니다.
+   장면 12는 .s12-wrap 안에서 CSS sticky로 고정되고 남는 높이(350vh)가 스크럽 구간입니다.
+   팝업(.lead)은 세로 수치를 피그마 그대로 둡니다 — 줄 하나를 바꾸면 합계 639가 깨집니다.
    ───────────────────────────────────────────── */
-/* main(z 1)이 고정 스테이지(z 0) 위에 흐릅니다. #s-spacer만 클릭을 통과시켜 그 한 화면에서
-   스테이지(START 버튼·슬라임)에 손이 닿습니다.
-   21차: 장면 13이 맨 위로 오면서 그 화면은 이제 **첫 화면이 아니라 두 번째 화면**입니다.
-   규칙은 그대로 유효합니다 — 배경이 없는 섹션이 #s-spacer 하나뿐인 것이 요점이었지
-   맨 위라는 것이 요점이 아니었습니다. */
+/* main(z 1)이 고정 스테이지(z 0) 위에 흐릅니다. #s-spacer만 클릭을 통과시켜 그 화면에서
+   스테이지에 손이 닿게 합니다(홈은 home.css에서 main 전체가 클릭을 받습니다). */
 main { position: relative; z-index: 1; pointer-events: none; }
 main > *:not(#s-spacer) { pointer-events: auto; }
 
@@ -20,43 +22,38 @@ main > *:not(#s-spacer) { pointer-events: auto; }
 .section__inner { width: 100%; max-width: var(--layout-content); margin: 0 auto; text-align: center; }
 
 /* 배경이 **없어야** 합니다. 여기는 고정 스테이지(z 0)를 들여다보는 창이고 이 섹션은
-   main(z 1) 안이라, 색을 깔면 히어로를 통째로 덮습니다. 22.1차에 그 실수를 했고
-   히어로가 민무늬 #4F4D4C 판으로 보였습니다. 아이보리가 비치는 문제는 색으로 가리는 게
-   아니라 스테이지를 **창이 열리기 전에** 켜서 해결합니다(js/scroll.js). */
+   main(z 1) 안이라, 색을 깔면 스테이지를 통째로 덮어 민무늬 판으로 보입니다. */
 #s-spacer { min-height: 100vh; min-height: 100svh; padding: 0; pointer-events: none; }
 
 /* ─────────────────────────────────────────────
-   장면 10 — Figma 17683:3582
-   The column is 1117.26 wide (346.672 + 16 + 391.918 + 16 + 346.672) with gap 40.
-   Everything inside a card is a fraction of `--card`, written as the Figma px over 320 so the
-   source numbers stay readable. (A `--u: card/320` multiplier would be a *length*, and
-   `length * length` is invalid — that is why these are written as `--card * N / 320`.)
+   장면 10 — 피그마 scene 10(17683:3582)
+   컬럼 폭 1117.26 (346.672 + 16 + 391.918 + 16 + 346.672), 세로 gap 40.
+   카드 안의 모든 치수는 `--card`의 분수이며, 원본 숫자가 읽히도록 「피그마 px / 320」으로
+   적습니다. (`--u: card/320` 같은 배율은 *길이*가 되고 `길이 × 길이`는 유효하지 않으므로
+   `--card * N / 320` 꼴로 씁니다.)
    ───────────────────────────────────────────── */
 #s-intro {
   position: relative;
   overflow: hidden;
-  /* Figma scene 10 sits on pure white — the pale wordmark IS --bg-brand-heavy, so a
-     --bg-hero background would make it invisible. Fade into the copy sections at both ends. */
-  /* Figma scene 10 sits on pure white — the pale wordmark IS --bg-brand-heavy, so a
-     --bg-hero background would make it invisible. */
+  /* 피그마 장면 10은 순백 위에 있습니다 — 옅은 워드마크 색이 곧 --bg-brand-heavy라,
+     바탕을 --bg-hero로 깔면 워드마크가 보이지 않습니다. */
   background: var(--static-white);
 }
 
-/* The pale wordmark behind the cards (Figma 17683:2898), running as a horizontal marquee.
-   The h1 spans the full width instead of being centred with translateX(-50%): the parallax in
-   js/scroll.js writes yPercent to this element, so leaving a translateX here would put two
-   owners on one property. Now the OUTER element is GSAP's (vertical parallax) and the INNER
-   track is the ticker's (horizontal drift) — see js/scroll.js.
-   No overflow here: #s-intro already clips, and a clip on this box would cut the p descender
-   off a 252px line-height:1 line. The copies are cloned by JS and justify-content keeps a
-   single one centred, which is what a no-JS or reduced-motion page shows. */
+/* 카드 뒤의 옅은 워드마크(피그마 17683:2898) — 가로 마퀴로 흐릅니다.
+   h1을 translateX(-50%)로 가운데 맞추지 않고 전폭으로 두는 이유: js/home.js의 패럴랙스가
+   이 요소에 yPercent를 쓰므로, 여기에 translateX를 두면 한 속성에 주인이 둘이 됩니다.
+   바깥 요소는 GSAP(세로 패럴랙스), 안쪽 트랙은 ticker(가로 흐름) 몫입니다 — js/home.js.
+   overflow는 두지 않습니다: #s-intro가 이미 자르고, 이 상자에서 자르면 line-height:1의
+   252px 글줄에서 p의 디센더가 잘립니다. 복제는 JS가 하고, justify-content가 한 벌을
+   가운데에 두므로 JS 없음 · reduced-motion에서는 그 한 벌이 보입니다. */
 .intro__bg {
   position: absolute;
   left: 0;
-  top: 59%;                                        /* Figma y 566 / 960 */
+  top: 59%;                                        /* 피그마 y 566 / 960 */
   width: 100%;
   margin: 0;
-  font-size: min(13.1vw, 252px);                   /* Figma 251.583 on a 1920 frame */
+  font-size: min(13.1vw, 252px);                   /* 피그마 251.583 (1920 프레임) */
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -78,9 +75,8 @@ main > *:not(#s-spacer) { pointer-events: auto; }
   text-align: center;
   color: var(--label-neutral);
 }
-/* Figma 17748:3056 — one component, used by scene 10 (in flow) and scenes 11–12 (sticky).
-   Shape and type live here so the two can't drift; only the background/border, which answer
-   to what is behind them (white section vs photo), stay with each use. */
+/* 피그마 pill(17748:3056) — 모양 · 글자는 여기 한 곳에 두고, 뒤에 무엇이 있느냐(흰 섹션 ·
+   사진)에 따라 달라지는 배경 · 테두리만 쓰는 자리에서 정합니다. */
 .pill {
   display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
   height: 62px; padding: 0 24px;

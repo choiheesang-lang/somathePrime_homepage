@@ -1,13 +1,33 @@
 #!/usr/bin/env python3
-"""페이지 조립기 — src/pages/*.html 을 읽어 공통 조각을 끼워 넣고 사이트 루트에 씁니다.
+"""페이지 조립기 — src/pages/*.html 을 읽어 공통 조각(src/partials)을 끼워 넣고 dist/ 에 씁니다.
 
-빌드 결과(루트의 *.html, brand/*.html)는 그대로 커밋합니다. 배포는 정적 파일 그대로라
-Vercel에는 빌드 단계가 없습니다. 페이지를 고치면 이 스크립트를 한 번 돌리면 됩니다.
+    python3 tools/build.py        # dist/ 를 비우고 html 10개 + 정적 자산을 다시 만듭니다
 
-    python3 tools/build.py
+dist/ 가 배포 루트입니다(vercel.json outputDirectory). 빌드 결과도 커밋하므로 Vercel 에는
+빌드 단계가 없습니다 — 소스를 고쳤으면 이 스크립트를 돌리고 dist/ 까지 함께 커밋하세요.
+외부 의존 없음(표준 라이브러리만).
 
-페이지 파일 맨 위의 머리말(--- ... ---)이 제목·설명·활성 메뉴·추가 CSS/JS를 정합니다.
-본문 안의 {{sprite}} {{lead}} 같은 자리표시는 src/partials/<이름>.html 로 바뀝니다.
+페이지 머리말(파일 맨 위 --- … ---) 키
+    title       <title> 과 og:title                                           (필수)
+    desc        meta description · og:description                            (필수)
+    path        출력 경로. "/brand/" 처럼 끝이 / 면 index.html 로 씀         (필수)
+    body        <body class="…">. home | sub | sub brand-page                (필수)
+    menu        활성 1depth 메뉴 키(MENU 의 첫 칸). 없으면 아무것도 활성화 안 함
+    menu-sub    활성 2depth 라벨(브랜드 소개 등) — 머리 탭 · 모바일 메뉴의 aria-current
+    crumb       브레드크럼. "브랜드 > 오시는 길" 처럼 > 로 구분, 마지막이 현재 페이지
+    head-tabs   서브페이지 머리 탭. 2depth 가 없는 메뉴가 페이지 안 앵커 탭을 둘 때
+                "라벨=#앵커|라벨=#앵커", "none" 이면 2depth 가 있어도 탭 없음(소식)
+    gnb         "main" 이면 투명 GNB(메인 비주얼 위). 기본은 흰 바탕 "sub"
+    css / js    추가로 실을 css/<이름>.css · js/<이름>.js (공백 구분, 확장자 없이)
+    preload     <link rel=preload as=image> 로 미리 받을 이미지 경로(공백 구분)
+
+본문 자리표시 {{이름}} → src/partials/<이름>.html
+    sprite   인라인 SVG 심볼 모음(로고 · 아이콘). 모든 페이지 맨 앞
+    gnb      GNB + 모바일 전체 메뉴(gnb() 가 MENU 로 항목을 채움)
+    crumb    브레드크럼(crumb())            bphead   서브페이지 머리: 제목 + 탭(bphead())
+    lead     관심고객 등록 팝업              quick    오른쪽 퀵메뉴 · TOP
+    footer   푸터                           stage · scene10 · scene12 · keywords  홈 · 브랜드 소개 전용 조각
+공통 <head> 는 partials/head.html, 공통 <script> 는 partials/scripts.html 이 맨 끝에 붙습니다.
 """
 import io
 import pathlib
@@ -19,7 +39,7 @@ SRC = ROOT / "src"
 PARTS = SRC / "partials"
 DIST = ROOT / "dist"                          # 배포 루트 — 빌드 때 비우고 다시 채웁니다
 ASSETS = ("css", "js", "img", "font", "svg")  # dist/로 그대로 복사되는 정적 자산 폴더
-SITE = "https://soma-the-prime.vercel.app"   # og 절대 주소(배포 주소가 정해지면 바꿉니다)
+SITE = "https://somatheprime-homepage.vercel.app"   # og:url 절대 주소 — 도메인이 바뀌면 여기만 고칩니다
 
 MENU = [
     ("brand", "브랜드", "/brand/", [("브랜드 소개", "/brand/"), ("캠퍼스 안내", "/brand/campus.html"), ("오시는 길", "/brand/location.html")]),
@@ -32,11 +52,14 @@ MENU = [
 
 
 def part(name):
+    """src/partials/<name>.html 을 읽습니다."""
     return io.open(PARTS / f"{name}.html", encoding="utf-8").read().rstrip()
 
 
 def gnb(active, kind="sub", active_sub=""):
-    """GNB 두 타입(피그마 GNB 세트 18291-11394) — 머리말 `gnb: main`이면 투명(메인 비주얼 위), 아니면 흰 바탕(서브)."""
+    """partials/gnb.html 에 MENU 항목을 채웁니다 — 데스크톱 메뉴(gnb2__*)와 모바일 전체 메뉴(mnav__*).
+    kind="main" 은 투명 GNB(메인 비주얼 위), 그 외는 흰 바탕. active / active_sub 는 머리말 menu / menu-sub.
+    피그마 GNB 세트(18291:11394)."""
     items = []
     for key, label, href, sub in MENU:
         cur = ' aria-current="page"' if key == active else ""
@@ -67,8 +90,7 @@ HOME_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2
 
 
 def crumb(spec):
-    """서브페이지 브레드크럼(현재 위치) — 머리말 `crumb: 브랜드 > 브랜드 소개`. 링크 없는 표시 전용.
-    피그마 Components의 `Breadcrumb`(Depth 1 · Current · Show depth 1)과 같은 구성입니다."""
+    """브레드크럼 — 머리말 crumb: "브랜드 > 브랜드 소개". 링크 없는 표시 전용(피그마 Breadcrumb 컴포넌트)."""
     parts = [p.strip() for p in spec.split(">") if p.strip()]
     items = [f'<li class="crumb__home">{HOME_ICON}<span class="sr-only">홈</span></li>']
     items += [f"<li>{p}</li>" for p in parts[:-1]]
@@ -95,13 +117,14 @@ def bphead(meta):
 
 
 def build(page):
+    """src/pages/<page> 하나를 조립해 dist/ 에 쓰고, dist 기준 상대 경로를 돌려줍니다."""
     raw = io.open(page, encoding="utf-8").read()
     m = re.match(r"---\n(.*?)\n---\n", raw, re.S)
     meta = dict(l.split(":", 1) for l in m.group(1).splitlines() if ":" in l)
     meta = {k.strip(): v.strip() for k, v in meta.items()}
     body = raw[m.end():]
     css = "".join(f'\n  <link rel="stylesheet" href="/css/{c}.css" />' for c in meta.get("css", "").split() if c)
-    js = "".join(f'\n  <script src="/js/{j}.js"></script>' for j in meta.get("js", "").split() if j)
+    js = "".join(f'\n  <script defer src="/js/{j}.js"></script>' for j in meta.get("js", "").split() if j)
     head = (part("head")
             .replace("{{title}}", meta["title"])
             .replace("{{desc}}", meta.get("desc", ""))
@@ -131,11 +154,12 @@ def build(page):
 def copy_assets():
     """css · js · img · font · svg 를 dist/ 아래로 복사합니다. 페이지가 모두 루트 절대 경로(/css/…)로
     참조하므로 dist/ 하나가 완결된 배포 루트가 됩니다.
-    git이 추적하는 파일만 복사합니다 — .gitignore에 걸린 보정 원본 PNG(img/수정이미지)와 .ttf 폰트가
-    배포에 섞여 들어가지 않게 하기 위해서입니다."""
+    .gitignore 에 걸리지 않은 파일만 복사합니다(추적 중 + 아직 add 하지 않은 새 파일) — 보정 원본 PNG(img/수정이미지)와
+    .ttf 폰트가 배포에 섞여 들어가지 않게 하기 위해서입니다. 새 자산을 넣었으면 add 하지 않아도 빌드에 들어갑니다."""
     import subprocess
-    tracked = subprocess.run(["git", "ls-files", "--", *ASSETS], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split("\n")
-    for rel in filter(None, tracked):
+    listed = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "--", *ASSETS],
+                            cwd=ROOT, capture_output=True, text=True, check=True).stdout.split("\n")
+    for rel in filter(None, listed):
         src = ROOT / rel
         if not src.exists():          # 지웠지만 아직 커밋 전인 파일은 건너뜁니다
             continue
