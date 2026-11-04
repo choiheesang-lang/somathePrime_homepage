@@ -1,0 +1,9 @@
+{
+  "name": "세방고딕 되돌리기 (소마 더 프라임)",
+  "id": "soma-theprime-sebang-swap",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] }
+}
