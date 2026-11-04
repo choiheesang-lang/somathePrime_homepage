@@ -1,0 +1,73 @@
+/* ─────────────────────────────────────────────────────────────
+   news.css — 소식 · 공지사항 (피그마 「소식」 18353:9371, Board / * 컴포넌트)
+   콘텐츠 1160 = 왼쪽 메뉴 200 + 간격 80 + 게시판 880. 본문 위 64 · 아래 140.
+   ───────────────────────────────────────────────────────────── */
+.nb { padding: 64px 0 140px; background: #fff; }
+.nb__in { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 80px; align-items: start; }
+
+/* 왼쪽 메뉴 — Board / Side menu item: 200×52, Body 2. 현재 항목만 Bold + 아래 2px Primary/Normal */
+.nb-lnb ul { margin: 0; padding: 0; list-style: none; }
+.nb-lnb a {
+  display: flex; align-items: center; height: 52px;
+  font-size: 16px; line-height: 1.7; color: var(--text-alternative); transition: color 0.2s;
+}
+.nb-lnb a:hover { color: var(--text-normal); }
+.nb-lnb a[aria-current="page"] { font-weight: 700; color: var(--text-normal); box-shadow: inset 0 -2px 0 var(--primary-normal); }
+
+/* 제목 줄 — 「공지사항」 + 오른쪽 「전체 128건」, 아래 20 */
+.nb-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 20px; }
+.nb-title { font-family: var(--font-title); font-size: 28px; font-weight: 700; line-height: 1.3; color: var(--text-normal); }
+.nb-count { font-size: 14px; line-height: 1.6; color: var(--text-alternative); }
+.nb-count b { font-weight: 700; color: var(--text-normal); }
+
+/* 표 — Board / Head(56, 위 2px Text/Normal · 아래 1px Line/Normal) + Row(64, 아래 1px Line/Neutral) */
+.nb-table { width: 100%; border-collapse: collapse; table-layout: fixed; border-top: 2px solid var(--text-normal); }
+.nb-c-no, .nb-c-views { width: 80px; }
+.nb-c-writer { width: 100px; }
+.nb-c-date { width: 120px; }
+.nb-table th {
+  height: 56px; padding: 0; border-bottom: 1px solid var(--line-normal);
+  font-size: 14px; font-weight: 500; line-height: 1.6; color: var(--text-neutral); text-align: center;
+}
+.nb-table td {
+  height: 64px; padding: 0; border-bottom: 1px solid var(--line-neutral);
+  font-size: 14px; line-height: 1.6; color: var(--text-alternative); text-align: center; font-variant-numeric: tabular-nums;
+}
+.nb-table td.nb-subj { padding: 0 16px; text-align: left; font-size: 15px; color: var(--text-normal); white-space: nowrap; }
+/* 긴 제목은 글만 말줄임 — 옆 「N」 배지는 늘 보이게 */
+.nb-subj a { display: inline-block; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; vertical-align: middle; color: inherit; }
+.nb-table tbody tr { transition: background-color 0.2s; }
+.nb-table tbody tr:hover { background: var(--bg-brand-normal); }
+.nb-table tbody tr:hover .nb-subj a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* 상단 고정 공지 — Row Type=Notice: Brand Normal 바탕, 제목 Bold, 번호 자리에 「공지」 배지 */
+.nb-table tr.is-notice { background: var(--bg-brand-normal); }
+.nb-table tr.is-notice .nb-subj { font-weight: 700; }
+.nb-badge {
+  display: inline-flex; align-items: center; justify-content: center; height: 24px; padding: 0 10px; border-radius: 999px;
+  background: var(--bg-brand-heavy); font-size: 13px; font-weight: 700; line-height: 1.5; color: var(--text-normal);
+}
+/* 새 글 「N」 — 18 정사각 r4, Primary/Normal */
+.nb-new {
+  display: inline-grid; place-items: center; width: 18px; height: 18px; margin-left: 6px; border-radius: var(--r-4);
+  background: var(--primary-normal); font-size: 12px; font-weight: 700; line-height: 1; color: #fff; vertical-align: middle;
+}
+
+@media (max-width: 1024px) {
+  .nb__in { grid-template-columns: 1fr; gap: 32px; }
+  /* 왼쪽 메뉴 → 가로 스크롤 탭 줄 */
+  .nb-lnb { margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter); overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line-neutral); }
+  .nb-lnb::-webkit-scrollbar { display: none; }
+  .nb-lnb ul { display: flex; gap: 24px; }
+  .nb-lnb a { height: 48px; font-size: 15px; white-space: nowrap; }
+}
+@media (max-width: 768px) {
+  .nb { padding: 40px 0 88px; }
+  .nb-title { font-size: 22px; }
+  .nb-c-writer, .nb-c-views, .nb-writer, .nb-views { display: none; }
+  .nb-c-no { width: 56px; }
+  .nb-c-date { width: 92px; }
+  .nb-table td { height: 56px; font-size: 13px; }
+  .nb-table td.nb-subj { padding: 0 8px; font-size: 14px; }
+  .nb-badge { height: 22px; padding: 0 8px; font-size: 12px; }
+}

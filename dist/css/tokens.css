@@ -1,0 +1,224 @@
+/* ═════════════════════════════════════════════════════════════
+   SOMA the Prime · Design Tokens
+   Figma: soma_thePrime (zdJrSOqkvIRsrPZmK4QT4L)
+
+   Figma 변수·스타일을 그대로 옮긴 것이다. 이름은 각 변수의 code syntax(WEB)와 같다.
+     L1 Palette     원시값. Figma "Palette" 컬렉션과 1:1.
+     L2 Semantic    역할값. Figma "Semantic" 컬렉션 Light 모드와 1:1.
+     L3 Foundation  Figma "Typography" · "Spacing" · "Radius" 컬렉션, 텍스트 스타일,
+                    effect style Shadow/sm·md·lg (web 섹션 Foundations 보드 18128:7618).
+     L4 App         코드에만 있는 값(모션 · 히어로 · 브랜드 음영). Figma에 없음.
+
+   색을 바꿀 때는 L1만 고치면 L2가 따라온다.
+   ═════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ───────────────────────────────────────────────────────────
+     L1 · PALETTE — Figma "Palette" 컬렉션
+     ─────────────────────────────────────────────────────────── */
+
+  /* Common */
+  --pal-common-0:          #000000;
+  --pal-common-100:        #FFFFFF;
+
+  /* Stone Gray — 브랜드 기본 중성색 (Figma: Palette/Stone Gray/*) */
+  --pal-stone-gray-0:      #000000;
+  --pal-stone-gray-10:     #2C2A29;
+  --pal-stone-gray-20:     #4F4D4C;
+  --pal-stone-gray-30:     #5D5B59;
+  --pal-stone-gray-40:     #A6A4A0;
+  --pal-stone-gray-50:     #E1DEDA;
+  --pal-stone-gray-60:     #F1EEEC;
+  --pal-stone-gray-70:     #F5F2F0;
+  --pal-stone-gray-80:     #F7F5F3;
+  --pal-stone-gray-90:     #FCFBF9;
+  --pal-stone-gray-100:    #FFFFFF;
+
+  /* Brand — 자매 브랜드 코어 컬러 (Figma: Palette/Brand/*) */
+  --pal-brand-coral:       #F2A48C;   /* soma */
+  --pal-brand-yellow:      #F6D98A;   /* playfacto */
+  --pal-brand-dusty-blue:  #98B8E3;   /* reading ocean */
+  --pal-brand-sage-green:  #B7CFA3;   /* myON */
+  --pal-brand-leaf:        #3E7A3A;   /* 강조 글자 — 기획서 9p 「골든 타임」, 로고 큐브 초록을 본문용으로 어둡게 */
+
+  /* Cool Neutral — Label·Line 알파값의 베이스 (Figma: Palette/Cool Neutral/*) */
+  --pal-cool-neutral-10:   #171719;
+  --pal-cool-neutral-15:   #1B1C1E;
+  --pal-cool-neutral-50:   #70737C;
+  --pal-cool-neutral-70:   #989BA2;
+  --pal-cool-neutral-80:   #AEB0B6;
+  --pal-cool-neutral-96:   #E1E2E4;
+  --pal-cool-neutral-98:   #F4F4F5;
+  --pal-cool-neutral-99:   #F7F7F8;
+
+  /* Status */
+  --pal-green-50:          #00BF40;
+  --pal-orange-50:         #FF9200;
+  --pal-red-50:            #FF4242;
+
+  /* ───────────────────────────────────────────────────────────
+     L2 · SEMANTIC — Figma "Semantic" 컬렉션 (Light 모드)
+     Dark 모드는 Figma에만 정의되어 있고 이 프로토타입은 라이트 전용이다.
+     ─────────────────────────────────────────────────────────── */
+
+  /* Primary — 2026-09-10 블루에서 Stone Gray로 교체됨 */
+  --primary-normal:        var(--pal-stone-gray-10);
+  --primary-strong:        var(--pal-stone-gray-20);
+  --primary-heavy:         var(--pal-stone-gray-30);
+  /* Primary 2번째 색 — 피그마 Semantic/Primary/normal2 (18166-8712). GNB 2depth 판 · 알림 배지 · 센터 핀. docs/DESIGN.md */
+  --primary-normal2:       #F19A2F;
+
+  /* Primary / Lamp — 브랜드 액센트 4색 */
+  --primary-lamp-coral:      var(--pal-brand-coral);
+  --primary-lamp-yellow:     var(--pal-brand-yellow);
+  --primary-lamp-dusty-blue: var(--pal-brand-dusty-blue);
+  --primary-lamp-sage-green: var(--pal-brand-sage-green);
+
+  /* Background */
+  --bg-normal:             var(--pal-common-100);
+  --bg-alternative:        var(--pal-cool-neutral-99);
+  --bg-brand-normal:       var(--pal-stone-gray-80);
+  --bg-brand-strong:       var(--pal-stone-gray-70);
+  --bg-brand-heavy:        var(--pal-stone-gray-60);
+
+  /* Label */
+  --label-normal:          var(--pal-cool-neutral-10);
+  --label-strong:          var(--pal-common-0);
+  --label-neutral:         rgba(46, 47, 51, 0.88);
+  --label-alternative:     rgba(55, 56, 60, 0.61);
+  --label-assistive:       rgba(55, 56, 60, 0.28);
+  --label-disable:         rgba(55, 56, 60, 0.16);
+
+  /* Text — 글자 전용 (Figma: Semantic/Text/*, color style도 같은 이름) */
+  --text-strong:           var(--pal-stone-gray-0);
+  --text-normal:           var(--pal-stone-gray-10);
+  --text-neutral:          var(--pal-stone-gray-30);
+  --text-alternative:      var(--pal-stone-gray-40);
+  --text-assistive:        var(--pal-stone-gray-50);
+  --text-disable:          var(--pal-stone-gray-40);
+  --text-inverse:          var(--pal-stone-gray-100);
+  --text-accent:           var(--pal-brand-leaf);
+
+  /* Line */
+  --line-normal:           rgba(112, 115, 124, 0.22);
+  --line-neutral:          rgba(112, 115, 124, 0.16);
+  --line-alternative:      rgba(112, 115, 124, 0.08);
+  --line-strong:           rgba(112, 115, 124, 0.52);
+  --line-solid-normal:     var(--pal-cool-neutral-96);
+  --line-solid-neutral:    #EAEBEC;                 /* 피그마 Line/Solid/Neutral — 퀵메뉴 판 테두리 */
+
+  /* Fill */
+  --fill-normal:           rgba(112, 115, 124, 0.08);
+  --fill-strong:           rgba(112, 115, 124, 0.16);
+  --fill-alternative:      rgba(112, 115, 124, 0.05);
+
+  /* Interaction */
+  --interaction-inactive:  var(--pal-cool-neutral-70);
+  --interaction-disable:   var(--pal-cool-neutral-98);
+
+  /* Status */
+  --status-positive:       var(--pal-green-50);
+  --status-cautionary:     var(--pal-orange-50);
+  --status-negative:       var(--pal-red-50);
+
+  /* Static / Inverse / Material */
+  --static-white:          var(--pal-common-100);
+  --static-black:          var(--pal-common-0);
+  --inverse-primary:       var(--pal-stone-gray-90);
+  --inverse-background:    var(--pal-cool-neutral-15);
+  --inverse-label:         var(--pal-cool-neutral-99);
+  --material-dimmer:       rgba(23, 23, 25, 0.52);
+
+  /* GNB 두 타입 — Figma "Component" 컬렉션 GNB/* (피그마 GNB 세트 18291-11394: main · sub.hover). docs/DESIGN.md
+     main = 메인 페이지, 사진 위 투명(검정 4%) + 흰 글자 · 흰 로고 / sub = 서브페이지, 흰 바탕 + 검정 글자.
+     메인은 호버하거나 히어로를 지나면 sub 벌로 바뀝니다(css/site.css .gnb2--main). */
+  --gnb-bg-main:      rgba(0, 0, 0, 0.04);        /* GNB/Bg/Main */
+  --gnb-bg-sub:       rgba(255, 255, 255, 0.96);  /* GNB/Bg/Sub (피그마 #FFF — 코드는 96% + blur) */
+  --gnb-ink-main:     #FFFFFF;                    /* GNB/Ink/Main — 메뉴 글자 · 로고 */
+  --gnb-ink-sub:      rgba(0, 0, 0, 0.78);        /* GNB/Ink/Sub */
+  --gnb-util-main:    rgba(255, 255, 255, 0.8);   /* GNB/Util/Main — 유틸 바 글자 · 화살표 */
+  --gnb-util-sub:     rgba(0, 0, 0, 0.58);        /* GNB/Util/Sub */
+  --gnb-util-bg-sub:  #F7F7F7;                    /* GNB/UtilBg/Sub — 유틸 바 바탕(main은 투명) */
+  --gnb-line-main:    rgba(238, 238, 238, 0.2);   /* GNB/Line/Main — 유틸 바 아래 선 · 헤더 아래 선 */
+  --gnb-line-sub:     #EEEEEE;                    /* GNB/Line/Sub */
+
+  /* ───────────────────────────────────────────────────────────
+     L3 · FOUNDATION — Figma Typography · Spacing · Radius · Shadow
+     ─────────────────────────────────────────────────────────── */
+
+  /* Typography 컬렉션 — font/brand · font/system */
+  --font-title: "SebangGothic", "Noto Sans KR", -apple-system, "Apple SD Gothic Neo", sans-serif;
+  --font:       "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+
+  /* 텍스트 스타일 크기 — Brand/* (세방고딕) */
+  --fs-brand-display:  56px;  --lh-brand-display:  1.25;
+  --fs-brand-title-1:  40px;  --lh-brand-title:    1.3;
+  --fs-brand-title-2:  32px;
+  --fs-brand-title-3:  24px;  --lh-brand-title-3:  1.5;
+  --fs-brand-heading:  20px;  --lh-brand:          1.4;
+  --fs-brand-body-1:   18px;
+  --fs-brand-body-2:   16px;
+  --fs-brand-label:    14px;
+
+  /* 텍스트 스타일 크기 — System/* (Noto Sans KR) */
+  --fs-system-body-1:  18px;  --lh-system-body:    1.7;
+  --fs-system-body-2:  16px;
+  --fs-system-body-3:  15px;  --lh-system-label:   1.6;
+  --fs-system-label-1: 14px;
+  --fs-system-label-2: 13px;  --lh-system-caption: 1.5;
+  --fs-system-caption: 12px;
+
+  /* Spacing 컬렉션 — space/* (8의 배수) */
+  --space-8: 8px;   --space-16: 16px; --space-24: 24px;  --space-32: 32px;
+  --space-40: 40px; --space-48: 48px; --space-56: 56px;  --space-64: 64px;
+  --space-80: 80px; --space-96: 96px; --space-120: 120px; --space-160: 160px;
+
+  /* Spacing 컬렉션 — layout/* (Desktop 값, Mobile은 아래 미디어 쿼리)
+     layout/max-width 1240은 좌우 여백까지 포함한 폭: 콘텐츠 1160 + gutter 40 × 2 */
+  --layout-max:     1240px;
+  --layout-content: 1160px;
+  --gutter:         40px;
+  --gnb-util-h:     28px;    /* GNB/login 위 유틸 바 (27 + 아래 선 1) */
+  --header-h:       128px;   /* 고정 헤더 전체 = 유틸 바 28 + 메뉴 바 100 */
+
+  /* Radius 컬렉션 — radius/* (4의 배수 ~ pill) */
+  --r-0: 0; --r-4: 4px; --r-8: 8px; --r-12: 12px; --r-16: 16px;
+  --r-20: 20px; --r-24: 24px; --r-28: 28px; --r-32: 32px; --r-pill: 999px;
+
+  /* Effect style Shadow/sm · md · lg — Stone Gray 10 기반 */
+  --shadow-sm: 0 2px 10px rgba(44, 42, 41, 0.08);
+  --shadow-md: 0 14px 40px rgba(44, 42, 41, 0.12);
+  --shadow-lg: 0 30px 80px rgba(44, 42, 41, 0.18);
+  /* 아이덴티티 — 비주얼 아래 V 꺾임 깊이(피그마 18155-8483: 1920 폭에서 약 130). docs/DESIGN.md */
+  --fold-depth: clamp(40px, 7vw, 136px);
+
+  /* ───────────────────────────────────────────────────────────
+     L4 · APP — 코드 전용. Figma에 대응 토큰 없음.
+     ─────────────────────────────────────────────────────────── */
+
+  /* 히어로 전용 */
+  --hero-veil-solid: var(--primary-strong);  /* 장면 1의 사진 덮개 (Figma 대기화면 배경 #4F4D4C) */
+  --hero-veil:       rgba(0, 0, 0, 0.11);  /* 장면 2 이후 베일 */
+  --hero-glass-bg:     rgba(255, 255, 255, 0.01);
+  --hero-glass-border: rgba(221, 221, 221, 0.2);
+  /* 메인 비주얼 아래 그라디언트 색 — 4 브랜드색을 24s 주기로 돕니다(css/home.css hero-tint, 피그마 Hero tint 세트).
+     @property 등록은 css/base.css. 기본값은 피그마 Slide 1(노랑) */
+  --hero-tint: var(--pal-brand-yellow);
+
+  /* 슬라임 선명 4색 — js/goo.js가 브랜드 4색을 채도 ×1.3 · 명도 −4%로 올린 값(블러로 섞여도 탁해지지 않게).
+     Figma "Component" 컬렉션 Slime/* 와 1:1 — 교육 프로그램 장식 점(css/program.css), 피그마 Slime / Scene 10 세트 */
+  --goo-coral:  #F58C66;
+  --goo-yellow: #F7D257;
+  --goo-blue:   #76A9EE;
+  --goo-green:  #A3D189;
+  --goo-grey:   var(--pal-stone-gray-50);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Spacing 컬렉션 Mobile 모드 */
+@media (max-width: 1024px) { :root { --header-h: 64px; --gnb-util-h: 0px; } }
+/* layout/content Mobile 335는 375 화면 기준 — 코드에서는 화면 폭에서 여백을 뺀 값 */
+@media (max-width: 768px)  { :root { --gutter: 20px; --layout-content: calc(100vw - 2 * var(--gutter)); } }

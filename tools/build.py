@@ -12,10 +12,13 @@ Vercel에는 빌드 단계가 없습니다. 페이지를 고치면 이 스크립
 import io
 import pathlib
 import re
+import shutil
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 PARTS = SRC / "partials"
+DIST = ROOT / "dist"                          # 배포 루트 — 빌드 때 비우고 다시 채웁니다
+ASSETS = ("css", "js", "img", "font", "svg")  # dist/로 그대로 복사되는 정적 자산 폴더
 SITE = "https://soma-the-prime.vercel.app"   # og 절대 주소(배포 주소가 정해지면 바꿉니다)
 
 MENU = [
@@ -117,7 +120,7 @@ def build(page):
     out = head + "\n<body class=\"" + meta.get("body", "") + "\">\n" + body.rstrip() + "\n" + part("scripts") + js + "\n</body>\n</html>\n"
     left = re.findall(r"\{\{\w+\}\}", out)
     assert not left, (page.name, left)
-    dest = ROOT / meta["path"].lstrip("/")
+    dest = DIST / meta["path"].lstrip("/")
     if meta["path"].endswith("/"):
         dest = dest / "index.html"
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -125,6 +128,24 @@ def build(page):
     return dest.relative_to(ROOT)
 
 
+def copy_assets():
+    """css · js · img · font · svg 를 dist/ 아래로 복사합니다. 페이지가 모두 루트 절대 경로(/css/…)로
+    참조하므로 dist/ 하나가 완결된 배포 루트가 됩니다.
+    git이 추적하는 파일만 복사합니다 — .gitignore에 걸린 보정 원본 PNG(img/수정이미지)와 .ttf 폰트가
+    배포에 섞여 들어가지 않게 하기 위해서입니다."""
+    import subprocess
+    tracked = subprocess.run(["git", "ls-files", "--", *ASSETS], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split("\n")
+    for rel in filter(None, tracked):
+        dest = DIST / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / rel, dest)
+
+
 if __name__ == "__main__":
+    if DIST.exists():
+        shutil.rmtree(DIST)
+    DIST.mkdir()
     for p in sorted((SRC / "pages").glob("*.html")):
         print("built", build(p))
+    copy_assets()
+    print("copied", ", ".join(ASSETS), "→ dist/")

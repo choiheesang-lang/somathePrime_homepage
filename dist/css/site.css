@@ -1,0 +1,371 @@
+/* ─────────────────────────────────────────────────────────────
+   site.css — 홈페이지 공통 (서체 · GNB · 전체 메뉴 · 퀵메뉴 · 푸터 · 버튼)
+   색·간격·로고는 랜딩의 tokens.css / base.css를 그대로 쓰고, 여기서는 홈페이지에서
+   새로 생긴 것과 서체만 다룹니다.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── 서체 — 사고력소마(new.somai.co.kr)와 같은 두 벌 ─────────────────
+   제목·메뉴·버튼·강조는 세방고딕, 본문은 Noto Sans KR. 기획서 9p의 「본문은 타이틀과
+   다른 깔끔한 고딕체」와도 맞습니다. */
+/* 프로젝트 /font 폴더의 세방고딕(OTF)을 직접 씁니다 — 피그마(SEBANG Gothic OTF)와 같은 파일.
+   TTF(약 2MB)보다 OTF(약 0.9MB)가 가벼워 OTF만 씁니다. */
+@font-face {
+  font-family: "SebangGothic";
+  src: url("/font/SEBANG%20Gothic%20OTF.otf") format("opentype");
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "SebangGothic";
+  src: url("/font/SEBANG%20Gothic%20OTF%20Bold.otf") format("opentype");
+  font-weight: 700; font-display: swap;
+}
+/* 글꼴 · 헤더 높이 · 강조색 토큰은 tokens.css (Figma Typography · Spacing · Text/Accent) */
+
+body { background: var(--bg-normal); font-size: var(--fs-system-body-2); line-height: var(--lh-system-body); letter-spacing: -0.01em; }
+h1, h2, h3, h4, .t-title, button, .btn2 { font-family: var(--font-title); letter-spacing: -0.02em; }
+h4 { margin: 0; }
+address { font-style: normal; }
+
+.skip-link {
+  position: fixed; left: 16px; top: -60px; z-index: 100;
+  padding: 10px 16px; border-radius: var(--r-8); background: var(--text-normal); color: #fff;
+}
+.skip-link:focus { top: 16px; }
+
+.wrap { max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--gutter); }   /* 1240 = 콘텐츠 1160 + 여백 40 × 2 */
+@media (max-width: 1280px) { .wrap { max-width: none; } }
+
+/* 본문이 고정 GNB 밑으로 들어가지 않게. 홈은 예외 — 메인 비주얼 사진이 투명 GNB 뒤 맨 위부터 깔립니다(home.css) */
+.page { padding-top: var(--header-h); }
+
+/* ── GNB ─────────────────────────────────────────────────────────
+   피그마 GNB/login: 위 28 유틸 바(#F7F7F7, 아래 선 #EEE) + 100 메뉴 바.
+   유틸 바는 오른쪽에 홍길동 ▾ · 교육기관 ▾ | 로그아웃.
+   메뉴 바는 왼쪽 로고 108×40, 오른쪽 메뉴 6개(16 Regular, 간격 72) — 피그마 18103-6570.
+   메뉴에 올리면 굵어지고 주황(Primary/normal2) 2depth 판이 열리며, 2depth는 pill 띠로 짚습니다(18166-8652).
+   두 타입(피그마 GNB 세트 18291-11394, tools/build.py 머리말 `gnb:`) — 색은 모두 tokens.css의 --gnb-*:
+   · .gnb2--sub  서브페이지. 흰 바탕(96% + blur) + 검정 78% 글자 + 컬러 로고 = 피그마 sub.hover.
+   · .gnb2--main 메인. 사진 위 투명(검정 4%) + 흰 글자 · 흰 로고 · 유틸 바 바탕 없음 = 피그마 main.
+     올리거나(:hover · :focus-within) 히어로를 지나 .is-solid가 붙으면(js/site.js) sub 벌로 바뀝니다. */
+.gnb2 {
+  position: fixed; inset: 0 0 auto; z-index: 50;
+  height: var(--header-h);
+  display: flex; flex-direction: column;
+  background: var(--gnb-bg);
+  border-bottom: 1px solid var(--gnb-line);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  transition: transform 0.35s var(--ease-out), background-color 0.3s, border-color 0.3s,
+              --lp-ink 0.3s, --lp-o 0.3s, --lp-g 0.3s, --lp-c 0.3s;
+}
+.gnb2.is-hidden { transform: translateY(-100%); }
+/* sub 벌 — 서브페이지, 그리고 메인의 호버 · 히어로 아래. 로고는 랜딩과 같은 컬러 벌(base.css의 @property 등록) */
+.gnb2, .mnav {
+  --gnb-bg: var(--gnb-bg-sub); --gnb-ink: var(--gnb-ink-sub); --gnb-line: var(--gnb-line-sub);
+  --gnb-sub: var(--gnb-util-sub);       /* 유틸 바 글자 · 화살표 */
+  --gnb-util-bg: var(--gnb-util-bg-sub);
+  --gnb-chip-bg: #fff; --gnb-chip-line: #D8D8D8;   /* 유틸 바 화살표 상자 · 세로선 */
+  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
+}
+/* main 벌 — 투명. 글자 · 로고 · 유틸 바 모두 흰색, 화살표 상자는 테두리만 */
+.gnb2--main:not(:hover, :focus-within, .is-solid) {
+  --gnb-bg: var(--gnb-bg-main); --gnb-ink: var(--gnb-ink-main); --gnb-line: var(--gnb-line-main);
+  --gnb-sub: var(--gnb-util-main); --gnb-util-bg: transparent;
+  --gnb-chip-bg: transparent; --gnb-chip-line: rgba(255, 255, 255, 0.4);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+
+.gnb2__top { flex: none; height: var(--gnb-util-h); background: var(--gnb-util-bg); border-bottom: 1px solid var(--gnb-line); transition: background-color 0.3s, border-color 0.3s; }
+.gnb2__top-in {
+  height: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--gutter);
+  display: flex; align-items: center; justify-content: flex-end; gap: var(--space-16);
+}
+.gnb2__acct { display: flex; align-items: center; gap: var(--space-16); }
+/* 항목(li)도 flex — 글줄 높이 때문에 드롭다운 버튼이 4px 내려가 로그아웃 · 세로선과 어긋나던 것을 한 줄 가운데로 */
+.gnb2__acct > li { display: flex; align-items: center; }
+.gnb2__dd { position: relative; }
+.gnb2__dd-btn, .gnb2__logout {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-title); font-weight: 400; font-size: 13px; line-height: 16px; letter-spacing: 0;
+  color: var(--gnb-sub); transition: color 0.3s;
+}
+.gnb2__chev {
+  display: grid; place-items: center; width: 16px; height: 16px;
+  background: var(--gnb-chip-bg); border: 1px solid var(--gnb-chip-line); border-radius: var(--r-4);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.gnb2__chev svg { width: 16px; height: 16px; flex: none; transition: transform 0.2s; }
+.gnb2__dd.is-open .gnb2__chev svg { transform: rotate(180deg); }
+.gnb2__dd-btn:hover, .gnb2__logout:hover { color: var(--gnb-ink); }
+.gnb2__drop {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 2;
+  min-width: 132px; padding: 6px;
+  background: #fff; border: 1px solid var(--line-neutral); border-radius: var(--r-8);
+  box-shadow: var(--shadow-md);
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
+}
+.gnb2__dd.is-open > .gnb2__drop {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
+}
+.gnb2__drop a {
+  display: block; padding: 8px 10px; border-radius: var(--r-4); white-space: nowrap;
+  font-size: var(--fs-system-label-2); color: var(--text-neutral);
+}
+.gnb2__drop a:hover, .gnb2__drop a:focus-visible { background: var(--bg-brand-normal); color: var(--text-normal); }
+.gnb2__drop a[aria-current] { color: var(--text-normal); font-weight: 700; }
+.gnb2__vr { width: 1px; height: 8px; background: var(--gnb-chip-line); }
+
+.gnb2__inner {
+  position: relative; flex: 1;
+  width: 100%; max-width: var(--layout-max); margin: 0 auto; padding: 8px var(--gutter) 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.gnb2__brand { position: relative; display: block; line-height: 0; }
+.gnb2__brand .logo-prime { width: 108px; height: 40px; transition: opacity 0.3s; }
+/* 흰 로고 — 피그마 logo(18291:11475)를 내보낸 svg/logo-prime-white.svg. 투명 GNB(main 벌)에서만 컬러 로고와 바꿔 보입니다 */
+.gnb2__brand .logo-prime-white { position: absolute; left: 0; top: 50%; width: 108px; height: 40px; translate: 0 -50%; max-width: none; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.gnb2--main:not(:hover, :focus-within, .is-solid) .gnb2__brand .logo-prime { opacity: 0; }
+.gnb2--main:not(:hover, :focus-within, .is-solid) .gnb2__brand .logo-prime-white { opacity: 1; }
+.gnb2__menu { display: flex; gap: 72px; }
+.gnb2__item { position: relative; }
+.gnb2__link {
+  display: inline-flex; flex-direction: column; padding: 12px 0;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-2); font-weight: 400; line-height: 1.4; letter-spacing: -0.32px;
+  color: var(--gnb-ink); transition: color 0.3s;   /* 투명 GNB 위에서는 흰색(피그마 2depth main 변형), 흰 GNB에서는 검정 78% */
+}
+/* 굵어져도 옆 메뉴가 밀리지 않게 — 굵은 글자 폭을 보이지 않는 줄로 미리 잡아 둡니다 */
+.gnb2__link::after, .gnb2__sub a::after {
+  content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 700; pointer-events: none;
+}
+.gnb2__item:is(:hover, :focus-within, .is-active) > .gnb2__link { font-weight: 700; }
+/* 2depth — 주황 판(Primary/normal2) 위 흰 글자. 메뉴 글자 가운데 아래에 열고 항목도 가운데 정렬(피그마 2depth 18291-12479) */
+.gnb2__sub {
+  position: absolute; left: 50%; top: calc(100% - 4px);
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-16);
+  min-width: 175px; padding: var(--space-16);
+  background: var(--primary-normal2); border-radius: var(--r-8);
+  box-shadow: 0 0 1px rgba(68, 68, 68, 0.21), 0 4px 12px rgba(68, 68, 68, 0.12);   /* 피그마 E200 */
+  opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s 0.25s;
+}
+.gnb2__item:hover > .gnb2__sub, .gnb2__item:focus-within > .gnb2__sub {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0);
+  transition: opacity 0.2s, transform 0.25s var(--ease-out), visibility 0s;
+}
+/* 호버 · 현재 항목은 굵게만(띠 없음). 키보드 초점은 밑줄로 */
+.gnb2__sub a {
+  display: inline-flex; flex-direction: column; align-items: center; white-space: nowrap;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-2); line-height: 22px; color: #fff;
+}
+.gnb2__sub a:is(:hover, :focus-visible, [aria-current="page"]) { font-weight: 700; }
+.gnb2__sub a:focus-visible { outline: none; text-decoration: underline; text-underline-offset: 4px; }
+.gnb2__burger { display: none; }
+
+@media (max-width: 1280px) { .gnb2__menu { gap: 48px; } }
+@media (max-width: 1024px) {
+  .gnb2__top, .gnb2__nav { display: none; }
+  .gnb2__inner { padding-top: 0; }
+  .gnb2__brand :is(.logo-prime, .logo-prime-white) { width: 82.7px; height: 30.6px; }
+  /* 피그마 18497:20940 menu — 48 상자(r8) 안 막대 2개(24×4, 간격 4). 색은 GNB 글자색(메인 사진 위 흰색) */
+  .gnb2__burger {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    width: 48px; height: 48px; margin-right: -12px; border-radius: var(--r-8);
+  }
+  .gnb2__burger span { display: block; width: 24px; height: 4px; background: var(--gnb-ink); transition: background-color 0.3s; }
+  .gnb2__burger span:nth-child(3) { display: none; }
+}
+
+/* ── 전체 메뉴 (모바일) ─────────────────────────────────────────── */
+.mnav {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; flex-direction: column;
+  background: #fff; overflow-y: auto;
+  --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
+}
+.mnav[hidden] { display: none; }
+/* 피그마 18497:20940 — 위 줄: 「홍길동님 환영합니다.」 + 로그아웃 + 닫기(✕), 아래 1px #d8d8d8 */
+.mnav { --mn-ink: rgba(0, 0, 0, 0.78); --mn-sub: rgba(0, 0, 0, 0.58); --mn-on: var(--primary-normal2); }
+.mnav__hello { display: flex; align-items: center; gap: 8px; min-height: 80px; padding: 16px; border-bottom: 1px solid #d8d8d8; }
+.mnav__user { font-size: 14px; line-height: 1.6; letter-spacing: -0.3px; color: var(--mn-ink); white-space: nowrap; }
+.mnav__user b { font-weight: 700; letter-spacing: -1px; text-decoration: underline; text-underline-position: from-font; }
+.mnav__logout { padding: 4px 8px; border: 1px solid #d8d8d8; border-radius: var(--r-4); background: #fff; font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px; color: var(--mn-sub); }
+.mnav__close { position: relative; flex: none; width: 48px; height: 48px; margin-left: auto; border-radius: var(--r-8); }
+.mnav__close span { position: absolute; left: 12px; top: 23px; width: 24px; height: 2px; background: #000; transform: rotate(45deg); }
+.mnav__close span + span { transform: rotate(-45deg); }
+/* 1depth 줄 — 위 16 · 글자 줄 19 · 아래 16 · 1px #eee(높이 52). 세방 Bold 14, 열리면 주황 + 화살표 위로 */
+.mnav__list { padding-top: 16px; }
+.mnav__item { border-bottom: 1px solid #eee; }
+.mnav__top {
+  display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px;
+  font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1.4; letter-spacing: -0.28px; color: var(--mn-sub); text-align: left;
+}
+.mnav__top[aria-expanded="true"], .mnav__top[aria-current="page"] { color: var(--mn-on); }
+.mnav__chev { flex: none; width: 18px; height: 18px; background: url("/svg/navi-arrow.svg") center / 9.4px 6.1px no-repeat; transition: transform 0.25s var(--ease-out); }
+.mnav__top[aria-expanded="true"] .mnav__chev { transform: rotate(180deg); }
+/* 2depth 판 — #f7f7f7 · 안쪽 24/16/24/32 · 두 줄 목록(간격 16) · 13px Bold · 3×3 사각 불릿, 지금 페이지는 주황 */
+.mnav__sub { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 24px 16px 24px 32px; background: #f7f7f7; border-top: 1px solid #eee; }
+.mnav__sub[hidden] { display: none; }
+.mnav__sub a { position: relative; display: block; padding-left: 10px; font-size: 13px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px; color: var(--mn-sub); }
+.mnav__sub a::before { content: ""; position: absolute; left: 0; top: 9px; width: 3px; height: 3px; border-radius: 1px; background: rgba(0, 0, 0, 0.3); }
+.mnav__sub a[aria-current="page"] { color: var(--mn-on); }
+.mnav__sub a[aria-current="page"]::before { background: var(--mn-on); }
+body.mnav-open { overflow: hidden; }
+
+/* ── 버튼 ─────────────────────────────────────────────────────────
+   피그마 Button/Fill · Button/Line · Button/Ghost(DESIGN.md 4). 모양은 모두 pill(r999)이고,
+   호버 · 누름은 **자기 종류 안에서만** 변합니다(라인이 채움으로 바뀌지 않음). 크기 56(기본) · 48 · 40 · 32. */
+.btn2 {
+  --h: 56px; --pad: 32px; --fs: 18px; --ico: 20px;
+  --stroke: var(--primary-heavy); --bw: 1px; --bg: #fff; --ink: var(--text-normal);   /* 종류 없이 쓰면 라인 */
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: var(--h); padding: 0 var(--pad);
+  font-family: var(--font-title); font-size: var(--fs); font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; white-space: nowrap;
+  color: var(--ink); background: var(--bg); border: var(--bw) solid var(--stroke); border-radius: var(--r-pill);
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, transform 0.2s var(--ease-out);
+}
+.btn2:active { transform: scale(0.98); }
+.btn2 svg { width: var(--ico); height: var(--ico); flex: none; }
+.btn2__arrow { transition: transform 0.3s var(--ease-out); }
+.btn2:hover .btn2__arrow { transform: translateX(4px); }
+.btn2:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 2px; }
+
+/* 채움 — Primary/Heavy → 호버 Strong → 누름 Normal, 흰 글자 */
+.btn2--fill { --stroke: transparent; --bw: 0px; --bg: var(--primary-heavy); --ink: #fff; }
+.btn2--fill:hover { --bg: var(--primary-strong); }
+.btn2--fill:active { --bg: var(--primary-normal); }
+/* 라인 — 1px 선. 호버해도 채워지지 않고 Heavy 8%(누름 16%)만 깔립니다 */
+.btn2--line { --stroke: var(--primary-heavy); --bw: 1px; --bg: #fff; --ink: var(--text-normal); }
+.btn2--line:hover { --stroke: var(--primary-strong); --bg: color-mix(in srgb, var(--primary-heavy) 8%, #fff); }
+.btn2--line:active { --stroke: var(--primary-normal); --bg: color-mix(in srgb, var(--primary-heavy) 16%, #fff); }
+/* 고스트 — 선 · 바탕 없음. 호버 때만 Heavy 8%(누름 16%) */
+.btn2--ghost { --stroke: transparent; --bw: 0px; --bg: transparent; --ink: var(--text-normal); }
+.btn2--ghost:hover { --bg: color-mix(in srgb, var(--primary-heavy) 8%, transparent); }
+.btn2--ghost:active { --bg: color-mix(in srgb, var(--primary-heavy) 16%, transparent); }
+/* 비활성 */
+.btn2:is(:disabled, .is-disabled) { pointer-events: none; --ink: var(--text-disable); }
+.btn2--fill:is(:disabled, .is-disabled) { --bg: var(--interaction-disable); }
+.btn2--line:is(:disabled, .is-disabled) { --stroke: var(--line-normal); }
+
+/* 크기 — 좌우 여백 · 글자는 피그마 Size 56/48/40/32 */
+.btn2--48 { --h: 48px; --pad: 30px; --fs: 16px; --ico: 16px; }
+.btn2--40 { --h: 40px; --pad: 24px; --fs: 16px; --ico: 16px; }
+.btn2--32 { --h: 32px; --pad: 20px; --fs: 14px; --ico: 14px; }
+/* 섹션 대표 버튼(교육 프로그램 안내 · 관심고객 등록 · 홈으로) — 폭 240, 모바일은 꽉 차게 */
+.btn2--wide { min-width: 240px; }
+.btn2--block { width: 100%; }
+@media (max-width: 640px) { .btn2--wide { min-width: 0; width: 100%; --h: 52px; --fs: 16px; } }
+
+/* 섹션 머리 — 기획서의 「제목 + 한 줄 소개」 */
+.sec-head { text-align: center; }
+.sec-head h2 { font-size: clamp(28px, 3vw, 40px); font-weight: 700; line-height: 1.3; color: var(--text-normal); }
+.sec-head p { margin-top: 14px; font-size: clamp(15px, 1.2vw, 18px); color: var(--text-neutral); }
+.eyebrow {
+  display: inline-block; margin-bottom: 14px;
+  font-family: var(--font-title); font-size: var(--fs-brand-label); font-weight: 700; letter-spacing: 0.08em;
+  color: var(--text-accent);
+}
+
+/* ── 아이덴티티: 아래로 꺾인 비주얼 ───────────────────────────────
+   큰 비주얼(메인 KV · 서브 상단 이미지)의 아래쪽 가운데가 V자로 내려옵니다(docs/DESIGN.md).
+   꺾여 잘린 양쪽에는 그 아래 바탕이 비칩니다. */
+.is-folded {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fold-depth)), 50% 100%, 0 calc(100% - var(--fold-depth)));
+}
+
+/* ── 퀵메뉴 (기획서 4p ⑤) ───────────────────────────────────────────
+   피그마 Quick menu(18126:6550): 폭 84 판 하나 — Background/Brand/Heavy · 1px Line/Solid/Neutral · r16 · Shadow/md,
+   안쪽 24 · 16, 간격 16. 로고 59 → 선 50 → 항목 다섯(폭 50, 사이 1px 선 · 간격 8) → TOP.
+   항목은 아이콘 24(Text/Normal 선) + Noto Bold 12/1.5 Text/Neutral, TOP은 세방 Bold 14.
+   자리: 1920에서 오른쪽 224 · 위 154(헤더 + 26, 콘텐츠 1160 오른쪽 끝 + 72). 좁은 화면은 오른쪽 24까지, 낮은 화면은 아래가 잘리지 않게 올라감 */
+.quick {
+  position: fixed; z-index: 45;
+  right: max(24px, 50vw - 580px - 156px);
+  top: clamp(calc(var(--header-h) + 16px), 100vh - 561px, calc(var(--header-h) + 26px));
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  width: 84px; padding: 24px 16px;
+  background: var(--bg-brand-heavy); border: 1px solid var(--line-solid-neutral); border-radius: var(--r-16); box-shadow: var(--shadow-md);
+  transition: opacity 0.4s, transform 0.5s var(--ease-out);
+}
+body.intro-on .quick { opacity: 0; pointer-events: none; transform: translateX(calc(100% + 32px)); }   /* 인트로 뒤 오른쪽에서 들어옵니다 */
+.quick__logo { display: block; flex: none; width: 59px; height: 22px; max-width: none; --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241; }
+.quick__list { position: relative; display: flex; flex-direction: column; gap: 8px; width: 50px; padding-top: 16px; border-top: 1px solid var(--line-neutral); }   /* 로고 아래 선 50 */
+.quick__list li + li { padding-top: 8px; border-top: 1px solid var(--line-neutral); }   /* 항목 사이 선 */
+.quick__btn, .quick__top {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 50px; padding: 0;
+  font-family: var(--font); font-size: 12px; font-weight: 700; line-height: 1.5; text-align: center; white-space: nowrap;
+  color: var(--text-neutral); transition: color 0.2s;
+}
+.quick__btn svg, .quick__top svg { width: 24px; height: 24px; color: var(--text-normal); transition: transform 0.25s var(--ease-out); }
+.quick__btn:hover, .quick__top:hover { color: var(--text-normal); }
+.quick__btn:hover svg { transform: translateY(-2px); }
+.quick__btn:focus-visible, .quick__top:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 4px; border-radius: var(--r-8); }
+.quick__top { padding: 8px 0; font-family: var(--font-title); font-size: 14px; line-height: 1.4; }
+.quick__top svg { color: var(--text-neutral); }
+.quick__top:hover svg { color: var(--text-normal); transform: translateY(-2px); }
+
+@media (max-width: 1024px) {
+  /* 모바일: 오른쪽 아래 둥근 버튼 둘(관심고객 등록 알약 · 맨 위로 원)만 — 판 · 로고 · 선은 숨김 */
+  .quick {
+    top: auto; bottom: calc(16px + env(safe-area-inset-bottom)); right: 16px; transform: none;
+    flex-direction: row; align-items: center; width: auto; padding: 0; gap: 10px;
+    background: none; border: 0; border-radius: 0; box-shadow: none;
+  }
+  body.intro-on .quick { transform: translateX(calc(100% + 24px)); }
+  .quick__logo { display: none; }
+  .quick__list { width: auto; padding: 0; border: 0; }
+  .quick__list li:not(:first-child) { display: none; }
+  .quick__btn--lead {
+    flex-direction: row; gap: 6px; width: auto; height: 52px; padding: 0 20px 0 16px; border-radius: var(--r-pill);
+    background: var(--text-normal); color: #fff;
+    box-shadow: var(--shadow-md); font-family: var(--font-title); font-size: 15px; font-weight: 700; white-space: nowrap;
+  }
+  .quick__btn--lead svg { width: 20px; height: 20px; color: #fff; }
+  .quick__btn--lead:hover { color: #fff; }
+  .quick__btn--lead br { display: none; }
+  .quick__top { order: 2; justify-content: center; gap: 0; width: 48px; height: 48px; margin: 0; padding: 0; border-radius: 50%; background: #fff; border: 1px solid var(--line-neutral); box-shadow: var(--shadow-md); font-size: 10.5px; line-height: 1.2; }
+  .quick__top svg { width: 20px; height: 20px; }
+}
+
+/* ── 푸터 ──────────────────────────────────────────────────────── */
+.site-footer { background: var(--bg-brand-normal); }
+.footer-info {
+  display: flex; flex-wrap: wrap; gap: 6px 20px;
+  font-size: var(--fs-system-label-1); color: var(--text-neutral);
+}
+.footer-info span + span::before { content: ""; display: inline-block; width: 1px; height: 11px; margin-right: 20px; background: var(--line-normal); vertical-align: -1px; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a:hover { color: var(--text-normal); text-decoration: underline; }
+@media (max-width: 640px) {
+  .footer-info { flex-direction: column; }
+  .footer-info span + span::before { display: none; }
+}
+
+/* ── 자리 페이지(기존 서비스 연동 예정) ─────────────────────────── */
+.stub { min-height: calc(100vh - var(--header-h) - 240px); display: grid; place-items: center; padding: 96px var(--gutter); text-align: center; }
+.stub__box { max-width: 560px; }
+.stub__box h1 { font-size: clamp(30px, 3.4vw, 44px); font-weight: 700; color: var(--text-normal); }
+.stub__box p { margin-top: 16px; color: var(--text-neutral); }
+.stub__tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 28px; }
+.stub__tabs span { padding: 8px 14px; border-radius: var(--r-pill); background: var(--bg-brand-normal); font-size: var(--fs-system-label-1); color: var(--text-neutral); scroll-margin-top: calc(var(--header-h) + 24px); }
+.stub__tabs span:target { background: var(--text-normal); color: #fff; }
+.stub__note { display: inline-block; margin-top: 28px; padding: 6px 12px; border: 1px dashed var(--line-strong); border-radius: var(--r-8); font-size: var(--fs-system-label-2); color: var(--text-alternative); }
+.stub .btn2 { margin-top: 36px; }
+
+/* ── 4색 슬라임(js/goo.js) — [data-goo] 호스트 안의 캔버스. 브랜드 소개 상단 비주얼 · 홈 장면 10 ──
+   WebGL이 없으면 .is-flat — 브랜드 색 원 넷을 겹친 정적 덩어리 */
+[data-goo] > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+[data-goo].is-flat > canvas { display: none; }
+[data-goo].is-flat::before { content: ""; position: absolute; left: 50%; top: 50%; width: 64%; max-width: 440px; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 46% 54% 50% 50% / 52% 46% 54% 48%;
+  background: radial-gradient(circle at 30% 30%, var(--pal-brand-coral), transparent 60%), radial-gradient(circle at 72% 32%, var(--pal-brand-dusty-blue), transparent 60%), radial-gradient(circle at 30% 72%, var(--pal-brand-sage-green), transparent 60%), radial-gradient(circle at 70% 70%, var(--pal-brand-yellow), transparent 60%), var(--pal-brand-yellow); }
+
+/* ── 서브페이지 브레드크럼(현재 위치) — 피그마 TOP_1(18262:10714) 위 줄. 링크 없는 표시 전용.
+   tools/build.py의 crumb()가 머리말 `crumb: 브랜드 > 브랜드 소개`로 조립합니다.
+   위 여백 24 · 글자 Noto 13 검정 38% · 홈 아이콘 15×14 · 4px 테두리 점(간격 16) · 현재 항목도 같은 색(피그마) ── */
+.crumb ol { display: flex; align-items: center; gap: 16px; padding-top: 24px; font-size: 13px; line-height: 16px; letter-spacing: -1px; color: rgba(0, 0, 0, 0.38); }
+.crumb li { display: flex; align-items: center; gap: 16px; }
+.crumb li + li::before { content: ""; width: 4px; height: 4px; border-radius: 50%; border: 1px solid #444; }
+.crumb svg { width: 15px; height: 14px; display: block; }
+.crumb [aria-current] { color: rgba(0, 0, 0, 0.38); }

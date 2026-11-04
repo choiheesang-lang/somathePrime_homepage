@@ -1,0 +1,100 @@
+/* ─────────────────────────────────────────────────────────────
+   location.css — 브랜드 > 오시는 길 (기획서 13p)
+   피그마 Location / Card(18489:12048, 2026-11-04 새 디자인) — 흰 카드(r12 · 1px #d8d8d8 · 안쪽 16 · 간격 32)
+   머리줄: 로고 상자 | 세로선 | 이름 · 전화 · 주소 | 교육기관(btn/home)
+   지도(높이 500): 실사 지도 사진 + 가운데 말풍선 · 핀 + 아래 막대(이름 · 파란 길찾기 · 로드뷰 = Location / Map tool)
+   모바일(≤640)은 Mobile 변형: 머리줄 세로, 지도 360, 막대 세로. 머리는 brand.css .bp-head 공유.
+   핀 낙하 · 말풍선은 js/location.js. DESIGN.md 「오시는 길」
+   ───────────────────────────────────────────────────────────── */
+
+.lc-visit { padding: 64px 0 140px; background: #fff; }
+.lc-head__title { margin-top: 12px; font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
+
+.lc-card {
+  --lc-ink: rgba(0, 0, 0, 0.78); --lc-sub: rgba(0, 0, 0, 0.58); --lc-stroke: #d8d8d8; --lc-light: #eee;
+  margin-top: 40px; display: flex; flex-direction: column; gap: 32px; padding: 16px;
+  border: 1px solid var(--lc-stroke); border-radius: var(--r-12); background: #fff;
+}
+
+/* 머리줄 — 데스크톱은 한 줄(로고 · 선 · 정보 · 교육기관). .lc-info__top은 모바일에서만 묶음 */
+.lc-info { display: flex; align-items: stretch; gap: 16px; --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241; }
+.lc-info__top { display: contents; }
+.lc-info__logo { order: 1; flex: none; align-self: center; display: block; padding: 12px; border-radius: var(--r-8); background: #fff; }
+.lc-info__logo .logo-prime { display: block; width: 130px; height: 48.15px; }
+.lc-info__line { order: 2; flex: none; width: 1px; height: 80px; background: var(--lc-light); }
+.lc-info__body { order: 3; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.lc-info__name { font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: -0.3px; color: var(--lc-ink); }
+.lc-info__rows { margin: 0; display: flex; flex-direction: column; }
+.lc-info__rows div { display: flex; align-items: center; gap: 6px; }
+.lc-info__rows dt { flex: none; display: flex; }
+.lc-info__rows dt img { width: 11px; height: 16px; }
+.lc-info__rows dd { margin: 0; font-size: 13px; line-height: 1.6; letter-spacing: -0.3px; color: var(--lc-sub); }
+
+/* 교육기관 — 피그마 btn/home(72×80, 1px #eee, r8) */
+.lc-home {
+  order: 4; flex: none; align-self: flex-start;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  width: 72px; height: 80px; padding: 8px; border: 1px solid var(--lc-light); border-radius: var(--r-8); background: #fff;
+  font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px; color: var(--lc-sub);
+  transition: border-color 0.2s, color 0.2s;
+}
+.lc-home img { width: 16px; height: 15px; margin: 2px 0; }
+.lc-home:hover { border-color: var(--lc-stroke); color: var(--lc-ink); }
+.lc-home:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 2px; }
+
+/* 지도 — 사진은 원래 크기로 두고, 사진 속 핀 끝(871.5, 448)이 지도의 --pin-x · --pin-y에 오게 놓습니다.
+   데스크톱은 피그마와 같은 자리(가운데 +17 · 위에서 285) */
+.lc-map {
+  --pin-x: calc(50% + 17px); --pin-y: 285px;
+  position: relative; height: 500px; overflow: hidden;
+  border: 1px solid var(--lc-stroke); border-radius: var(--r-12); background: #EEEAE4;
+}
+.lc-map__img { position: absolute; left: calc(var(--pin-x) - 871.5px); top: calc(var(--pin-y) - 448px); width: 1851px; max-width: none; height: 878px; }
+/* 말풍선 + 핀 — 핀 끝이 (--pin-x, --pin-y) */
+.lc-mark { position: absolute; left: var(--pin-x); top: var(--pin-y); transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+.lc-label {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 37px;
+  border: 1px solid var(--lc-stroke); border-radius: var(--r-12); background: #fff; box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
+  text-align: center; white-space: nowrap;
+}
+.lc-label b { font-size: 14px; font-weight: 700; color: #000; }
+.lc-label span { font-size: 13px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px; color: var(--primary-normal2); }
+.lc-pin { display: block; width: 27px; height: 40px; }
+
+/* 아래 막대 — 554 · 핀과 같은 가로 중심 · 아래 33 */
+.lc-bar {
+  position: absolute; left: var(--pin-x); bottom: 33px; transform: translateX(-50%);
+  width: min(554px, 100% - 24px); height: 80px; padding: 0 20px 0 21px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  border-radius: var(--r-12); background: #fff;
+  box-shadow: 0 18px 18px rgba(68, 68, 68, 0.06), 0 0 1px rgba(68, 68, 68, 0.31);
+}
+.lc-bar__name { font-size: 14px; font-weight: 700; color: #000; white-space: nowrap; }
+.lc-bar__btns { display: flex; gap: 20px; }
+/* 길찾기 · 로드뷰 — 피그마 Location / Map tool(파랑 80×40 · r8 · 흰 12 Bold) */
+.lc-go {
+  display: inline-flex; align-items: center; width: 80px; height: 40px; padding-left: 2px;
+  border-radius: var(--r-8); background: #5698f7; color: #fff;
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+  transition: background-color 0.2s, transform 0.25s var(--ease-out);
+}
+.lc-go__ic { flex: none; display: grid; place-items: center; width: 32px; height: 34px; }
+.lc-go__ic img { display: block; max-width: none; }
+.lc-go:hover { background: #3f86f0; transform: translateY(-1px); }
+.lc-go:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 2px; }
+
+/* ── 반응형 ── */
+@media (max-width: 640px) {
+  .lc-visit { padding: 40px 0 88px; }
+  .lc-card { gap: 16px; }
+  /* 머리줄 세로: 로고 + 교육기관 → 가로선 → 정보 (피그마 Location / Card Mobile) */
+  .lc-info { flex-direction: column; gap: 16px; }
+  .lc-info__top { display: flex; align-items: center; justify-content: space-between; }
+  .lc-info__logo { align-self: auto; }
+  .lc-home { align-self: auto; }
+  .lc-info__line { width: 100%; height: 1px; }
+  /* 지도 360 — 핀 · 말풍선이 막대 위에 보이게 핀 끝을 196에 */
+  .lc-map { --pin-x: 50%; --pin-y: 196px; height: 360px; }
+  .lc-bar { left: 12px; right: 12px; bottom: 12px; transform: none; width: auto; height: auto; padding: 12px 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .lc-bar__btns { gap: 8px; }
+}

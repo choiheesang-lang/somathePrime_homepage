@@ -1,0 +1,433 @@
+/* ─────────────────────────────────────────────────────────────
+   home.css — 홈 (기획서 3~7p)
+   인트로·장면 10·장면 12는 랜딩의 hero.css / sections.css를 그대로 쓰고, 여기서는
+   홈페이지에 맞게 바뀐 것(오프닝 오버레이, 고정 해제)과 새 섹션만 다룹니다.
+   ───────────────────────────────────────────────────────────── */
+
+/* 랜딩은 main이 고정 스테이지를 들여다보는 창이라 클릭을 통과시켰습니다. 홈페이지의
+   스테이지는 오프닝 동안만 위에 덮이는 막이므로 main은 평범한 흐름입니다. */
+main { pointer-events: auto; }
+
+/* ── 인트로 오버레이 ──────────────────────────────────────────────
+   랜딩에서는 스테이지가 main 뒤(z 0)에 고정돼 있었습니다. 여기서는 오프닝 동안 GNB(50)
+   바로 아래(40)로 올라와 화면을 덮고, 끝나면 페이드아웃 후 visibility로 꺼집니다. */
+#stage { z-index: 40; }
+body:not(.intro-on) #stage { visibility: hidden; }
+body.intro-on { overflow: hidden; }
+body.intro-on.intro-leaving #stage { opacity: 0; transition: opacity 0.9s var(--ease-in-out); }
+/* SKIP 마스크가 커지는 동안: 버튼 · 커서 디스크를 치우고 클릭을 막고, GNB는 위로 비켜 둡니다 */
+body.intro-revealing #stage { pointer-events: none; }
+body.intro-revealing, body.intro-revealing #stage { cursor: auto !important; }
+body.intro-revealing .intro-skip, body.intro-revealing #play-btn, body.intro-revealing .hero-ctl { opacity: 0 !important; pointer-events: none; transition: opacity 0.2s; }
+/* SKIP은 START 대기 화면(is-armed)에서만 보입니다. 재생이 시작되면 숨고, 끝난 뒤 막이 걷히기 전
+   0.9초(is-armed도 is-intro도 아닌 틈)에도 다시 나오지 않습니다 */
+body:not(.is-armed) .intro-skip { opacity: 0; pointer-events: none; }
+/* 인트로 동안 GNB는 화면 위로 비켜 두고, 걷힌 뒤 위에서 내려옵니다 */
+body:is(.intro-on, .intro-revealing) .gnb2 { transform: translateY(-100%); }
+
+/* ── 인트로 → 메인 등장 ─────────────────────────────────────────
+   인트로 동안 GNB는 위 밖, 메인 비주얼 글은 왼쪽으로 살짝 비켜 숨어 있고,
+   퀵메뉴는 오른쪽 밖에 있습니다. intro-on이 떨어지면 아래 지연대로 들어옵니다. */
+body.intro-on .kv__panel > * { opacity: 0; transform: translateX(-32px); }
+body.intro-entering .gnb2 { transition: transform 0.7s var(--ease-out); }
+body.intro-entering .kv__panel > * { transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out); }
+body.intro-entering .kv__copies { transition-delay: 0.45s; }
+body.intro-entering .kv__ctrls { transition-delay: 0.55s; }
+body.intro-on .kv-banner { opacity: 0; translate: 0 16px; }
+body.intro-entering .kv-banner { transition: opacity 0.6s var(--ease-out) 0.65s, translate 0.8s var(--ease-out) 0.65s; }
+body.intro-entering .quick { transition: opacity 0.5s 0.35s, transform 0.8s var(--ease-out) 0.35s; }
+/* 랜딩의 START 대기 화면을 그대로 씁니다 — 커서 디스크(START/SKIP)와 터치용 고정 디스크.
+   손가락 드래그가 스크롤로 끊기지 않도록 인트로 동안 스테이지의 터치 동작을 막습니다. */
+body.intro-on #stage { touch-action: none; }
+
+/* SKIP — 아래 가운데 큰 버튼. 누르면 오프닝을 건너뛰고 바로 홈 */
+/* 글자 · 아이콘은 START 디스크와 같게 — Noto Sans KR 700 14 · 아이콘 상자 20 · 간격 4를 디스크 배율(--dk =
+   디스크 지름 / 96, home.js placeSkip)로 키웁니다. 1440에서 약 13px, 1920에서 약 16px */
+.intro-skip {
+  --dk: 1;
+  position: fixed; left: 50%; bottom: 48px; z-index: 5; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: calc(4px * var(--dk));
+  height: 56px; padding: 0 24px 0 28px;
+  font-family: var(--font); font-size: calc(14px * var(--dk)); font-weight: 700; letter-spacing: calc(-0.3px * var(--dk)); color: var(--text-normal);
+  background: #fff; border: 0; border-radius: var(--r-pill);   /* 흰 버튼 — 어두운 무대 위에서 누를 수 있는 것으로 읽히게 */
+  box-shadow: var(--shadow-md);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.4s, transform 0.25s var(--ease-out);
+}
+.intro-skip svg { width: calc(20px * var(--dk)); height: calc(20px * var(--dk)); }
+.intro-skip:hover { background: #F1EEEC; }
+.intro-skip:active { transform: translateX(-50%) scale(0.97); }
+.intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 5px var(--text-normal); }
+/* 장면 9(밝은 배경)로 넘어가면 버튼도 밝은 판 위에서 읽히게 */
+body.intro-light .intro-skip { color: var(--text-normal); background: #fff; box-shadow: var(--shadow-md), 0 0 0 1px var(--line-neutral); }
+
+/* START 동그라미 → SKIP (home.js nearSkip)
+   버튼 가장자리 120px 안에서 동그라미가 ease-in-out으로 32px까지 작아지고, 영역에 들어오는
+   순간 START 글자는 0.3초에 사라집니다. 버튼 위에서는 점과 겹친 부분만 반전 — 버튼 안의
+   밝은 복제(.intro-skip__inv)를 점 모양 원으로 잘라 보여 줍니다. 점이 커서이므로 손가락은 숨김. */
+#play-btn .pb-label, #play-btn .pb-icon { transition: opacity 0.3s var(--ease-out); }
+body.disc-near #play-btn .pb-label, body.disc-near #play-btn .pb-icon { opacity: 0; }
+body.ptr-on .intro-skip { cursor: none; }
+.intro-skip__inv {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: calc(4px * var(--dk));
+  padding: 0 24px 0 28px; border-radius: inherit;
+  background: #2C2A29; color: #fff;   /* 흰 버튼 위 검은 디스크 = 어둡게 반전 */
+  clip-path: circle(var(--inv-r, 0px) at var(--inv-x, 50%) var(--inv-y, 50%));
+  pointer-events: none;
+}
+@media (max-width: 640px) { .intro-skip { bottom: calc(24px + env(safe-area-inset-bottom)); } }
+/* 터치 화면(커서 디스크가 없는 곳 — .hero-ctl이 보이는 조건과 같음): SKIP은 좌하단, START(.hero-ctl)는 우하단.
+   둘 다 96 동그라미 · 14 Bold · 아이콘 20 · 간격 4 · 같은 그림자 · 투명도 0.88로 맞추고 색만 반대(SKIP 흰 판 · 어두운 글자).
+   위치는 home.js placeSkip이 터치에서는 계산하지 않습니다(2026-11-04) */
+@media not all and (hover: hover) and (pointer: fine) {
+  .intro-skip {
+    left: 16px; right: auto; top: auto; bottom: 32px; transform: none;
+    width: 96px; height: 96px; padding: 0; justify-content: center; gap: 4px;
+    font-family: var(--font-title); font-size: 14px; letter-spacing: -0.3px; line-height: 1; color: var(--primary-normal);
+    background: #fff; border-radius: 50%; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  body.is-armed .intro-skip { opacity: 0.88; }
+  .intro-skip svg { width: 20px; height: 20px; }
+  .intro-skip:hover { background: #fff; }
+  .intro-skip:active { opacity: 1; transform: scale(0.94); }
+  body.intro-light .intro-skip { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--line-neutral); }
+}
+/* 세로 위치는 home.js의 placeSkip()이 카드와 아래 블롭 사이에 맞춥니다(위 bottom은 그 전까지의 자리) */
+
+/* 메인 비주얼 사진은 흰 GNB 뒤 페이지 맨 위부터 깔립니다 */
+.home-main { position: relative; padding-top: 0; }
+
+/* ── 메인 비주얼 (4p ③④) ─────────────────────────────────────────
+   미래탐구 브랜드 사이트 비주얼(피그마 18155-8475)을 따릅니다 — 왼쪽 글 패널 400 · 제목 46 ·
+   본문 14/2 · 「1 / 3 ‹ | › ❚❚」 한 줄 컨트롤. 다른 점: 패널이 사진 위에 떠 있고(왼쪽 화면 끝에서
+   뻗어 나온 카드), 사진 아래는 사이트 아이덴티티인 V 꺾임(.is-folded, DESIGN.md)입니다. */
+/* 사진은 페이지 맨 위(흰 GNB 뒤)부터 깔립니다 — 피그마 Main_visual도 GNB 124 위로 올라가 있습니다 */
+.kv {
+  --kv-c: 255 255 255;   /* 컨트롤 색 채널(흰 글자판) */
+  position: relative;
+  z-index: 2;            /* 장면 10 슬라임이 꺾임 위로 넘어갈 때 사진 뒤로 들어가도록(#s-intro z 1) */
+  /* 피그마 Main visual 1920×888 비율(46.25vw) — 1920보다 좁아도 문구 · 컨트롤 · 배너가 겹치지 않게 888 아래로는 줄지 않습니다 */
+  height: clamp(888px, 46.25vw, 1128px);
+}
+/* V 꺾임은 메인 비주얼만 피그마 마스크(M0 0H1920V640L960 888L0 640Z)대로 248 — 서브페이지 · 모바일은 토큰 그대로 */
+@media (min-width: 1025px) { .kv { --fold-depth: clamp(40px, 12.92vw, 248px); } }
+.kv__slides { position: absolute; inset: 0; overflow: hidden; background: var(--bg-brand-heavy); }
+.kv__slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.2s var(--ease-in-out); }
+.kv__slide.is-on { opacity: 1; }
+/* 사진 크롭 — 피그마 Slide 1 · 2 · 3의 사진 상자(1920×888 기준 위치 · 크기)를 %로 옮긴 것. 원본(2560×1440)과
+   상자가 같은 16:9라 1920에서는 피그마와 픽셀 단위로 같고, 다른 폭에서는 cover가 비율을 지킵니다 */
+.kv__slide img {
+  position: absolute; left: var(--x, 0); top: var(--y, 0); width: var(--w, 100%); height: var(--h, 100%);
+  object-fit: cover; object-position: 50% 45%; max-width: none;
+}
+@media (min-width: 1025px) {
+  .kv__slide:nth-child(1) { --w: 104.06%; --h: 126.58%; --x: -3.54%; --y: -13.96%; }   /* entrance-01 1998×1124 @ −68, −124 */
+  .kv__slide:nth-child(2) { --w: 156.15%; --h: 189.98%; --x: 0%;     --y: -31.98%; }   /* lounge-01 2998×1687 @ 0, −284 */
+  .kv__slide:nth-child(3) { --w: 100.57%; --h: 122.30%; --x: -0.57%; --y: 0%; }        /* lounge-03 1931×1086 @ −11, 0 */
+}
+/* 사진 위 검정 덮개 — 흰 글자가 읽히게. 피그마 세 장 모두 12% */
+.kv__slide::after { content: ""; position: absolute; inset: 0; background: #000; opacity: 0.12; pointer-events: none; }
+/* 왼쪽 그라데이션 — 글이 놓이는 쪽만 어둡게(피그마 Rectangle 324: 왼쪽 절반 폭, 25%까지 검정 10% → 50%에서 0) */
+.kv__slides::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 25.25%, rgba(0, 0, 0, 0) 50%);
+}
+/* 아래 그라디언트 — 피그마 Main visual의 Hero tint(Rectangle 325: 아래 절반 435~888, 브랜드색 1 → 0, 레이어 투명도 70%).
+   색은 사진 넘김과 상관없이 네 브랜드색을 24s 주기로 천천히 돕니다(--hero-tint, base.css @property) */
+.kv__slides::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 51%; pointer-events: none;
+  background: linear-gradient(0deg, var(--hero-tint) 0%, transparent 100%); opacity: 0.7;
+}
+.kv__slides { animation: hero-tint 24s linear infinite; }
+@keyframes hero-tint {
+  0%   { --hero-tint: var(--pal-brand-coral); }
+  25%  { --hero-tint: var(--pal-brand-yellow); }
+  50%  { --hero-tint: var(--pal-brand-dusty-blue); }
+  75%  { --hero-tint: var(--pal-brand-sage-green); }
+  100% { --hero-tint: var(--pal-brand-coral); }
+}
+@media (prefers-reduced-motion: reduce) { .kv__slides { animation: none; } }   /* 노랑(피그마 Slide 1) 고정 */
+.kv__slide.is-on img { animation: kv-focus 7s var(--ease-out) both; }
+@keyframes kv-focus { from { transform: scale(1.06); } to { transform: scale(1); } }
+
+/* 글은 판 없이 사진 위에 바로 — 피그마 Main visual(18181-8344) Bottom 프레임: 페이지 맨 위에서 216,
+   왼쪽은 콘텐츠 1160의 왼쪽 선(1920에서 380). 문구 아래 24에 컨트롤 줄, 그 아래 13에 배너가 옵니다. */
+.kv__panel {
+  --edge: max(var(--gutter), calc((100vw - var(--layout-content)) / 2));
+  position: absolute; left: 0; right: 0; z-index: 1; top: 216px;
+  display: flex; flex-direction: column;
+  padding: 0 var(--edge);
+  color: #fff;
+}
+/* 문구 세 벌은 같은 칸에 겹쳐 두고 사진과 함께 크로스페이드 */
+.kv__copies { display: grid; margin: 0 0 24px; }
+.kv__copy { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out), visibility 0s 0.5s; }
+.kv__copy.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0.15s, 0.15s, 0s; }
+.kv__eyebrow { padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
+.kv__title { display: flex; flex-direction: column; white-space: nowrap; font-family: var(--font-title); font-size: clamp(34px, 3.2vw, 46px); font-weight: 700; line-height: 1.12; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
+.kv__sub { margin-top: -8px; padding: 0 2px; font-family: var(--font-title); font-size: 14px; font-weight: 400; line-height: 2; letter-spacing: -0.3px; color: var(--kv-ink, #fff); }
+
+/* 컨트롤 — 피그마 Carousel control(18212-8344): 흰 상자(r8, 높이 40, 안쪽 4 · 왼쪽 20) 안에
+   숫자 · ‹ | › · 멈춤, 상자 10 아래에 5초 진행 바. 상자 안은 Primary/Heavy 글자 · 아이콘,
+   구분선과 멈춤 테두리는 Line/Neutral(16%). 진행 바만 사진 위라 흰색(--kv-c, 모바일은 검정).
+   상자 오른쪽 8에 관심고객 등록 버튼(피그마 18426:10793 — 높이 40 · r8 · 14 Bold · 아이콘 18 · Primary/normal) */
+.kv__ctrls { display: flex; align-items: flex-start; gap: 8px; padding-bottom: 12px; }
+.kv__ctrl {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  height: 40px; padding: 4px 4px 4px 20px;
+  background: #fff; border-radius: var(--r-8);
+}
+.kv__count { display: flex; gap: 4px; font-size: 14px; line-height: 1.6; color: var(--text-disable); font-variant-numeric: tabular-nums; }
+.kv__count b, .kv__count span { font-weight: 400; color: var(--primary-heavy); }
+.kv__nav { display: flex; align-items: center; }
+.kv__btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-8); color: var(--primary-heavy); transition: background-color 0.2s, color 0.2s; }
+.kv__btn svg { width: 18px; height: 18px; }
+.kv__btn:hover { background: rgba(0, 0, 0, 0.06); color: var(--text-normal); }
+.kv__sep { width: 1px; height: 10px; background: var(--line-neutral); }
+.kv__btn--toggle { border: 1px solid var(--line-neutral); }
+.kv__btn--toggle svg { width: 14px; height: 14px; }
+.kv__btn--toggle .i-play { display: none; }
+.kv__btn--toggle[aria-pressed="true"] .i-play { display: block; }
+.kv__btn--toggle[aria-pressed="true"] .i-pause { display: none; }
+/* 자동 넘김 5초 진행 바 — 상자 10 아래 */
+.kv__bar { position: absolute; left: 0; right: 0; bottom: -12px; height: 2px; border-radius: 2px; background: rgb(var(--kv-c) / 0.08); overflow: hidden; }
+.kv__bar i { display: block; height: 100%; width: 100%; background: rgb(var(--kv-c) / 0.58); transform-origin: left; transform: scaleX(0); }
+.kv__lead { --fs: 14px; --ico: 18px; --bg: var(--primary-normal); border-radius: var(--r-8); }
+.kv__lead:hover { --bg: var(--primary-strong); }
+
+/* 관심고객 등록 배너 — 피그마 banner(18426:10608): 1200×160 밝은 판(Background/Brand/Normal · r16 · Shadow/md),
+   아래 끝이 사진 바닥에서 182 = 꺾임 248의 0.734 — 폭이 줄면 꺾임과 같이 줄어듭니다. 컨트롤 줄과는 13 떨어집니다.
+   내용은 타이포만: 왼쪽 워드마크 | 가운데 포인트색 밑줄 문구 | 오른쪽 큰 「12」. 그래픽은 오른쪽 옅은 V 패턴 · 왼쪽 작은 V.
+   디자인 확인용 토글 — 판(버튼)을 누르면 내용이 꺼지고(.is-off) 빈 자리를 다시 누르면 켜집니다(js/home.js). */
+.kv { --banner-h: 160px; }
+.kv-banner {
+  position: absolute; z-index: 2; left: 50%; bottom: calc(var(--fold-depth) * 0.734); transform: translateX(-50%);
+  width: min(1200px, 100% - 2 * var(--gutter)); height: var(--banner-h);
+  border-radius: var(--r-16); text-align: left; cursor: pointer;
+}
+.kv-banner:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 3px; }
+.kv-banner.is-off:is(:hover, :focus-visible) { outline: 1px dashed rgba(255, 255, 255, 0.7); outline-offset: 0; }   /* 꺼진 자리 표시 */
+.kv-banner__body {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; height: 100%;
+  background: var(--bg-brand-normal); border-radius: inherit; box-shadow: var(--shadow-md);
+  transition: opacity 0.3s var(--ease-out), translate 0.4s var(--ease-out);
+}
+.kv-banner.is-off .kv-banner__body { opacity: 0; translate: 0 12px; }
+/* 옅은 V 패턴 — 오른쪽 끝(숫자 뒤)에서 왼쪽으로 사라지는 꺾임 무늬 */
+.kv-banner__body::before {
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 360px; pointer-events: none;
+  background:
+    linear-gradient(135deg, transparent 46%, rgba(44, 42, 41, 0.06) 46% 54%, transparent 54%) 0 0 / 24px 24px,
+    linear-gradient(225deg, transparent 46%, rgba(44, 42, 41, 0.06) 46% 54%, transparent 54%) 12px 0 / 24px 24px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 70%); mask-image: linear-gradient(90deg, transparent, #000 70%);
+}
+.kv-banner__body > span { position: relative; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+.kv-banner__body > span + span { border-left: 1px solid var(--line-neutral); }
+/* 왼쪽 — 워드마크. O만 로고처럼 오렌지, 아래 넓은 자간의 캠퍼스 이름 */
+.kv-banner__brand { padding: 0 48px 0 64px; gap: 6px; }
+.kv-banner__v { position: absolute; left: 30px; top: 50%; width: 14px; height: 9px; margin-top: -4.5px; background: var(--primary-normal2); clip-path: polygon(0 0, 50% 64%, 100% 0, 100% 36%, 50% 100%, 0 36%); }
+.kv-banner__mark { font-family: var(--font-title); font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; color: var(--text-normal); white-space: nowrap; }
+.kv-banner__mark em { font-style: normal; color: #E39241; }   /* 로고 O의 오렌지(--lp-o) */
+.kv-banner__place { font-family: var(--font-title); font-size: 12px; font-weight: 700; letter-spacing: 0.42em; color: var(--text-neutral); }
+/* 가운데 — 포인트색 두 줄(밑줄) + 아래 짧은 안내 */
+.kv-banner__msg { padding: 0 40px; gap: 10px; }
+.kv-banner__hook { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.kv-banner__hook span {
+  font-family: var(--font-title); font-size: 21px; font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; color: var(--primary-normal2);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1.5px no-repeat; padding-bottom: 2px;
+}
+.kv-banner__sub { font-family: var(--font); font-size: 14px; line-height: 1.5; letter-spacing: -0.01em; color: var(--text-normal); word-break: keep-all; }
+/* 오른쪽 — 참고 이미지의 「march 07」처럼 작은 영단어 위에 큰 숫자 */
+.kv-banner__date { padding: 0 56px 0 48px; align-items: flex-end; }
+.kv-banner__month { font-family: var(--font-title); font-size: 22px; font-weight: 400; line-height: 1; letter-spacing: 0; color: var(--text-normal); }
+.kv-banner__num { display: flex; align-items: flex-end; gap: 8px; font-family: var(--font-title); font-size: 84px; font-weight: 700; line-height: 0.9; letter-spacing: -0.03em; color: var(--text-normal); }
+.kv-banner__num small { margin-bottom: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; line-height: 1; padding: 4px 6px; border-radius: var(--r-4); background: var(--primary-normal2); color: #fff; }
+@media (prefers-reduced-motion: reduce) { .kv-banner__body { transition: none; } }
+
+@media (max-width: 1024px) {
+  /* 모바일: 사진(위, V 꺾임) → 글(아래). 글은 흰 바탕 위라 진한 색으로 돌아옵니다 */
+  .kv { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column; }
+  .kv__slides { position: relative; inset: auto; height: calc(var(--header-h) + 75vw); }
+  /* 글 패널은 사진 아래 64를 겹쳐 올라갑니다(피그마 Main visual Mobile 18461:10464 간격 −64) —
+     눈썹 글자가 V 꺾임의 흰 자리에 앉습니다 */
+  .kv__panel {
+    position: relative; z-index: 1; top: auto; bottom: auto; margin-top: -64px;
+    padding: 24px var(--gutter) 40px; gap: 24px;
+    --kv-ink: var(--text-normal); --kv-c: 0 0 0;
+  }
+  .kv__ctrl { box-shadow: inset 0 0 0 1px var(--line-neutral); }   /* 흰 바탕 위라 상자 윤곽만 */
+  .kv__copies { margin: 0; }
+  /* 배너는 글 아래 흐름으로, 높이 96(375 화면에서 343×96 — 여백 16). 모바일은 토글 없이 항상 보이고,
+     누르면 관심고객 등록 팝업이 열립니다(js/home.js가 data-lead-open을 붙임).
+     왼쪽: 워드마크 · 캠퍼스 한 줄 + 포인트색 밑줄 두 줄 | 오른쪽: 구분선 뒤 「december 12 OPEN」 + 옅은 V 패턴 */
+  .kv-banner {
+    position: relative; left: auto; bottom: auto; transform: none;
+    width: auto; height: 96px; margin: 0 var(--gutter) 48px;
+  }
+  .kv-banner.is-off .kv-banner__body { opacity: 1; translate: none; }
+  .kv-banner.is-off:is(:hover, :focus-visible) { outline: none; }
+  .kv-banner.is-off:focus-visible { outline: 2px solid var(--primary-normal); outline-offset: 3px; }
+  .kv-banner__body { grid-template-columns: 1fr auto; grid-template-rows: auto auto; align-content: center; row-gap: 6px; padding: 0 0 0 16px; }
+  .kv-banner__body::before { width: 140px; background-size: 16px 16px, 16px 16px; background-position: 0 0, 8px 0; }
+  .kv-banner__body > span { height: auto; }
+  .kv-banner__body > span + span { border-left: 0; }
+  .kv-banner__body > .kv-banner__brand { grid-column: 1; grid-row: 1; min-width: 0; flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 0 8px; height: 13px; overflow: hidden; padding: 0; }
+  .kv-banner__v, .kv-banner__sub { display: none; }
+  .kv-banner__mark { font-size: 13px; }
+  .kv-banner__place { font-size: 9px; letter-spacing: 0.2em; }
+  .kv-banner__msg { grid-column: 1; grid-row: 2; min-width: 0; padding: 0; gap: 0; }
+  .kv-banner__hook { gap: 2px; }
+  .kv-banner__hook span { font-size: 14px; line-height: 1.3; padding-bottom: 1px; background-size: 100% 1px; white-space: nowrap; }
+  .kv-banner__body > .kv-banner__date {
+    grid-column: 2; grid-row: 1 / -1; align-self: center; height: 64px; justify-content: center;
+    margin-left: 12px; padding: 0 16px; gap: 4px; border-left: 1px solid var(--line-neutral);
+  }
+  .kv-banner__month { font-size: 12px; }
+  .kv-banner__num { gap: 4px; font-size: 40px; }
+  .kv-banner__num small { margin-bottom: 2px; padding: 2px 4px; font-size: 9px; border-radius: 3px; }
+}
+@media (max-width: 640px) { .kv-banner { margin: 0 16px 40px; } }
+
+/* ── 장면 10 (5p) — 랜딩 그대로, 고정만 풉니다 ──────────────────────
+   랜딩에서는 장면 11이 위로 덮으며 밀려나는 연출 때문에 sticky였습니다. 장면 11이 빠졌으므로
+   평범한 흐름의 섹션입니다. */
+#s-intro { position: relative !important; height: auto !important; min-height: 100svh; padding-top: 120px; padding-bottom: 200px; }
+/* 슬라임이 위쪽(히어로 꺾임 옆 흰 삼각형)으로 넘어갈 수 있게 세로는 열고, 가로 마퀴만 자릅니다 */
+#s-intro { z-index: 1; overflow-x: clip; overflow-y: visible; }
+/* 장면 12 「더 넓어진 소마를 경험할 차례」 — 피그마 18127-6956과 같은 Background/Brand/Heavy(부모들이 투명이라 흰 body가 비쳤음) */
+#s-copy-2 { background: var(--bg-brand-heavy); }
+/* brand/display/bold(56) — 좁은 화면은 비례로 줄임 */
+.intro__slogan { font-family: var(--font-title); font-size: clamp(32px, 3.9vw, var(--fs-brand-display)); font-weight: 700; line-height: var(--lh-brand-display); }
+/* 장면 10 슬라임 — 캔버스 가운데를 알약 배지 가운데(.intro 맨 위 + 31px)에 맞춰 공이 배지 뒤로 모입니다.
+   커서 밀어냄은 window에서 받으므로 pointer-events 없음 */
+.intro__goo { position: absolute; left: 50%; top: 31px; width: 100vw; height: 880px; transform: translate(-50%, -50%); pointer-events: none; }
+/* 배지 · 글자는 밝은 색 + difference — 흰 바탕에서는 어둡게, 뭉쳐 검어진 슬라임 위에서는 밝게 반전(브랜드 소개 상단과 같은 규칙).
+   배지 판은 difference와 섞이면 회색 얼룩이 되므로 투명하게, 테두리만 남깁니다 */
+.intro__pill { position: relative; background: none; border-color: rgba(255, 255, 255, 0.35); backdrop-filter: none; -webkit-backdrop-filter: none; mix-blend-mode: difference; }
+.intro__pill small { color: #A3A3A3; }
+.intro__pill span { color: #ECEAE9; }
+.intro__slogan { color: #ECEAE9; mix-blend-mode: difference; }
+.intro__list { color: #B0B0B0; mix-blend-mode: difference; }
+@media (max-width: 640px) { .intro__goo { height: 640px; } .intro__slogan { font-size: 28px; } }
+.intro__more {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+  font-family: var(--font-title); font-size: var(--fs-brand-body-2); font-weight: 700; color: var(--text-neutral);
+  border-bottom: 1px solid currentColor; padding-bottom: 2px;
+}
+.intro__more svg { width: 18px; height: 18px; }
+.intro__more:hover { color: var(--text-normal); }
+.intro__more:hover .btn2__arrow { transform: translateX(4px); }
+.is-link { cursor: pointer; }
+
+/* ── 교육 프로그램 안내 (6p) — 4면 판 + 슬라임 ─────────────────────
+   미탐존(피그마 18144-9958)처럼 한 장의 판(1160, 비율 1400:688, r24)을 2×2로 나눕니다. 면마다 브랜드 색(--c)이고,
+   활성 면(.is-on, 항상 하나)은 교실 사진 위에 브랜드 색 덮개 + 흰 글자입니다. 가운데 슬라임은
+   svg.quad__goo(home.js quad)가 그립니다. */
+.prog { padding: 140px 0 150px; background: var(--bg-brand-normal); }
+/* 모바일에서 슬라임 svg가 scale(1.6)로 좌우 밖까지 나가 문서 폭을 넓히던 것(고정 헤더까지 같이 넓어짐)을 가로만 자릅니다 */
+.prog { overflow-x: clip; }
+/* 폭 1160(콘텐츠 폭). 양쪽 퀵메뉴 자리(136)보다 안쪽이라 1440에서도 그대로 1160 */
+.quad { position: relative; width: min(1160px, 100% - 272px); margin: 56px auto 0; }
+.quad__faces { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--r-24); overflow: hidden; isolation: isolate; }
+.quad__face {
+  position: relative; overflow: hidden; aspect-ratio: 700 / 344;
+  /* 비활성 — 가운데(슬라임 자리) 쪽이 짙고 바깥 모서리로 갈수록 밝아지는 판. 가운데가 「파인 자리」로 읽힙니다 */
+  background: linear-gradient(var(--ang, 315deg), color-mix(in srgb, var(--c) 42%, #fff) 0%, var(--c) 70%, color-mix(in srgb, var(--c) 92%, #000) 100%);
+  color: var(--text-normal);
+  cursor: pointer;
+  transition: color 0.5s;
+}
+.quad__face:nth-child(2) { --ang: 45deg; }
+.quad__face:nth-child(3) { --ang: 225deg; }
+.quad__face:nth-child(4) { --ang: 135deg; }
+/* 사진 — 슬라임이 사라진 자리(--rx --ry)에서 원이 커지며 드러납니다(--rv, home.js). 비활성은 0.6s 페이드아웃 */
+.quad__photo {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none;
+  opacity: 0; transition: opacity 0.6s var(--ease-in-out);
+  clip-path: circle(var(--rv, 150%) at var(--rx, 50%) var(--ry, 50%));
+}
+.quad__face.is-on .quad__photo { opacity: 1; transition: none; animation: quad-focus 6s var(--ease-out) both; }
+@keyframes quad-focus { from { transform: scale(1.05); } to { transform: scale(1); } }
+/* 활성 덮개 — 브랜드 색 45% + 아래쪽 어둡게(글이 읽히게).
+   활성 면을 클릭하면 클릭 지점(--cx --cy)에서 원(--cr, home.js)이 커지며 덮개만 걷혀 맑은 사진이 보입니다
+   (피그마 Quad overlay 세트 State=Clear, 18225-8275의 모습). 다시 클릭하거나 다른 면이 활성되면 원이 닫힙니다 */
+.quad__face::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 45%, transparent) 0%, color-mix(in srgb, var(--c) 25%, rgba(0, 0, 0, 0.45)) 100%);
+  -webkit-mask-image: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), transparent calc(var(--cr, 0%) - 1px), #000 var(--cr, 0%));
+          mask-image: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), transparent calc(var(--cr, 0%) - 1px), #000 var(--cr, 0%));
+  opacity: 0; transition: opacity 0.6s var(--ease-in-out);
+}
+.quad__face.is-on::after { opacity: 1; }
+.quad__face:focus-visible { outline: 3px solid var(--primary-normal2); outline-offset: -3px; }
+.quad__face.is-on { color: #fff; }
+/* 글 — 바깥 모서리 쪽에 모아 가운데 슬라임 자리를 비웁니다 */
+.quad__body { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 48px; width: 62%; }
+.quad__face:nth-child(2n) .quad__body { left: auto; right: 0; align-items: flex-end; text-align: right; }
+.quad__logo { display: grid; height: 56px; align-content: center; color: currentColor; }
+.quad__logo svg { height: 34px; width: auto; }
+.quad__logo svg.is-play { height: 46px; }
+.quad__field { margin-top: 18px; font-family: var(--font-title); font-size: clamp(20px, 1.6vw, 26px); }
+.quad__desc { margin-top: 8px; font-size: var(--fs-system-label-1); line-height: 1.6; opacity: 0.85; word-break: keep-all; }
+/* 슬라임 오버레이 — 판과 같은 비율이라 viewBox가 그대로 맞습니다 */
+.quad__goo, .quad__back { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.quad__back { mix-blend-mode: multiply; }   /* 뒤 슬라임 넷은 면 색 위에 색유리처럼 */
+.quad__blob { fill: var(--primary-normal); }
+.quad__mark { transform-box: fill-box; transform-origin: center; }
+.prog__more { margin-top: 56px; text-align: center; }
+@media (max-width: 1024px) {
+  .quad { width: calc(100% - var(--gutter) * 2); }   /* 퀵메뉴가 아래로 내려가므로 가득 */
+  .quad__body { padding: 28px 28px; width: 68%; }
+  .quad__logo { height: 44px; }
+  .quad__logo svg { height: 26px; }
+  .quad__logo svg.is-play { height: 36px; }
+}
+@media (max-width: 640px) {
+  .prog { padding: 88px 0 96px; }
+  .quad { margin-top: 36px; }
+  .quad__faces { border-radius: var(--r-16); }
+  .quad__face { aspect-ratio: 1 / 1; }
+  .quad__goo, .quad__back { transform: scale(1.6); }   /* 정사각 판에 viewBox가 letterbox되어 작아지는 만큼 키움(r 26 → 42px) */
+  .quad__body { padding: 18px 16px; width: 100%; justify-content: flex-start; }
+  .quad__face:nth-child(n+3) .quad__body { justify-content: flex-end; }
+  .quad__logo { height: 32px; }
+  .quad__logo svg { height: 20px; }
+  .quad__logo svg.is-play { height: 28px; }
+  .quad__field { margin-top: 8px; font-size: var(--fs-brand-body-1); }
+  .quad__desc { display: none; }
+  .prog__more { margin-top: 36px; }
+}
+
+/* ── 장면 12 (7p) — 랜딩 그대로 + 관심고객 등록 버튼 ─────────────── */
+.copy-big { font-family: var(--font-title); }
+.s12-cta { margin-top: clamp(32px, 3.4vw, 56px); position: relative; z-index: 2; }
+
+/* ── 오시는 길 (7p ③) ───────────────────────────────────────────── */
+.visit { padding: 120px 0 140px; background: #fff; }
+.visit__head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 2px solid var(--text-normal); }
+.visit__head h2 { font-size: clamp(26px, 2.4vw, 36px); font-weight: 700; color: var(--text-normal); }
+.visit__more { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-title); font-size: 15px; color: var(--text-neutral); }
+.visit__more svg { width: 18px; height: 18px; }
+.visit__more:hover { color: var(--text-normal); }
+.visit__card { display: grid; grid-template-columns: 360px 1fr; gap: 0; margin-top: 32px; border-radius: var(--r-20); overflow: hidden; box-shadow: 0 0 0 1px var(--line-neutral); }
+.visit__info { display: flex; flex-direction: column; gap: 28px; padding: 40px; background: var(--bg-brand-normal); --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241; }
+.visit__logo { width: 108px; height: 40px; }
+.visit__info dl { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.visit__info dl div { display: flex; gap: 16px; }
+.visit__info dt { flex: none; width: 36px; font-family: var(--font-title); font-weight: 700; color: var(--text-normal); }
+.visit__info dd { margin: 0; color: var(--text-neutral); }
+.visit__links { display: flex; gap: 8px; margin-top: auto; }
+.visit__map { min-height: 360px; background: #EEEAE4; }
+.visit__map img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 49% 40%; }   /* 핀(목동서로 349)이 가운데 근처에 남게 */
+@media (max-width: 900px) {
+  .visit { padding: 80px 0 96px; }
+  .visit__card { grid-template-columns: 1fr; }
+  .visit__info { padding: 28px; }
+  .visit__map { min-height: 240px; aspect-ratio: 16 / 9; }
+}
+
+/* 홈의 등장 모션은 랜딩 장면 10~13과 같은 규칙(js/home.js의 reveal)입니다 */
