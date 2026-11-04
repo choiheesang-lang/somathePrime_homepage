@@ -252,8 +252,10 @@ body.ptr-on .intro-skip { cursor: none; }
   /* 모바일: 사진(위, V 꺾임) → 글(아래). 글은 흰 바탕 위라 진한 색으로 돌아옵니다 */
   .kv { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column; }
   .kv__slides { position: relative; inset: auto; height: calc(var(--header-h) + 75vw); }
+  /* 글 패널은 사진 아래 64를 겹쳐 올라갑니다(피그마 Main visual Mobile 18461:10464 간격 −64) —
+     눈썹 글자가 V 꺾임의 흰 자리에 앉습니다 */
   .kv__panel {
-    position: relative; top: auto; bottom: auto;
+    position: relative; z-index: 1; top: auto; bottom: auto; margin-top: -64px;
     padding: 24px var(--gutter) 40px; gap: 24px;
     --kv-ink: var(--text-normal); --kv-c: 0 0 0;
   }
