@@ -167,11 +167,13 @@ address { font-style: normal; }
   .gnb2__top, .gnb2__nav { display: none; }
   .gnb2__inner { padding-top: 0; }
   .gnb2__brand :is(.logo-prime, .logo-prime-white) { width: 82.7px; height: 30.6px; }
+  /* 피그마 18497:20940 menu — 48 상자(r8) 안 막대 2개(24×4, 간격 4). 색은 GNB 글자색(메인 사진 위 흰색) */
   .gnb2__burger {
-    display: flex; flex-direction: column; justify-content: center; gap: 5px;
-    width: 44px; height: 44px; margin-right: -10px; padding: 0 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    width: 48px; height: 48px; margin-right: -12px; border-radius: var(--r-8);
   }
-  .gnb2__burger span { display: block; height: 2px; border-radius: 2px; background: var(--gnb-ink); transition: background-color 0.3s; }
+  .gnb2__burger span { display: block; width: 24px; height: 4px; background: var(--gnb-ink); transition: background-color 0.3s; }
+  .gnb2__burger span:nth-child(3) { display: none; }
 }
 
 /* ── 전체 메뉴 (모바일) ─────────────────────────────────────────── */
@@ -182,27 +184,32 @@ address { font-style: normal; }
   --lp-ink: #323333; --lp-o: #E39241; --lp-g: #5FA756; --lp-c: #E39241;
 }
 .mnav[hidden] { display: none; }
-.mnav__head {
-  display: flex; align-items: center; justify-content: space-between;
-  height: var(--header-h); padding: 0 var(--gutter); border-bottom: 1px solid var(--line-neutral);
+/* 피그마 18497:20940 — 위 줄: 「홍길동님 환영합니다.」 + 로그아웃 + 닫기(✕), 아래 1px #d8d8d8 */
+.mnav { --mn-ink: rgba(0, 0, 0, 0.78); --mn-sub: rgba(0, 0, 0, 0.58); --mn-on: var(--primary-normal2); }
+.mnav__hello { display: flex; align-items: center; gap: 8px; min-height: 80px; padding: 16px; border-bottom: 1px solid #d8d8d8; }
+.mnav__user { font-size: 14px; line-height: 1.6; letter-spacing: -0.3px; color: var(--mn-ink); white-space: nowrap; }
+.mnav__user b { font-weight: 700; letter-spacing: -1px; text-decoration: underline; text-underline-position: from-font; }
+.mnav__logout { padding: 4px 8px; border: 1px solid #d8d8d8; border-radius: var(--r-4); background: #fff; font-size: 12px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px; color: var(--mn-sub); }
+.mnav__close { position: relative; flex: none; width: 48px; height: 48px; margin-left: auto; border-radius: var(--r-8); }
+.mnav__close span { position: absolute; left: 12px; top: 23px; width: 24px; height: 2px; background: #000; transform: rotate(45deg); }
+.mnav__close span + span { transform: rotate(-45deg); }
+/* 1depth 줄 — 위 16 · 글자 줄 19 · 아래 16 · 1px #eee(높이 52). 세방 Bold 14, 열리면 주황 + 화살표 위로 */
+.mnav__list { padding-top: 16px; }
+.mnav__item { border-bottom: 1px solid #eee; }
+.mnav__top {
+  display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px;
+  font-family: var(--font-title); font-size: 14px; font-weight: 700; line-height: 1.4; letter-spacing: -0.28px; color: var(--mn-sub); text-align: left;
 }
-.mnav__head .logo-prime { width: 82.7px; height: 30.6px; }
-.mnav__close { width: 44px; height: 44px; margin-right: -12px; padding: 13px; }
-.mnav__acct {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 14px var(--gutter); background: #F7F7F7; border-bottom: 1px solid #EEEEEE;
-}
-.mnav__user { font-size: var(--fs-system-label-1); color: var(--text-neutral); }
-.mnav__user b { font-family: var(--font-title); color: var(--text-normal); }
-.mnav__list { padding: 8px var(--gutter) 24px; }
-.mnav__list > li { border-bottom: 1px solid var(--line-alternative); }
-.mnav__top { display: block; padding: 18px 0; font-family: var(--font-title); font-size: var(--fs-brand-heading); font-weight: 700; }
-.mnav__list ul { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 18px; }
-.mnav__list ul a {
-  display: block; padding: 8px 12px; border-radius: var(--r-8); background: var(--bg-brand-normal);
-  font-size: var(--fs-system-label-1); color: var(--text-neutral);
-}
-.mnav__util { display: flex; gap: 16px; padding: 0 var(--gutter) 32px; font-size: var(--fs-system-label-1); color: var(--text-alternative); }
+.mnav__top[aria-expanded="true"], .mnav__top[aria-current="page"] { color: var(--mn-on); }
+.mnav__chev { flex: none; width: 18px; height: 18px; background: url("/svg/navi-arrow.svg") center / 9.4px 6.1px no-repeat; transition: transform 0.25s var(--ease-out); }
+.mnav__top[aria-expanded="true"] .mnav__chev { transform: rotate(180deg); }
+/* 2depth 판 — #f7f7f7 · 안쪽 24/16/24/32 · 두 줄 목록(간격 16) · 13px Bold · 3×3 사각 불릿, 지금 페이지는 주황 */
+.mnav__sub { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 24px 16px 24px 32px; background: #f7f7f7; border-top: 1px solid #eee; }
+.mnav__sub[hidden] { display: none; }
+.mnav__sub a { position: relative; display: block; padding-left: 10px; font-size: 13px; font-weight: 700; line-height: 1.6; letter-spacing: -0.3px; color: var(--mn-sub); }
+.mnav__sub a::before { content: ""; position: absolute; left: 0; top: 9px; width: 3px; height: 3px; border-radius: 1px; background: rgba(0, 0, 0, 0.3); }
+.mnav__sub a[aria-current="page"] { color: var(--mn-on); }
+.mnav__sub a[aria-current="page"]::before { background: var(--mn-on); }
 body.mnav-open { overflow: hidden; }
 
 /* ── 버튼 ─────────────────────────────────────────────────────────

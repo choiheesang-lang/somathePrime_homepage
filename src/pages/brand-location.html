@@ -17,8 +17,9 @@ js: brand location
     {{crumb}}
     {{bphead}}
 
-    <!-- 13p 오시는 길 — 기존 홈페이지(찾아오시는 길) 구성: 위 정보 띠(로고 · 주소 · 전화) + 아래 큰 지도 + 길찾기 · 로드뷰.
-         지도는 기존 홈페이지의 지도 연동이 들어올 자리(지금은 그림 지도 src/partials/map.html). 전화번호는 추후 추가(기획서). -->
+    <!-- 13p 오시는 길 — 피그마 Location / Card(18489:12048, 2026-11-04 새 디자인). 흰 카드 안에 머리줄(로고 상자 · 이름 / 전화 / 주소 · 교육기관)
+         + 실사 지도(가운데 말풍선 + 핀, 아래 막대: 이름 · 길찾기 · 로드뷰). 지도는 피그마 지도 사진(img/location/map.jpg).
+         전화번호는 추후 추가(기획서) — 말풍선도 같은 문구. -->
     <section class="lc-visit">
       <div class="wrap">
         <div class="lc-head" data-step="0">
@@ -28,37 +29,35 @@ js: brand location
 
         <div class="lc-card" data-step="1">
           <div class="lc-info">
-            <svg class="lc-info__logo logo-prime" viewBox="0 0 432 160" role="img" aria-label="SOMA THE PRIME"><use href="#logo-prime" /></svg>
-            <div class="lc-info__body">
-              <p class="lc-info__name">소마 더 프라임 <span>목동 캠퍼스</span></p>
-              <dl class="lc-info__rows">
-                <div>
-                  <dt><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 18s-5.5-4.6-5.5-9.3a5.5 5.5 0 0 1 11 0C15.5 13.4 10 18 10 18Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="8.5" r="2" stroke="currentColor" stroke-width="1.5"/></svg><span>주소</span></dt>
-                  <dd>서울 양천구 목동서로 349, 7층 <button type="button" class="lc-copy" data-copy="서울 양천구 목동서로 349, 7층" aria-label="주소 복사">복사</button></dd>
-                </div>
-                <div>
-                  <dt><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6.6 3.2 8.4 6.6a1 1 0 0 1-.2 1.2L7 9a9.5 9.5 0 0 0 4 4l1.2-1.2a1 1 0 0 1 1.2-.2l3.4 1.8a1 1 0 0 1 .5 1.1l-.6 2.2a1.5 1.5 0 0 1-1.6 1.1C8.6 17.3 2.7 11.4 2.2 4.9a1.5 1.5 0 0 1 1.1-1.6l2.2-.6a1 1 0 0 1 1.1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>전화</span></dt>
-                  <dd class="is-pending">추후 안내 예정</dd>
-                </div>
-              </dl>
+            <div class="lc-info__top">
+              <span class="lc-info__logo"><svg class="logo-prime" viewBox="0 0 432 160" role="img" aria-label="SOMA THE PRIME"><use href="#logo-prime" /></svg></span>
+              <a class="lc-home" href="/"><img src="/img/location/ic-home.svg" width="16" height="15" alt="" /><span>교육기관</span></a>
             </div>
-            <div class="lc-info__links">
-              <a class="btn2 btn2--line btn2--40" href="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">카카오맵</a>
-              <a class="btn2 btn2--line btn2--40" href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%96%91%EC%B2%9C%EA%B5%AC%20%EB%AA%A9%EB%8F%99%EC%84%9C%EB%A1%9C%20349" target="_blank" rel="noopener">네이버 지도</a>
+            <span class="lc-info__line" aria-hidden="true"></span>
+            <div class="lc-info__body">
+              <p class="lc-info__name">소마 더 프라임</p>
+              <dl class="lc-info__rows">
+                <div><dt><img src="/img/location/ic-call.svg" width="11" height="16" alt="" /><span class="sr-only">전화</span></dt><dd>추후 안내</dd></div>
+                <div><dt><img src="/img/location/ic-location.svg" width="11" height="16" alt="" /><span class="sr-only">주소</span></dt><dd>서울 양천구 목동서로 349, 7층</dd></div>
+              </dl>
             </div>
           </div>
 
-          <div class="lc-map" role="img" aria-label="지도 — 서울 양천구 목동서로 349, 소마 더 프라임">
-            {{map}}
-            <!-- 길찾기 · 로드뷰 — 기존 홈페이지 지도의 두 버튼. 연동 전까지 카카오맵으로 엽니다 -->
-            <div class="lc-map__tools">
-              <a class="lc-tool" href="https://map.kakao.com/link/to/%EC%86%8C%EB%A7%88%20%EB%8D%94%20%ED%94%84%EB%9D%BC%EC%9E%84,37.5265,126.8664" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-11a6.5 6.5 0 0 1 13 0c0 5.6-6.5 11-6.5 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9.5 10 2.5 2.5L15 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>길찾기</a>
-              <a class="lc-tool" href="https://map.kakao.com/link/roadview/37.5265,126.8664" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="10" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M4 10c1.8-3.6 4.5-5.4 8-5.4s6.2 1.8 8 5.4c-1.8 3.6-4.5 5.4-8 5.4S5.8 13.6 4 10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15.4V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>로드뷰</a>
+          <div class="lc-map">
+            <img class="lc-map__img" src="/img/location/map.jpg" width="1851" height="878" alt="지도 — 서울 양천구 목동서로 349, 소마 더 프라임" loading="lazy" />
+            <div class="lc-mark" aria-hidden="true">
+              <div class="lc-label"><b>소마 더 프라임</b><span>전화 추후 안내</span></div>
+              <img class="lc-pin" src="/img/location/pin.png" width="27" height="40" alt="" />
+            </div>
+            <div class="lc-bar">
+              <p class="lc-bar__name">소마 더 프라임</p>
+              <div class="lc-bar__btns">
+                <a class="lc-go" href="https://map.kakao.com/link/to/%EC%86%8C%EB%A7%88%20%EB%8D%94%20%ED%94%84%EB%9D%BC%EC%9E%84,37.5265,126.8664" target="_blank" rel="noopener"><span class="lc-go__ic"><img src="/img/location/ic-route.svg" width="17" height="24" alt="" /></span>길찾기</a>
+                <a class="lc-go" href="https://map.kakao.com/link/roadview/37.5265,126.8664" target="_blank" rel="noopener"><span class="lc-go__ic"><img src="/img/location/ic-roadview.svg" width="24" height="24" alt="" /></span>로드뷰</a>
+              </div>
             </div>
           </div>
         </div>
-
-        <p class="lc-note" data-step="2">지하철 5호선 오목교역 2번 출구에서 도보 7분 · 건물 지하 주차장 이용 가능(2시간 무료)</p>
       </div>
     </section>
   </main>

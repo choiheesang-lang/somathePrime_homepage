@@ -35,16 +35,15 @@
     </div>
   </header>
 
+  <!-- 모바일 전체 메뉴 — 피그마 18497:20940. 위 줄(환영 · 로그아웃 · 닫기) + 1depth 아코디언(2depth는 회색 판 두 줄 목록).
+       메뉴 내용은 사이트 메뉴(tools/build.py MENU), 열고 닫기 · 아코디언은 js/site.js. 홍길동은 로그인 상태 견본 -->
   <div class="mnav" id="mnav" hidden>
-    <div class="mnav__head">
-      <a class="gnb2__brand" href="/" aria-label="소마 더 프라임 홈"><svg class="logo-prime" viewBox="0 0 432 160" aria-hidden="true" focusable="false"><use href="#logo-prime" /></svg></a>
-      <button type="button" class="mnav__close" id="mnav-close" aria-label="전체 메뉴 닫기"><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M1 1L17 17M17 1L1 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-    </div>
-    <div class="mnav__acct">
-      <a class="mnav__user" href="/mypage.html"><b>홍길동</b> 님 · 소마 더 프라임 목동</a>
+    <div class="mnav__hello">
+      <p class="mnav__user"><a href="/mypage.html"><b>홍길동</b></a>님 환영합니다.</p>
+      <a class="mnav__logout" href="/mypage.html#logout">로그아웃</a>
+      <button type="button" class="mnav__close" id="mnav-close" aria-label="전체 메뉴 닫기"><span></span><span></span></button>
     </div>
     <ul class="mnav__list">
         {{mobile}}
     </ul>
-    <div class="mnav__util"><a href="/tuition.html">수강료 납부</a><a href="/mypage.html#logout">로그아웃</a></div>
   </div>

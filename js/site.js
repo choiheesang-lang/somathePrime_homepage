@@ -21,6 +21,18 @@
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mnav && !mnav.hidden) setMenu(false); });
   // 같은 페이지 안의 앵커(소식 > 공지사항 등)로 가면 메뉴를 닫습니다
   mnav && mnav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+  // 1depth 아코디언(피그마 18497:20940) — 한 번에 하나만 열립니다
+  mnav && mnav.querySelectorAll('button.mnav__top').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      mnav.querySelectorAll('button.mnav__top').forEach((b) => {
+        const on = b === btn && open;
+        b.setAttribute('aria-expanded', String(on));
+        const sub = document.getElementById(b.getAttribute('aria-controls'));
+        if (sub) sub.hidden = !on;
+      });
+    });
+  });
 
   /* 내리면 GNB를 숨기고 올리면 다시 — 랜딩과 같은 규칙(6px 이하 흔들림은 무시).
      인트로가 화면을 덮고 있는 동안에는 건드리지 않습니다. */

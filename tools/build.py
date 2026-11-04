@@ -32,7 +32,7 @@ def part(name):
     return io.open(PARTS / f"{name}.html", encoding="utf-8").read().rstrip()
 
 
-def gnb(active, kind="sub"):
+def gnb(active, kind="sub", active_sub=""):
     """GNB 두 타입(피그마 GNB 세트 18291-11394) — 머리말 `gnb: main`이면 투명(메인 비주얼 위), 아니면 흰 바탕(서브)."""
     items = []
     for key, label, href, sub in MENU:
@@ -43,10 +43,19 @@ def gnb(active, kind="sub"):
             links = "".join(f'<li><a href="{h}" data-label="{t}">{t}</a></li>' for t, h in sub)
             subhtml = f'<ul class="gnb2__sub">{links}</ul>'
         items.append(f'<li class="{cls}"><a class="gnb2__link" href="{href}" data-label="{label}"{cur}>{label}</a>{subhtml}</li>')
+    # 모바일 전체 메뉴(피그마 18497:20940) — 1depth 아코디언. 2depth가 있으면 버튼(누르면 회색 판이 열림), 없으면 링크.
+    # 지금 있는 메뉴는 처음부터 열고, 지금 페이지(menu-sub)는 aria-current(주황).
     mob = []
     for key, label, href, sub in MENU:
-        subs = "".join(f'<li><a href="{h}">{t}</a></li>' for t, h in sub)
-        mob.append(f'<li><a class="mnav__top" href="{href}">{label}</a>' + (f"<ul>{subs}</ul>" if subs else "") + "</li>")
+        if sub:
+            on = key == active
+            subs = "".join(f'<li><a href="{h}"{" aria-current=\"page\"" if on and t == active_sub else ""}>{t}</a></li>' for t, h in sub)
+            mob.append(f'<li class="mnav__item has-sub"><button type="button" class="mnav__top" aria-expanded="{"true" if on else "false"}" aria-controls="mnav-{key}">'
+                       f'{label}<span class="mnav__chev" aria-hidden="true"></span></button>'
+                       f'<ul class="mnav__sub" id="mnav-{key}"{"" if on else " hidden"}>{subs}</ul></li>')
+        else:
+            cur = ' aria-current="page"' if key == active else ""
+            mob.append(f'<li class="mnav__item"><a class="mnav__top" href="{href}"{cur}>{label}</a></li>')
     return (part("gnb").replace("{{kind}}", "gnb2--main" if kind == "main" else "gnb2--sub")
             .replace("{{items}}", "\n          ".join(items)).replace("{{mobile}}", "\n        ".join(mob)))
 
@@ -97,10 +106,10 @@ def build(page):
             .replace("{{site}}", SITE)
             .replace("{{preload}}", "".join(f'\n  <link rel="preload" as="image" href="{p}" fetchpriority="high" />' for p in meta.get("preload", "").split()))
             .replace("{{css}}", css))
-    for name in ("sprite", "lead", "footer", "quick", "stage", "scene10", "scene12", "keywords", "map"):
+    for name in ("sprite", "lead", "footer", "quick", "stage", "scene10", "scene12", "keywords"):
         if "{{" + name + "}}" in body:
             body = body.replace("{{" + name + "}}", part(name))
-    body = body.replace("{{gnb}}", gnb(meta.get("menu", ""), meta.get("gnb", "sub")))
+    body = body.replace("{{gnb}}", gnb(meta.get("menu", ""), meta.get("gnb", "sub"), meta.get("menu-sub", "")))
     if "{{crumb}}" in body:
         body = body.replace("{{crumb}}", crumb(meta["crumb"]))
     if "{{bphead}}" in body:
