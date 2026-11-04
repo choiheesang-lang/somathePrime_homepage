@@ -206,10 +206,27 @@
   (function kvBanner() {
     const b = document.getElementById('kv-banner');
     if (!b) return;
+    /* 모바일(≤1024)은 토글 없이 항상 보이고, 누르면 관심고객 등록 팝업(js/lead.js의 data-lead-open 위임) */
+    const mobile = window.matchMedia('(max-width: 1024px)');
+    const label = () => (b.classList.contains('is-off') ? '관심고객 등록 배너 보이기' : '관심고객 등록 배너 숨기기');
+    const mode = () => {
+      if (mobile.matches) {
+        b.setAttribute('data-lead-open', '');
+        b.removeAttribute('aria-pressed');
+        b.setAttribute('aria-label', '관심고객 등록하기');
+      } else {
+        b.removeAttribute('data-lead-open');
+        b.setAttribute('aria-pressed', String(!b.classList.contains('is-off')));
+        b.setAttribute('aria-label', label());
+      }
+    };
+    mode();
+    mobile.addEventListener('change', mode);
     b.addEventListener('click', () => {
+      if (mobile.matches) return;
       const off = b.classList.toggle('is-off');
       b.setAttribute('aria-pressed', String(!off));
-      b.setAttribute('aria-label', off ? '관심고객 등록 배너 보이기' : '관심고객 등록 배너 숨기기');
+      b.setAttribute('aria-label', label());
     });
   })();
 

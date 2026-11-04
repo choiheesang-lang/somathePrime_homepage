@@ -157,18 +157,28 @@ body.has-reveal .bp-kv :is(.ic-color, .ic-point, .ic-light) { opacity: 0; }
   .bp-tabs a { font-size: 15px; white-space: nowrap; }
   .bp-kv__photo { aspect-ratio: auto; height: 420px; border-radius: var(--r-16); }
   .bp-kv__copy { top: 30%; padding: 0 var(--gutter); }
-  .bp-kv__cards { --card: calc((100vw - 2 * var(--gutter) - 12px) / 3.45); margin-top: calc(var(--card) * -0.75); }
-  .bp-kv__cards .keywords { flex-direction: row; align-items: flex-start; gap: 6px; }
+  /* 카드 셋 — 작게 세 장을 다 보이는 대신 한 장 210(375 기준)으로 키우고 가로로 넘깁니다(약 1.5장이 보여 넘길 수 있음이 드러남).
+     카드는 ±15°로 흔들려 1·3번 칸(5° 기준 상자) 위아래로 0.07·card쯤 넘치므로, 세로도 자르는 스크롤 상자에 위아래 여유를 둡니다 */
+  .bp-kv__cards {
+    --card: min(220px, 56vw); --pad: calc(var(--card) * 0.08);
+    margin-top: calc(var(--card) * -0.55 - var(--pad)); padding: var(--pad) var(--gutter);
+    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain; scrollbar-width: none;
+  }
+  .bp-kv__cards::-webkit-scrollbar { display: none; }
+  .bp-kv__cards .keywords { flex-direction: row; align-items: flex-start; justify-content: flex-start; gap: 12px; width: max-content; }
+  .bp-kv__cards .kw-slot { scroll-snap-align: center; }
   .bp-prime, .bp-space, .bp-end { padding: 80px 0; }
   .bp-intro { padding: 48px 0; }
   .bp-intro__body br { display: none; }
-  .bp-prime__visual img { width: 150px; }
-  .bp-prime__visual { gap: 16px; }
-  .bp-age { width: 160px; gap: 16px; }
-  .bp-age__note b { font-size: 16px; }
-  .bp-age__note span { font-size: 12px; }
-  .bp-age__labs text { font-size: 14px; }
-  .bp-age__n { font-size: 36px; }
+  /* 사진 · 나이 다이얼 — 가로로 붙이면 둘 다 작아져서 세로로 쌓습니다(사진 위, 다이얼 아래, 가운데) */
+  .bp-prime__visual { flex-direction: column; align-items: center; gap: 40px; justify-self: stretch; }
+  .bp-prime__visual img { width: min(296px, 100%); }
+  .bp-age { width: 200px; gap: 18px; }
+  .bp-age__note b { font-size: 17px; }
+  .bp-age__note span { font-size: 13px; }
+  .bp-age__labs text { font-size: 13px; }
+  .bp-age__n { font-size: 42px; }
   .bp-age__k, .bp-age__en { font-size: 10px; }
   .bp-diff { padding: 80px 0; }
   .bp-diff__row { grid-template-columns: 36px 1fr 24px 1.2fr; gap: 12px; padding: 20px 0; }
